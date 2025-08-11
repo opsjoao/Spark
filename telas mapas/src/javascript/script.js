@@ -19,7 +19,7 @@ let map;
       if (!query) return;
 
       const request = {
-        query: query,
+        query: document.getElementById("place-input").value+" parque",
         fields: ['name', 'geometry', 'formatted_address'],
       };
 
@@ -48,3 +48,4 @@ let map;
       });
     }
     window.pesquisarParque = pesquisarParque;
+
