@@ -9,19 +9,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-  <div id="container">
-    <i class="fa fa-bars" aria-hidden="true"></i>
-    <input id="search" type="text" class="input-field" placeholder="Spark">
-    <i class="fa fa-search" aria-hidden="true"></i>
-  </div>
-
-  <div class="conteudo">
-    <h1>Minha Página</h1>
-    <p>Conteúdo do app aqui.</p>
-  </div>
-
-
-  <h1>Mapa com Places API</h1>
+<header class="">
+    <input id="pac-input" type="text" placeholder="Buscar parques..." 
+    class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300">
+  </header>
   <div id="map"></div>
 
 
@@ -101,3 +92,4 @@
 
   
 </html>
+
