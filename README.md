@@ -1,4 +1,6 @@
-# Spark
+# Spark <p align="center">
+  <img src="Spark.png" alt="Logo Spark" width="200">
+</p>
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
 [![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)]()
@@ -12,6 +14,4 @@ Aplicativo de organização de eventos e encontros em parques
 
 Projeto Integrador do Instituto Federal 2025
 
-<p align="center">
-  <img src="Spark.png" alt="Logo Spark" width="200">
-</p>
+
