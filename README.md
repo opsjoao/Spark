@@ -11,3 +11,7 @@ Aplicativo de organização de eventos e encontros em parques
 - **Controle de Versão:** GitHub
 
 Projeto Integrador do Instituto Federal 2025
+
+<p align="center">
+  <img src="" alt="Logo Spark" width="200">
+</p>
