@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Inscrição</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="form_container">
+        <div id="form_header">
+            <h1 id="form_title">Formulário de Inscrição de Eventos</h1>
+        </div>
+        <form id="form" action="/enviar" method="POST">
+            <div id="input_container">
+                <!-- Campo para Nome Usuário -->
+                <div class="input-box">
+                    <label class="form-label" for="nomeUsuario">Nome do Usuário:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="nomeUsuario" name="nomeUsuario" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Identificador do Usuário -->
+                <div class="input-box">
+                    <label class="form-label" for="idUsuario">Identificador do Usuário:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="idUsuario" name="idUsuario" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Nome do Parque -->
+                <div class="input-box">
+                    <label class="form-label" for="nomeParque">Nome do Parque:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="nomeParque" name="nomeParque" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Nome do Evento -->
+                <div class="input-box">
+                    <label class="form-label" for="nomeEvento">Nome do Evento:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="nomeEvento" name="nomeEvento" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Data do Evento -->
+                <div class="input-box">
+                    <label class="form-label" for="dataEvento">Data do Evento:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="date" id="dataEvento" name="dataEvento" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Hora de Início -->
+                <div class="input-box">
+                    <label class="form-label" for="horaInicio">Hora de Início:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="time" id="horaInicio" name="horaInicio" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Hora de Término -->
+                <div class="input-box">
+                    <label class="form-label" for="horaTermino">Hora de Término:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="time" id="horaTermino" name="horaTermino" required>
+                    </div>
+                </div>
+
+                <!-- Campo para Descrição -->
+                <div class="input-box">
+                    <label class="form-label" for="descricaoEvento">Descrição:</label>
+                    <div class="input-field">
+                        <textarea class="form-control" id="descricaoEvento" name="descricaoEvento" rows="4" required></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botão de Cadastro -->
+            <button type="submit" class="btn-default">
+                <i class="fa-solid fa-check"></i>
+                Cadastrar Evento
+            </button>
+        </form>
+    </div>
+</body>
+</html>
