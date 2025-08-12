@@ -10,14 +10,13 @@ let map, markers = [], autocomplete, placesService;
 
       placesService = new google.maps.places.PlacesService(map);
 
-      // Autocomplete para qualquer tipo de local
       const input = document.getElementById("pac-input");
       autocomplete = new google.maps.places.Autocomplete(input, {
         fields: ['name','geometry','types','formatted_address']
       });
       autocomplete.bindTo("bounds", map);
 
-      // Evento ao selecionar um local
+      
       autocomplete.addListener("place_changed", () => {
         const place = autocomplete.getPlace();
         if (!place.geometry || !place.geometry.location) {
@@ -38,26 +37,33 @@ let map, markers = [], autocomplete, placesService;
         }
       });
 
-      // GPS inicial
+      // pega o GPS
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
             const userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
             map.setCenter(userPos);
             addMarker(userPos, "Você está aqui!");
+            buscarParquesProximos(userPos); // mostra os parques próximos automaticamente
           },
-          () => console.warn("GPS não permitido.")
+          () => {
+            console.warn("GPS não permitido. Usando localização padrão.");
+            buscarParquesProximos(fallbackLocal);
+          }
         );
+      } else {
+        buscarParquesProximos(fallbackLocal);
       }
     }
 
     function buscarParquesProximos(localizacao){
+      const raio = document.getElementById("radiusInput").value * 1000; // km pra metros
       const request = {
         location: localizacao,
-        radius: 5000, // 5 km
+        radius: raio,
         type: 'park'
       };
-
+  
       placesService.nearbySearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results.length) {
           const bounds = new google.maps.LatLngBounds();
