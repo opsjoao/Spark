@@ -9,15 +9,21 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-<header class="">
-    <input id="pac-input" type="text" placeholder="Buscar parques..." 
-    class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300">
-  </header>
-  <div id="map"></div>
+    
+<input id="pac-input" type="text" placeholder="Buscar parques..." class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300">
+
+<label class="block mb-2 text-sm font-medium text-gray-700">
+  Distância (km)
+</label>
+<input id="radiusInput" type="range" min="1" max="20" value="5"
+  class="w-full accent-blue-500"
+  oninput="document.getElementById('radiusValue').innerText = this.value">
+<span id="radiusValue">5</span> km
 
 
+</header>
+  <div id="map" class="w-full h-full rounded-lg shadow-lg"></div>
 
-  
 <div class="fixed z-50 w-full h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-full bottom-4 left-1/2 dark:bg-gray-700 dark:border-gray-600 sm:hidden">
     <div class="grid h-full max-w-lg grid-cols-5 mx-auto">
         <button data-tooltip-target="tooltip-home" type="button" class="inline-flex flex-col items-center justify-center px-5 rounded-s-full hover:bg-gray-50 dark:hover:bg-gray-800 group">
