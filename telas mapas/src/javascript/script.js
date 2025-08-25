@@ -43,7 +43,7 @@ let map, markers = [], autocomplete, placesService;
           (pos) => {
             const userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
             map.setCenter(userPos);
-            addMarker(userPos, "Você está aqui!");
+            addMarkerUser(userPos, "Você está aqui!");
             buscarParquesProximos(userPos); // mostra os parques próximos automaticamente
           },
           () => {
@@ -79,9 +79,24 @@ let map, markers = [], autocomplete, placesService;
     }
 
     function addMarker(position, title){
-      const m = new google.maps.Marker({ map, position, title });
-      markers.push(m);
-    }
+      const m = new google.maps.Marker({ 
+        map, position, title,           
+        icon: {
+            url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZKDRr2KVPcOF9xpqfkzQeFQkTSZPJKUepcg&s",
+            scaledSize: new google.maps.Size(40, 40)
+          }});
+    
+            markers.push(m);
+      }
+  
+    function addMarkerUser(position, title){
+      const m = new google.maps.Marker({ 
+        map, position, title});
+    
+            markers.push(m);
+      }
+    
+
 
     function clearMarkers(){
       markers.forEach(m => m.setMap(null));
