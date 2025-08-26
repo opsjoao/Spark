@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="src/styles/styles.css">
+    <title>Cadastrar instituição</title>
+</head>
+<body>
+    <main id="form_container">
+        <div id="form_header">
+            <h1 id="form_title" style="font-size: 20pt;">
+                Cadastrar Instituição
+            </h1>
+            <button class="btn-default">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+        </div>
+
+        <form action="cadastro.php" id="form" method="POST">
+            <div id="input_container">
+                <div class="input-box">
+                    <label 
+                        for="name" 
+                        class="form-label"
+                    >
+                        Nome instituição
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="text"
+                            name="name"
+                            id="name"
+                            class="form-control"
+                            placeholder="Furico c=3"
+                            required
+                        >
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label 
+                        for="tipo" 
+                        class="form-label"
+                    >
+                        CNPJ (opcional)
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="text"
+                            name="cnpj"
+                            id="cnpj"
+                            class="form-control"
+                            placeholder="00.000.000/0000-00"
+                        >
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label 
+                        for="cnpj" 
+                        class="form-label"
+                    >
+                      
+                        E-mail
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="email"
+                            name="email"
+                            id="email"
+                            class="form-control"
+                            placeholder="exemplo@gmail.com"
+                            required
+                        >
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label 
+                        for="password" 
+                        class="form-label"
+                    >
+
+                     Tipo de instituição 
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="text"
+                            name="name"
+                            id="name"
+                            class="form-control"
+                            placeholder="(ex: social, caritativa, ensino)"
+                        >
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label 
+                        for="tipo" 
+                        class="form-label"
+                    >
+
+                        Senha
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="password"
+                            name="password"
+                            id="password"
+                            class="form-control"
+                            placeholder="*******"
+                            required
+                        >
+                        <i class="fa-regular fa-eye-slash password-icon"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label 
+                        for="confirm_password" 
+                        class="form-label"
+                    >
+                        Confirmar senha
+                    </label>
+                    <div class="input-field">
+                        <input 
+                            type="password"
+                            name="confirm_password"
+                            id="confirm_password"
+                            class="form-control"
+                            placeholder="*******"
+                            required
+                        >
+                        <i class="fa-regular fa-eye-slash password-icon"></i>
+                    </div>
+                </div>
+
+                <div class="radio-container">
+                    <label class="form-label">
+                <button id="btn-cadastrar">      
+                Cadastrar Instituição
+            </button>
+        </form>
+    </main>
+
+    <script src="src/javascript/script.js"></script>
+</body>
+</html>
