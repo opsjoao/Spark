@@ -38,7 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Login falhou (usuário não encontrado ou senha incorreta)
         // Redireciona de volta para a página de login com um erro
-        header("Location: index.html?error=1");
+        header("Location: login.html?error=1");
         exit();
     }
 }
