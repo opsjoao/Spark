@@ -99,18 +99,19 @@ function addMarker(position, title, placeId) {
         if (status === google.maps.places.PlacesServiceStatus.OK) {
           let photoUrl = "";
           if (place.photos && place.photos.length > 0) {
-            photoUrl = `<img src="${place.photos[0].getUrl({maxWidth:200})}" style="width:100%;border-radius:8px;margin-bottom:5px;">`;
+              photoUrl = place.photos[0].getUrl({maxWidth: 200});
           }
 
-          const content = `
-            <div style="max-width:220px;font-family:Arial;">
-              <img style="width:100%; max-height:160px; border-radius:10px; object-fit:cover; margin-bottom:5px; src:"${photoUrl}
-              <h3 style="margin:0;color:green;">${place.name}</h3>
-              <p style="margin:0;">${place.formatted_address || ""}</p>
-              <p style="margin:0;"><b>Telefone:</b> ${place.formatted_phone_number || "Não disponível"}</p>
-              ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue">Visitar site</a>` : ""}
-            </div>
-          `;
+      const content = `
+        <div style="max-width:220px;font-family:Arial;">
+          <img src="${photoUrl}" style="width:100%; max-height:160px; border-radius:10px; object-fit:cover; margin-bottom:5px;">
+          <h3 style="margin:0;color:green;">${place.name}</h3>
+          <p style="margin:0;">${place.formatted_address || ""}</p>
+          <p style="margin:0;"><b>Telefone:</b> ${place.formatted_phone_number || "Não disponível"}</p>
+          ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue">Visitar site</a>` : ""}
+        </div>
+      `;
+
           infoWindow.setContent(content);
           infoWindow.open(map, m);
         } else {
