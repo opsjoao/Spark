@@ -1,19 +1,31 @@
-// Obtém todos os inputs com o mesmo nome "exibirDias"
-const radioButtons = document.querySelectorAll('input[name="evento"]');
-
-// Obtém o elemento que contém a lista de dias
 const diasDaSemanaDiv = document.getElementById('diasDaSemana');
 
+const diaPontualDiv = document.getElementById('diaPontual');
+
+const radioSemanal = document.getElementById("semanal");
+const radioPontual = document.getElementById("pontual");
+
+const form = document.getElementById("form");
+const inputDataEvento = document.getElementById("dataEvento");
+const selectDias = document.getElementById("dias");
+
 // Adiciona um "ouvinte de evento" (event listener) a cada input de rádio
-radioButtons.forEach(radio => {
-    radio.addEventListener('change', function() {
-        // Verifica qual rádio está selecionado (checked)
-        if (this.value === 'Semanal') {
-            // Se for "sim", mostra a div de dias
-            diasDaSemanaDiv.style.display = 'block';
-        } else {
-            // Se for "não" (ou qualquer outra coisa), esconde a div
-            diasDaSemanaDiv.style.display = 'none';
-        }
-    });
-});
+
+  radioSemanal.addEventListener("change", function () {
+    if (this.checked) {
+      diasDaSemanaDiv.style.display = "block";
+      diaPontualDiv.style.display = "none";
+      inputDataEvento.required = false;
+      selectDias.required = true;
+    }
+  });
+
+  radioPontual.addEventListener("change", function () {
+    if (this.checked) {
+      diaPontualDiv.style.display = "block";
+      diasDaSemanaDiv.style.display = "none";
+      inputDataEvento.required = true;
+      selectDias.required = false; 
+    }
+  });
+  

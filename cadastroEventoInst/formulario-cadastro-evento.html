@@ -44,14 +44,14 @@
                 <div>
                     <input type="radio" id="semanal" name="evento" value="Semanal">
                     <label for="html">Semanal</label><br>
-                    <input type="radio" id="pontual" name="evento" value="Pontual">
+                    <input type="radio" id="pontual" name="evento" value="Pontual" required>
                     <label for="css">Pontual</label><br>
                 </div>
 
                 <div id="diaPontual" style="display: none;">
                     <label class="form-label" for="dataEvento">Data do Evento:</label>
                     <div class="input-field">
-                        <input class="form-control" type="date" id="dataEvento" name="dataEvento" required>
+                        <input class="form-control" type="date" id="dataEvento" name="dataEvento">
                     </div>
                 </div>
 
@@ -94,9 +94,13 @@
                 <i class="fa-solid fa-check"></i>
                 Cadastrar Evento
             </button>
-
     <script src="script.js"></script>
+    
         </form>
+        <button class="btn-default" onclick="history.back()">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Voltar
+            </button>
     </div>
 </body>
 </html>
