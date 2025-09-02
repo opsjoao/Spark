@@ -97,7 +97,3 @@ INSERT INTO Evento (idParque, IdInstituicao, nome, dia, horario_inicio, horario_
 
 INSERT INTO Participantes (idUsuario, idEvento, dataInscricao, dataParticipacao) VALUES
 (1, 1, '2025-05-01', '2025-05-03');
-
-
-SELECT * FROM Usuario;
-
