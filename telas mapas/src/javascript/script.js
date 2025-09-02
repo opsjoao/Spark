@@ -77,80 +77,70 @@ function buscarParquesProximos(localizacao) {
 }
 
 function addMarker(position, title, placeId) {
-  const m = new google.maps.Marker({ 
-    map, 
-    position, 
-    title,           
+  const m = new google.maps.Marker({
+    map,
+    position,
+    title,
     icon: {
       url: "src/assets/pin_verde.png",
       scaledSize: new google.maps.Size(20, 30)
     }
   });
 
-  // Ao clicar no marcador, buscar detalhes do lugar pelo place_id
   if (placeId) {
     m.addListener("click", () => {
-      const request = {
-        placeId: placeId,
-        fields: ['name', 'formatted_address', 'website', 'formatted_phone_number', 'photos']
-      };
-
-      placesService.getDetails(request, (place, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK) {
-          let photoUrl = "";
-          if (place.photos && place.photos.length > 0) {
-            photoUrl = place.photos[0].getUrl({maxWidth: 200});
-          }
-
-// Criar a div com conteúdo
-const content = `
-  <div id="mapContent" style="position: fixed; top: 0; left: 0; width: 50%; height: 100vh; font-family: Arial; overflow-y: auto; z-index: 1000; padding: 10px; background-color: white; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);">
-    <img src="${photoUrl}" style="width:100%; max-height:160px; border-radius:10px; object-fit:cover; margin-bottom:10px;">
-    <h3 style="margin:0;color:green;">${place.name}</h3>
-    <p style="margin:5px 0 0;">${place.formatted_address || ""}</p>
-    <p style="margin:5px 0 0;"><b>Telefone:</b> ${place.formatted_phone_number || "Não disponível"}</p>
-    ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue; display:block; margin-top:5px;">Visitar site</a>` : ""}
-  </div>
-`;
-
-// Inserir o conteúdo na página
-document.body.innerHTML += content;
-
-// Função para fechar a div quando clicar fora
-function closeOnClickOutside(event) {
-  const contentDiv = document.getElementById('mapContent');
-  // Verifica se o clique foi fora da div
-  if (contentDiv && !contentDiv.contains(event.target)) {
-    contentDiv.style.display = 'none';  // Fecha a div
-    document.removeEventListener('click', closeOnClickOutside);  // Remove o evento de clique
-  }
-}
-
-// Adicionar o evento de clique para fechar a div
-document.addEventListener('click', closeOnClickOutside);
-
-// Função para reabilitar o clique no mapa, após fechar a div
-function reenableClickOnMap() {
-  const contentDiv = document.getElementById('mapContent');
-  contentDiv.style.display = 'none';  // Fecha a div
-  // Adiciona o ouvinte de novo, permitindo interagir com o mapa
-  document.addEventListener('click', closeOnClickOutside);
-}
-
-
-
-          infoWindow.setContent(content);
-          infoWindow.open(map, m);
-        } else {
-          infoWindow.setContent(`<b>${title}</b><br>Não foi possível carregar detalhes.`);
-          infoWindow.open(map, m);
-        }
-      });
+      // Create and show the details pane instead of using a separate fixed div
+      showDetailsPane(placeId, title);
     });
   }
 
   markers.push(m);
 }
+
+// Function to handle showing the details pane
+function showDetailsPane(placeId, title) {
+  const request = {
+    placeId: placeId,
+    fields: ['name', 'formatted_address', 'website', 'formatted_phone_number', 'photos']
+  };
+
+  placesService.getDetails(request, (place, status) => {
+    const detailsContainer = document.getElementById("park-details");
+    
+    if (status === google.maps.places.PlacesServiceStatus.OK) {
+      let photoUrl = "";
+      if (place.photos && place.photos.length > 0) {
+        photoUrl = place.photos[0].getUrl({ maxWidth: 200 });
+      }
+
+      const content = `
+        <img src="${photoUrl}" style="width:100%; max-height:160px; border-radius:10px; object-fit:cover; margin-bottom:10px;">
+        <h3 style="margin:0;color:green;">${place.name}</h3>
+        <p style="margin:5px 0 0;">${place.formatted_address || ""}</p>
+        <p style="margin:5px 0 0;"><b>Telefone:</b> ${place.formatted_phone_number || "Não disponível"}</p>
+        ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue; display:block; margin-top:5px;">Visitar site</a>` : ""}
+      `;
+      detailsContainer.innerHTML = content;
+      detailsContainer.style.display = 'block'; // Show the pane
+    } else {
+      detailsContainer.innerHTML = `<b>${title}</b><br>Não foi possível carregar detalhes.`;
+      detailsContainer.style.display = 'block'; // Show the pane
+    }
+  });
+}
+
+// Listen for clicks on the entire document
+document.addEventListener('click', (event) => {
+  const detailsContainer = document.getElementById("park-details");
+  const isClickInsidePane = detailsContainer.contains(event.target);
+  const isClickOnMarker = event.target.tagName === 'IMG' && event.target.src.includes('pin_verde.png'); // A simple way to check if it's the marker icon
+
+  // Hide the pane if the click is not inside the pane and not on a marker
+  if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker) {
+    detailsContainer.style.display = 'none';
+  }
+});
+
 
 function addMarkerUser(position, title) {
   const m = new google.maps.Marker({ 
