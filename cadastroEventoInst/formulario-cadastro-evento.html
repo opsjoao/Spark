@@ -11,10 +11,10 @@
         <div id="form_header">
             <h1 id="form_title">Formulário de Inscrição de Eventos</h1>
         </div>
-        <form id="form" action="/enviar" method="POST">
+        <form id="form" action="insituicao-evento-cadarso.php" method="POST">
             <div id="input_container">
                 <div class="input-box">
-                    <label class="form-label" for="nomeUsuario">Nome da Instituição:</label>
+                    <label class="form-label" for="nomeInstiuicao">Nome da Instituição:</label>
                     <div class="input-field">
                         <input class="form-control" type="text" id="nomeInstiuicao" name="nomeInstiuicao" required>
                     </div>
@@ -43,9 +43,9 @@
 
                 <div>
                     <input type="radio" id="semanal" name="evento" value="Semanal">
-                    <label for="html">Semanal</label><br>
+                    <label for="semanal">Semanal</label><br>
                     <input type="radio" id="pontual" name="evento" value="Pontual" required>
-                    <label for="css">Pontual</label><br>
+                    <label for="pontual">Pontual</label><br>
                 </div>
 
                 <div id="diaPontual" style="display: none;">
