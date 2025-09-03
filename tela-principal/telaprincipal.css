@@ -1,0 +1,190 @@
+/* telaprincipal.css (código completo e atualizado) */
+
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background: #f0f2f5; /* Um cinza claro para o fundo do desktop */
+  color: #333;
+}
+
+main {
+  padding: 10px;
+  /* Espaço para a barra inferior NO MOBILE. Será sobrescrito no desktop. */
+  padding-bottom: 80px; 
+}
+
+/* HEADER */
+.topbar {
+  background: #7CBD64;
+  color: white;
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.topbar h1 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* DESTAQUE E POST (sem alterações) */
+.destaque {
+  position: relative;
+}
+.destaque img {
+  width: 100%;
+  border-radius: 10px;
+}
+.destaque-texto {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+.post {
+  background: white;
+  border-radius: 10px;
+  margin: 15px 0; /* Ajustado para 0 nas laterais */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+.post-img {
+  width: 100%;
+  height: auto;
+}
+.post-body {
+  padding: 10px;
+}
+.post-body h4 {
+  font-size: 16px;
+  margin-bottom: 2px;
+}
+.post-body .local {
+  font-size: 14px;
+  color: #666;
+}
+.stars {
+  color: #FFD700;
+  margin: 5px 0;
+}
+
+/* --- ESTILOS DE NAVEGAÇÃO --- */
+
+/* NAVBAR INFERIOR (MOBILE) */
+.bottombar {
+  background: #E6F5E6;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000; /* Garantir que fique por cima */
+}
+.bottombar a {
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 12px;
+}
+.bottombar a.active {
+  color: #7CBD64;
+}
+
+/* SIDEBAR (DESKTOP) - Escondida por padrão */
+.sidebar {
+  display: none;
+}
+
+
+/* --- REGRAS DE RESPONSIVIDADE PARA DESKTOP --- */
+
+/* Aplicar estilos para telas com 768px de largura ou mais */
+@media (min-width: 768px) {
+  
+  /* 1. Esconder a barra de navegação mobile */
+  .bottombar {
+    display: none;
+  }
+  
+  /* 2. Mostrar e Estilizar a sidebar de desktop */
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 60px; /* Altura do topbar */
+    width: 240px;
+    height: calc(100vh - 60px); /* Altura total menos o topbar */
+    background: #f8fdf8;
+    padding: 20px;
+    border-right: 1px solid #ddd;
+  }
+  
+  .sidebar a {
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-bottom: 5px;
+  }
+
+  .sidebar a i {
+    font-size: 24px;
+    margin-right: 15px;
+  }
+  
+  .sidebar a.active {
+    background-color: #E6F5E6;
+    color: #7CBD64;
+    font-weight: bold;
+  }
+
+  .sidebar a:hover {
+    background-color: #eef1ec;
+  }
+
+  /* 3. Ajustar o conteúdo principal */
+  main {
+    max-width: 700px; /* Largura máxima para o feed */
+    margin: 0 auto; /* Centraliza o feed na tela */
+    padding-left: 260px; /* Deixa espaço para a sidebar da esquerda + um respiro */
+    padding-bottom: 20px; /* Reduz o padding inferior que não é mais necessário */
+  }
+
+  /* Ocultar ícone de menu no topbar do desktop */
+  .topbar .bx-menu {
+    display: none;
+  }
+}
