@@ -18,25 +18,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $conn->real_escape_string($_POST['email']);
     $senha_digitada = $_POST['password'];
 
-    $sql = "SELECT id, senha FROM Usuario WHERE email = ?"; // Pega o ID também, é útil
+    $sql = "SELECT idUsuario, senha FROM Usuario WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $stmt->store_result(); // Necessário para verificar num_rows
+    $stmt->store_result();
     
     if ($stmt->num_rows > 0) {
         $stmt->bind_result($id_usuario, $senha_hashed);
         $stmt->fetch();
 
         if (password_verify($senha_digitada, $senha_hashed)) {
-            // Login bem-sucedido! AGORA, VAMOS CRIAR A SESSÃO
-            
+            // Login bem-sucedido!
             $_SESSION['loggedin'] = true;
             $_SESSION['id_usuario'] = $id_usuario;
             $_SESSION['email_usuario'] = $email;
 
             // Redireciona para a tela principal
-            header("Location: sua_tela_principal.php"); // Altere aqui!
+            header("Location: ../../tela-principal/telaprincipal.html");
             exit();
         }
     }
