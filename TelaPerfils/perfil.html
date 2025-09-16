@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Spark - Amigos</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        referrerpolicy="no-referrer"/>
   <style>
     body {
       margin: 0;
@@ -75,6 +78,66 @@
       font-weight: 500;
       color: #1d3557;
     }
+
+    /* --- ESTILOS DE NAVEGAÇÃO --- */
+.bottombar {
+  background: #E6F5E6;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
+.bottombar .nav-btn {
+  background: transparent;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  flex: 1;
+}
+.bottombar .nav-btn i {
+  font-size: 22px;
+  margin-bottom: 2px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.bottombar .nav-btn span {
+  font-size: 12px;
+}
+.bottombar .nav-btn.active {
+  color: #7CBD64;
+}
+.bottombar .nav-btn .icon-badge {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  border-radius: 50%;
+  background-color: transparent;
+  margin-bottom: 2px;
+}
+.bottombar .nav-btn.active .icon-badge {
+  background-color: #7CBD64;
+}
+.bottombar .nav-btn.active .icon-badge i {
+  color: white;
+}
+.sidebar {
+  display: none;
+}
   </style>
 </head>
 <body>
@@ -88,6 +151,29 @@
   <main class="friend-list-container" id="friends-list">
     <!-- Lista de amigos via JS -->
   </main>
+
+  <nav class="bottombar">
+    <button class="nav-btn active" onclick="window.location.href='../TelaPerfils/perfil.html'">
+      <i class="fa-solid fa-users"></i>
+      <span>Amigos</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='../tela-atividades/atividades.php'">
+      <i class="fa-solid fa-person-walking"></i>
+      <span>Atividades</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='../tela-principal/telaprincipal.html'">
+      <i class="fa-solid fa-house"></i>
+      <span>Início</span>
+    </button>
+    <button class="nav-btn">
+      <i class="fa-solid fa-star"></i>
+      <span>Favoritos</span>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='../teladeusuario/teladeusuario.html'">
+      <span class="icon-badge"><i class="fa-solid fa-user"></i></span>
+      <span>Conta</span>
+    </button>
+  </nav>
 
   <script>
     const amigos = [

@@ -18,30 +18,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $conn->real_escape_string($_POST['email']);
     $senha_digitada = $_POST['password'];
 
-    $sql = "SELECT idUsuario, senha FROM Usuario WHERE email = ?";
+    // Busca o usuário pelo e-mail
+    $sql = "SELECT idUsuario, nome, senha FROM Usuario WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $stmt->store_result();
+    $result = $stmt->get_result();
     
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($id_usuario, $senha_hashed);
-        $stmt->fetch();
-
-        if (password_verify($senha_digitada, $senha_hashed)) {
+    if ($result->num_rows === 1) {
+        $usuario = $result->fetch_assoc();
+        
+        // Verifica a senha com hash
+        if (password_verify($senha_digitada, $usuario['senha'])) {
             // Login bem-sucedido!
             $_SESSION['loggedin'] = true;
-            $_SESSION['id_usuario'] = $id_usuario;
-            $_SESSION['email_usuario'] = $email;
+            $_SESSION['id_usuario'] = $usuario['idUsuario'];
+            $_SESSION['nome_usuario'] = $usuario['nome'];
 
-            // Redireciona para a tela principal
-            header("Location: ../../tela-principal/telaprincipal.html");
+            // --- CORREÇÃO APLICADA AQUI ---
+            // Usando o caminho absoluto para o redirecionamento, baseado no que funcionou no seu teste.
+            // Se o seu teste mostrou que você NÃO precisa do /Spark-main/, remova-o daqui.
+            $redirect_url = '/Spark-main/tela-principal/telaprincipal.html';
+            header("Location: " . $redirect_url);
             exit();
+
         }
     }
     
     // Se chegou até aqui, o login falhou
-    header("Location: login.html?error=1");
+    // Redireciona de volta para a PÁGINA DE LOGIN com o parâmetro de erro.
+    header("Location: login.php?error=1");
     exit();
 }
 

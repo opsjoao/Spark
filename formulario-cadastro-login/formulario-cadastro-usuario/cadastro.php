@@ -1,57 +1,69 @@
 <?php
+// 1. Configurações e Conexão com o Banco
+$servidor = "localhost";
+$usuario_db = "root";
+$senha_db = "";
+$banco = "Spark"; // Verifique se o nome do banco está correto
 
-//variaveis relacionadas ao banco de dados
-$servername = "localhost"; // ou 127.0.0.1
-$username = "root"; 
-$password = ""; 
-$dbname = "Spark";
-
-//cria a conexão
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-//verifica a conexão
+$conn = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
 
-//verifica se o formulário foi submetido
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //filtra e recupera os dados do formulário
-    $nome = $conn->real_escape_string($_POST['name']);//o real_escape_string indica uma funçao de segurança
-    $cpf = $conn->real_escape_string($_POST['cpf']);
-    $data_nasc = $conn->real_escape_string($_POST['birthdate']);
-    $email = $conn->real_escape_string($_POST['email']);
-    $senha = $_POST['password']; // Senha bruta
-    $confirm_senha = $_POST['confirm_password'];
-    $genero = $conn->real_escape_string($_POST['gender']);
+// 2. Receber os dados do formulário via POST
+$nome = $_POST['name'];
+$username = $_POST['username']; // Novo campo
+$cpf = $_POST['cpf'] ?: null; // Define como nulo se for enviado vazio
+$data_nasc = $_POST['birthdate'];
+$email = $_POST['email'];
+$senha = $_POST['password'];
+$senha_confirm = $_POST['confirm_password'];
+$genero = $_POST['gender'];
 
-    //preenche o campo tipi automaticamente no banco, pois não possui no formulário de cadastro 
-    $tipo = "Comum";
-
-    //valida se as senhas coincidem
-    if ($senha !== $confirm_senha) {
-        die("As senhas não coincidem.");
-    }
-
-    //hash da senha por segurança
-    $senha_hashed = password_hash($senha, PASSWORD_DEFAULT);
-
-    $sql = "INSERT INTO Usuario (nome, tipo, email, senha, cpf, genero, data_nasc) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssss", $nome, $tipo, $email, $senha_hashed, $cpf, $genero, $data_nasc);
-
-    //execução
-    if ($stmt->execute()) {
-        header('Location: ../formulario login.v2/login.html');
-        exit();
-    } else {
-        echo "Erro: " . $stmt->error;
-    }
-
-    $stmt->close();
+// 3. Validações
+// a) Verificar se as senhas coincidem
+if ($senha !== $senha_confirm) {
+    die("Erro: As senhas não coincidem. <a href='javascript:history.back()'>Tente novamente</a>.");
 }
 
+// b) Verificar se email, username ou CPF já existem (usando prepared statements)
+$stmt = $conn->prepare("SELECT email FROM Usuario WHERE email = ? OR username = ? OR cpf = ?");
+$stmt->bind_param("sss", $email, $username, $cpf);
+$stmt->execute();
+$stmt->store_result();
+
+if ($stmt->num_rows > 0) {
+    die("Erro: E-mail, username ou CPF já cadastrado. <a href='javascript:history.back()'>Tente novamente</a>.");
+}
+$stmt->close();
+
+// 4. Criptografar a senha (Segurança Essencial!)
+$senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+
+// 5. Inserir o novo usuário no banco de dados
+$stmt = $conn->prepare("
+    INSERT INTO Usuario (nome, username, tipo, email, senha, cpf, genero, data_nasc) 
+    VALUES (?, ?, 'comum', ?, ?, ?, ?, ?)
+");
+
+// s = string, s = string, s = string, ...
+$stmt->bind_param("sssssss", $nome, $username, $email, $senha_hash, $cpf, $genero, $data_nasc);
+
+if ($stmt->execute()) {
+    // Se o cadastro for bem-sucedido, exibe uma mensagem e um link para o login
+    echo "
+        <div style='font-family: sans-serif; text-align: center; padding-top: 50px;'>
+            <h1>Usuário cadastrado com sucesso!</h1>
+            <p>Agora você já pode fazer o login.</p>
+            <a href='../formulario-login/login.php' style='display: inline-block; padding: 10px 20px; background-color: #448019; color: white; text-decoration: none; border-radius: 5px;'>Ir para Login</a>
+        </div>
+    ";
+} else {
+    echo "Erro ao cadastrar usuário: " . $stmt->error;
+}
+
+// 6. Fechar as conexões
+$stmt->close();
 $conn->close();
 
 ?>

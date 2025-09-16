@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="src/styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="src/styles/styles.css"> 
     <title>Cadastrar Usuário</title>
 </head>
 <body>
@@ -13,7 +13,7 @@
             <h1 id="form_title" style="font-size: 20pt;">
                 Cadastrar Usuário
             </h1>
-            <button class="btn-default" onclick="window.location.href='../formulario-login/login.html'">
+            <button class="btn-default" onclick="window.location.href='../formulario-login/login.php'">
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
         </div>
@@ -21,19 +21,14 @@
         <form action="cadastro.php" id="form" method="POST">
             <div id="input_container">
                 <div class="input-box">
-                    <label 
-                        for="name" 
-                        class="form-label"
-                    >
-                        Nome
-                    </label>
+                    <label for="name" class="form-label">Nome</label>
                     <div class="input-field">
                         <input 
                             type="text"
                             name="name"
                             id="name"
                             class="form-control"
-                            placeholder="Fulano"
+                            placeholder="Seu nome completo"
                             required
                         >
                         <i class="fa-regular fa-user"></i>
@@ -41,33 +36,37 @@
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="cpf" 
-                        class="form-label"
-                    >
-                        CPF
-                    </label>
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-field">
+                        <input 
+                            type="text"
+                            name="username"
+                            id="username"
+                            class="form-control"
+                            placeholder="@seu_usuario (sem espaços)"
+                            required
+                        >
+                        <i class="fa-solid fa-at"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="cpf" class="form-label">CPF</label>
                     <div class="input-field">
                         <input 
                             type="text"
                             name="cpf"
                             id="cpf"
                             class="form-control"
-                            placeholder="(Apenas Números)"
+                            placeholder="(Opcional)"
                             maxlength="14"
-                            required
                         >
-                        <i class="fa-regular fa-user"></i>
+                        <i class="fa-regular fa-id-card"></i>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="birthdate" 
-                        class="form-label"
-                    >
-                        Nascimento
-                    </label>
+                    <label for="birthdate" class="form-label">Nascimento</label>
                     <div class="input-field">
                         <input 
                             type="date"
@@ -80,12 +79,7 @@
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="email" 
-                        class="form-label"
-                    >
-                        E-mail
-                    </label>
+                    <label for="email" class="form-label">E-mail</label>
                     <div class="input-field">
                         <input 
                             type="email"
@@ -100,19 +94,14 @@
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="password" 
-                        class="form-label"
-                    >
-                        Senha
-                    </label>
+                    <label for="password" class="form-label">Senha</label>
                     <div class="input-field">
                         <input 
                             type="password"
                             name="password"
                             id="password"
                             class="form-control"
-                            placeholder="*******"
+                            placeholder="Crie uma senha forte"
                             required
                         >
                         <i class="fa-regular fa-eye-slash password-icon"></i>
@@ -120,83 +109,37 @@
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="confirm_password" 
-                        class="form-label"
-                    >
-                        Confirmar senha
-                    </label>
+                    <label for="confirm_password" class="form-label">Confirmar senha</label>
                     <div class="input-field">
                         <input 
                             type="password"
                             name="confirm_password"
                             id="confirm_password"
                             class="form-control"
-                            placeholder="*******"
+                            placeholder="Repita a senha"
                             required
                         >
                         <i class="fa-regular fa-eye-slash password-icon"></i>
                     </div>
-                    <span id="password-error" style="color: red; font-size: 12px; display: none;"></span>
+                    <span id="password-error" style="color: red; font-size: 12px; display: none; width: 100%; margin-top: 5px;"></span>
                 </div>
 
                 <div class="radio-container">
-                    <label class="form-label">
-                        Gênero
-                    </label>
-
+                    <label class="form-label">Gênero</label>
                     <div id="gender_inputs">
                         <div class="radio-box">
-                            <input 
-                                type="radio"
-                                name="gender"
-                                id="female"
-                                class="form-control"
-                                value="Feminino"
-                                required
-                            >
-                            <label 
-                                for="female" 
-                                class="form-label"
-                            >
-                                Feminino
-                            </label>
+                            <input type="radio" name="gender" id="female" class="form-control" value="Feminino" required>
+                            <label for="female" class="form-label">Feminino</label>
                         </div>
-
                         <div class="radio-box">
-                            <input 
-                                type="radio"
-                                name="gender"
-                                id="male"
-                                class="form-control"
-                                value="Masculino"
-                            >
-                            <label 
-                                for="male" 
-                                class="form-label"
-                            >
-                                Masculino
-                            </label>
+                            <input type="radio" name="gender" id="male" class="form-control" value="Masculino">
+                            <label for="male" class="form-label">Masculino</label>
                         </div>
-
                         <div class="radio-box">
-                            <input 
-                                type="radio"
-                                name="gender"
-                                id="other"
-                                class="form-control"
-                                value="Outro"
-                            >
-                            <label 
-                                for="other" 
-                                class="form-label"
-                            >
-                                Outro
-                            </label>
+                            <input type="radio" name="gender" id="other" class="form-control" value="Outro">
+                            <label for="other" class="form-label">Outro</label>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -205,10 +148,6 @@
                 Criar conta
             </button>
         </form>
-        <button type="submit" class="btn-default" onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'" >
-            <i class="fa-solid"></i>
-            Cadastrar Instituição
-        </button>
     </main>
 
     <script src="src/javascript/script.js"></script>

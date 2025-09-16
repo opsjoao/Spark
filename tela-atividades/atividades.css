@@ -1,0 +1,292 @@
+/* RESET E ESTILOS GERAIS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #ffffff;
+    color: #333;
+}
+
+main {
+    padding: 10px;
+    padding-top: 70px; /* Espaço para o header fixo */
+    /* Espaçamento inferior para não cobrir o último card com o FAB */
+    padding-bottom: 160px; 
+}
+
+/* Título da Seção */
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1c2b20;
+    margin-bottom: 10px;
+}
+
+/* HEADER */
+.topbar {
+    background: #DCF8DC;
+    color: #333;
+    border-radius: 999px;
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+}
+
+.topbar h1 {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.topbar i {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+
+/* ESTILOS DO CARD DE POSTAGEM */
+.post {
+    background: #DCF8DC;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    margin-bottom: 10px;
+}
+
+.post-header h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c2b20;
+}
+.post-header p {
+    font-size: 13px;
+    color: #556B55;
+}
+
+.avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.post-img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.post-body {
+    padding: 0;
+    margin-top: 10px;
+}
+
+.post-title-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.title-and-location {
+    flex-grow: 1;
+}
+
+.post-body h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c2b20;
+    margin-bottom: 2px;
+}
+
+.post-body .local {
+    font-size: 13px;
+    color: #556B55;
+}
+
+.post-body > p:last-child {
+    font-size: 13px;
+    color: #445944;
+    line-height: 1.4;
+}
+
+/* Estilo para a data da atividade no card */
+.activity-date {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 500;
+    color: #556B55;
+    flex-shrink: 0;
+    padding-left: 10px;
+}
+
+.activity-date i {
+    color: #7CBD64;
+    margin-right: 5px;
+}
+
+/* Botão Flutuante (FAB - Floating Action Button) */
+.fab {
+    position: fixed;
+    z-index: 1000;
+    bottom: 85px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(45deg, #7CBD64, #8BC34A);
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 0 6px rgba(0, 0, 0, 0.05);
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+
+    /* Centralização do container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* --- ALTERAÇÃO 1: Tamanho do ícone ajustado --- */
+    font-size: 20px; 
+}
+
+/* --- ALTERAÇÃO 2: Nova regra para empurrar o ícone --- */
+.fab i {
+    transform: translateX(1px); /* Empurra o ícone 1px para a direita */
+}
+
+
+/* Hover */
+.fab:hover {
+    transform: scale(1.08) translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+/* BARRA DE NAVEGAÇÃO */
+.bottombar {
+    background: #E6F5E6;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    z-index: 1000;
+}
+.bottombar .nav-btn {
+    background: transparent;
+    border: none;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+    flex: 1;
+}
+.bottombar .nav-btn i {
+    font-size: 22px;
+    margin-bottom: 2px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+.bottombar .nav-btn span {
+    font-size: 12px;
+}
+.bottombar .nav-btn.active {
+    color: #7CBD64;
+}
+
+/* Sidebar para desktop */
+.sidebar {
+    display: none;
+}
+
+/* REGRAS DE RESPONSIVIDADE PARA DESKTOP */
+@media (min-width: 768px) {
+    main {
+        max-width: 700px;
+        margin: 0 auto;
+        padding-top: 80px; 
+        padding-left: 260px; 
+        padding-bottom: 40px; /* Padding menor no desktop pois não há bottombar nem fab atrapalhando */
+    }
+    .topbar {
+        left: 250px;
+        right: 15px;
+        width: auto; 
+    }
+    .topbar .bx-menu {
+        display: none;
+    }
+    .bottombar {
+        display: none;
+    }
+    .fab {
+        bottom: 30px;
+        right: 30px;
+    }
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 240px;
+        height: 100vh;
+        background: #f8fdf8;
+        padding: 20px;
+        border-right: 1px solid #ddd;
+        z-index: 1001; 
+    }
+    .sidebar a {
+        color: #333;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 15px 10px;
+        border-radius: 8px;
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+    .sidebar a i {
+        font-size: 24px;
+        margin-right: 15px;
+    }
+    .sidebar a.active {
+        background-color: #E6F5E6;
+        color: #7CBD64;
+        font-weight: bold;
+    }
+    .sidebar a:hover {
+        background-color: #eef1ec;
+    }
+}
