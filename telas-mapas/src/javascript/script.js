@@ -115,9 +115,9 @@ function showDetailsPane(placeId, title) {
 
       const content = `
         <img src="${photoUrl}" style="width:100%; max-height:160px; border-radius:10px; object-fit:cover; margin-bottom:10px;">
-        <h3 style="margin:0;color:green;">${place.name}</h3>
+        <h3 style="text-align:center;margin:0;color:green;font-size:18px">${place.name}</h3>
         <p style="margin:5px 0 0;">${place.formatted_address || ""}</p>
-        <p style="margin:5px 0 0;"><b>Telefone:</b> ${place.formatted_phone_number || "Não disponível"}</p>
+        <p style="margin:5px 0 0;"><i class="fa-solid fa-phone"></i>  ${place.formatted_phone_number || "Não disponível"}</p>
         ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue; display:block; margin-top:5px;">Visitar site</a>` : ""}
       `;
       detailsContainer.innerHTML = content;
@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const applyButton = document.getElementById("apply-filter-button");
     applyButton.addEventListener("click", () => {
         // Coloque sua lógica de pesquisa aqui, usando o valor do `radiusInput`
-        
+
         // Após a pesquisa, você pode esconder o menu
         filterMenu.classList.remove("filter-menu-visible");
         filterMenu.classList.add("filter-menu-hidden");
