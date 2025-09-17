@@ -116,9 +116,10 @@ function showDetailsPane(placeId, title) {
       const content = `
         <img src="${photoUrl}" style="width:100%; max-height:160px; border-radius:10px; object-fit:cover; margin-bottom:10px;">
         <h3 style="text-align:center;margin:0;color:green;font-size:18px">${place.name}</h3>
-        <p style="margin:5px 0 0;">${place.formatted_address || ""}</p>
-        <p style="margin:5px 0 0;"><i class="fa-solid fa-phone"></i>  ${place.formatted_phone_number || "Não disponível"}</p>
-        ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue; display:block; margin-top:5px;">Visitar site</a>` : ""}
+        <div style="width: 100%; border-bottom: 0.1px solid #464646ff;margin-top:4px;margin-bottom:4px"></div>
+        <p style="margin:5px 0 0;font-size:14px"><i class="fa-solid fa-location-dot"></i>  ${place.formatted_address || ""}</p>
+        <p style="margin:5px 0 0;font-size:14px"><i class="fa-solid fa-phone"></i>  ${place.formatted_phone_number || "Não disponível"}</p>
+        ${place.website ? `<a href="${place.website}" target="_blank" style="color:blue; display:block; margin-top:5px;"><i class="fa-solid fa-earth-americas"></i>  Visitar site</a>` : ""}
       `;
       detailsContainer.innerHTML = content;
       detailsContainer.style.display = 'block'; // Show the pane
