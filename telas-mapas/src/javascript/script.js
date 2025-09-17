@@ -158,3 +158,38 @@ function clearMarkers() {
 }
 
 window.initMap = initMap;
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    const filterButton = document.getElementById("filter-menu-button");
+    const filterMenu = document.getElementById("filter-menu");
+
+    // Alterna a visibilidade do menu quando o botão é clicado
+    filterButton.addEventListener("click", () => {
+        // Usa o método toggle para adicionar/remover a classe 'filter-menu-visible'
+        filterMenu.classList.toggle("filter-menu-visible");
+        // Opcional: remove a classe 'filter-menu-hidden' quando a visibilidade é ativada
+        filterMenu.classList.toggle("filter-menu-hidden");
+    });
+
+    // Opcional: Oculta o menu se o usuário clicar fora dele
+    document.addEventListener("click", (event) => {
+        if (!filterMenu.contains(event.target) && !filterButton.contains(event.target)) {
+            if (filterMenu.classList.contains("filter-menu-visible")) {
+                filterMenu.classList.remove("filter-menu-visible");
+                filterMenu.classList.add("filter-menu-hidden");
+            }
+        }
+    });
+
+    // Opcional: Lógica para o botão "Aplicar"
+    const applyButton = document.getElementById("apply-filter-button");
+    applyButton.addEventListener("click", () => {
+        // Coloque sua lógica de pesquisa aqui, usando o valor do `radiusInput`
+        // ...
+        // Após a pesquisa, você pode esconder o menu
+        filterMenu.classList.remove("filter-menu-visible");
+        filterMenu.classList.add("filter-menu-hidden");
+    });
+});
