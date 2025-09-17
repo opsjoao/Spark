@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const applyButton = document.getElementById("apply-filter-button");
     applyButton.addEventListener("click", () => {
         // Coloque sua lógica de pesquisa aqui, usando o valor do `radiusInput`
-        // ...
+        
         // Após a pesquisa, você pode esconder o menu
         filterMenu.classList.remove("filter-menu-visible");
         filterMenu.classList.add("filter-menu-hidden");
