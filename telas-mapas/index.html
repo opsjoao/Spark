@@ -9,18 +9,29 @@
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    
-<input id="pac-input" type="text" placeholder="Buscar parques..." class="w-full max-w-lg px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300">
 
-<label class="block mb-2 text-sm font-medium text-gray-700">
-  Distância (km)
-</label>  
-<label for="radiusInput">Raio: <span id="radiusValue">5</span></label>
-  <input id="radiusInput" type="range" min="1" max="20" value="5"
-    class="w-full accent-lime-600 bg-stone-100"
-    oninput="document.getElementById('radiusValue').innerText = this.value">
+<div class="search-and-filter-container">
+  <div class="flex w-full gap-2 items-center">
+    <div class="flex-grow">
+      <input id="pac-input" type="text" placeholder="Buscar parques..." 
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-300">
+    </div>
 
+    <button id="filter-menu-button"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg shadow-sm hover:bg-gray-300 focus:outline-none focus:ring focus:ring-blue-300">
+      Filtros
+    </button>
+  </div>
 
+    <div id="filter-menu" class="filter-menu-hidden">
+        <label for="radiusInput">Distância (km): <span id="radiusValue">5</span></label>
+        <input id="radiusInput" type="range" min="1" max="20" value="5"
+               class="w-full accent-lime-600 bg-stone-100"
+               oninput="document.getElementById('radiusValue').innerText = this.value">
+        <button id="apply-filter-button" class="apply-button">Aplicar</button>
+    </div>
+</div>
+        
 </header>
   <div id="park-details" class="fixed top-0 left-0 w-1/2 h-screen font-sans overflow-y-auto z-50 p-2.5 bg-white shadow-md" style="display: none;"></div>
   <div id="map" class="w-full h-full rounded-lg shadow-lg"></div>
