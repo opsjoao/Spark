@@ -237,9 +237,8 @@ main {
   font-weight: 500;
 }
 
-/* --- ESTILOS DE NAVEGAÇÃO --- */
 .bottombar {
-  background: #E6F5E6;
+  background: #ffffff;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -275,7 +274,27 @@ main {
   font-size: 12px;
 }
 .bottombar .nav-btn.active {
-  color: #7CBD64;
+  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
+}
+
+.bottombar .nav-btn.active span {
+  color: #364b36; /* Cor do texto específica, se desejar */
+}
+
+/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
+.bottombar .nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #dcf8dc; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 .sidebar {
   display: none;
@@ -349,4 +368,5 @@ main {
     padding-left: 260px; 
     padding-bottom: 20px;
   }
+
 }
