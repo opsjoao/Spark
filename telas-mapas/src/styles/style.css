@@ -53,3 +53,50 @@ body {
       height: 500px;
       width: 100%;
     }
+
+
+.search-and-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    position: relative; /* Essencial para o posicionamento absoluto do menu */
+}
+
+.filter-menu-hidden {
+    display: none;
+}
+
+.filter-menu-visible {
+    display: block;
+    position: absolute;
+    top: 100%; /* Posiciona o menu abaixo do botão */
+    right: 0; /* Alinha o menu à direita do contêiner pai */
+    z-index: 10;
+    
+    /* Estilos de aparência para o menu */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    margin-top: 5px;
+}
+
+/* Estilos para os elementos internos do menu */
+.filter-menu-visible label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.apply-button {
+    width: 100%;
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+}
