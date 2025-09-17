@@ -50,9 +50,15 @@ body {
 }
     /* Defina o tamanho do mapa */
     #map {
-      height: 500px;
+      height: 90%;
       width: 100%;
     }
+
+    html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 
 
 .search-and-filter-container {
@@ -100,3 +106,6 @@ body {
     margin-top: 10px;
     cursor: pointer;
 }
+
+
+
