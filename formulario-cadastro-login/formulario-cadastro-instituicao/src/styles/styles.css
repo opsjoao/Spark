@@ -83,7 +83,7 @@ body {
 #form_title::after {
     content: '';
     position: absolute;
-    width: 100px;
+    width: 275px;
     height: 3px;
     border-radius: 30px;
     background-color: #448019;
@@ -154,8 +154,11 @@ input:-webkit-autofill {
     color: #000;
 }
 
-.radio-container {
-    grid-column: span 2;
+
+.radio-container-1 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
 }
 
 #gender_inputs {

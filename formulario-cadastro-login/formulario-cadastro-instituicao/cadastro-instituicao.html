@@ -13,11 +13,23 @@
             <h1 id="form_title" style="font-size: 20pt;">
                 Cadastrar Instituição
             </h1>
-            <button class="btn-default" onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
+            <button class="btn-default" onclick="window.location.href='../formulario-login/login.html'">
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
         </div>
 
+        <div class="radio-container-1">
+            <div id="gender_inputs">
+                <div class="radio-box">
+                        <input type="radio" name="form_type" id="user" class="form-control" onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
+                        <label for="usuario" class="form-label">Usuário</label>
+                </div>
+                <div class="radio-box">
+                        <input type="radio" name="form_type" id="institution" class="form-control" checked onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'">
+                        <label for="instituicao" class="form-label">Instituição</label>
+                </div>
+            </div>
+        </div>
         <form action="cadastro.php" id="form" method="POST">
             <div id="input_container">
                 <div class="input-box">
@@ -25,7 +37,7 @@
                         for="name" 
                         class="form-label"
                     >
-                        Nome instituição
+                        Nome da Instituição
                     </label>
                     <div class="input-field">
                         <input 
@@ -33,7 +45,7 @@
                             name="name"
                             id="name"
                             class="form-control"
-                            placeholder="Capoeira para Todos"
+                            placeholder="Digite o nome da instituição"
                             required
                         >
                         <i class="fa-regular fa-user"></i>
@@ -94,7 +106,7 @@
                             name="name"
                             id="name"
                             class="form-control"
-                            placeholder="(ex: social, caritativa, ensino)"
+                            placeholder="(Ex: social, caritativa, ensino)"
                         >
                         <i class="fa-regular fa-user"></i>
                     </div>
@@ -141,10 +153,10 @@
                     </div>
                 </div>
 
-                <div class="radio-container">
-                    <label class="form-label">
-                <button id="btn-cadastrar">      
-                Cadastrar Instituição
+       
+                <button type="submit" class="btn-default">
+                <i class="fa-solid fa-check"></i>
+                Criar conta
             </button>
         </form>
     </main>

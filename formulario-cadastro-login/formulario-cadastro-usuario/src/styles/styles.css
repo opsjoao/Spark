@@ -134,6 +134,13 @@ input:-webkit-autofill {
     color: #000;
 }
 
+.radio-container-1 {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    grid-column: span 2;
+}
+
 .radio-container {
     grid-column: span 2;
 }
