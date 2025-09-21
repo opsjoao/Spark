@@ -21,19 +21,11 @@ if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
 }
 
-// 2. Consulta SQL para buscar PRÓXIMOS EVENTOS (com idEvento)
+// 2. Consulta SQL para buscar PRÓXIMOS EVENTOS (futuros)
 $sql_proximos = "
     SELECT 
-        e.idEvento, 
-        e.nome AS nome_evento, 
-        e.descricao, 
-        e.dia, 
-        e.horario_inicio, 
-        e.imagem_path,
-        p.nome AS nome_parque,
-        u.nome AS nome_usuario, 
-        u.username, 
-        u.avatar_path
+        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
+        p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
     FROM Evento AS e
     JOIN Parque AS p ON e.idParque = p.idParque
     JOIN Usuario AS u ON e.idUsuario = u.idUsuario
@@ -43,19 +35,11 @@ $sql_proximos = "
 $resultado_proximos = $conexao->query($sql_proximos);
 
 
-// 3. Consulta SQL para buscar o HISTÓRICO (com idEvento)
+// 3. Consulta SQL para buscar o HISTÓRICO (eventos passados que o usuário participou)
 $sql_historico = "
     SELECT 
-        e.idEvento, 
-        e.nome AS nome_evento, 
-        e.descricao, 
-        e.dia, 
-        e.horario_inicio, 
-        e.imagem_path,
-        p.nome AS nome_parque,
-        u.nome AS nome_usuario, 
-        u.username, 
-        u.avatar_path
+        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
+        p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
     FROM Evento AS e
     JOIN Parque AS p ON e.idParque = p.idParque
     JOIN Usuario AS u ON e.idUsuario = u.idUsuario
@@ -68,6 +52,22 @@ $stmt_historico->bind_param("i", $idUsuarioLogado);
 $stmt_historico->execute();
 $resultado_historico = $stmt_historico->get_result();
 
+// 4. NOVA CONSULTA para MEUS EVENTOS (eventos que o usuário confirmou presença)
+$sql_meus_eventos = "
+    SELECT 
+        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
+        p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
+    FROM Evento AS e
+    JOIN Parque AS p ON e.idParque = p.idParque
+    JOIN Usuario AS u ON e.idUsuario = u.idUsuario
+    JOIN Participantes AS pa ON e.idEvento = pa.idEvento
+    WHERE pa.idUsuario = ?
+    ORDER BY e.dia, e.horario_inicio;
+";
+$stmt_meus_eventos = $conexao->prepare($sql_meus_eventos);
+$stmt_meus_eventos->bind_param("i", $idUsuarioLogado);
+$stmt_meus_eventos->execute();
+$resultado_meus_eventos = $stmt_meus_eventos->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -99,6 +99,7 @@ $resultado_historico = $stmt_historico->get_result();
     <main>
         <div class="tabs-container">
             <button class="tab-button active" onclick="showTab('proximos')">Próximos Eventos</button>
+            <button class="tab-button" onclick="showTab('meus-eventos')">Meus Eventos</button>
             <button class="tab-button" onclick="showTab('historico')">Histórico</button>
         </div>
 
@@ -111,85 +112,59 @@ $resultado_historico = $stmt_historico->get_result();
             ?>
             <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="post-link">
                 <section class="post">
-                    <div class="post-header">
-                        <img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil do usuário" class="avatar">
-                        <div class="user-info">
-                            <h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3>
-                            <p>@<?php echo htmlspecialchars($evento['username']); ?></p>
-                        </div>
-                    </div>
-
-                    <?php if (!empty($evento['imagem_path'])): ?>
-                        <img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img">
-                    <?php endif; ?>
-                    
-                    <div class="post-body">
-                        <div class="post-title-line">
-                            <div class="title-and-location">
-                                <h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4>
-                                <p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p>
-                            </div>
-                            <div class="activity-date">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <span>
-                                    <?php echo date("d/m", strtotime($evento['dia'])) . ", " . date("H:i", strtotime($evento['horario_inicio'])); ?>
-                                </span>
-                            </div>
-                        </div>
-                        <p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p>
-                    </div>
+                    <div class="post-header"><img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil" class="avatar"><div class="user-info"><h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3><p>@<?php echo htmlspecialchars($evento['username']); ?></p></div></div>
+                    <?php if (!empty($evento['imagem_path'])): ?><img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img"><?php endif; ?>
+                    <div class="post-body"><div class="post-title-line"><div class="title-and-location"><h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4><p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p></div><div class="activity-date"><i class="fa-solid fa-calendar-week"></i><span><?php echo date("d/m", strtotime($evento['dia'])) . ", " . date("H:i", strtotime($evento['horario_inicio'])); ?></span></div></div><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
                 </section>
             </a>
             <?php
-                } // Fim do while
+                }
             } else {
                 echo "<p class='empty-message'>Nenhum próximo evento encontrado.</p>";
             }
             ?>
         </div>
 
+        <div id="meus-eventos" class="tab-content">
+            <?php
+            if ($resultado_meus_eventos && $resultado_meus_eventos->num_rows > 0) {
+                while($evento = $resultado_meus_eventos->fetch_assoc()) {
+                    $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
+                    $avatar = !empty($evento['avatar_path']) ? $evento['avatar_path'] : $caminho_avatar_padrao;
+            ?>
+            <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="post-link">
+                 <section class="post">
+                    <div class="post-header"><img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil" class="avatar"><div class="user-info"><h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3><p>@<?php echo htmlspecialchars($evento['username']); ?></p></div></div>
+                    <?php if (!empty($evento['imagem_path'])): ?><img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img"><?php endif; ?>
+                    <div class="post-body"><div class="post-title-line"><div class="title-and-location"><h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4><p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p></div><div class="activity-date"><i class="fa-solid fa-calendar-week"></i><span><?php echo date("d/m", strtotime($evento['dia'])) . ", " . date("H:i", strtotime($evento['horario_inicio'])); ?></span></div></div><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
+                </section>
+            </a>
+            <?php
+                }
+            } else {
+                echo "<p class='empty-message'>Você ainda não confirmou presença em nenhum evento.</p>";
+            }
+            ?>
+        </div>
+
         <div id="historico" class="tab-content">
-             <?php
+            <?php
             if ($resultado_historico && $resultado_historico->num_rows > 0) {
                 while($evento = $resultado_historico->fetch_assoc()) {
                     $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
                     $avatar = !empty($evento['avatar_path']) ? $evento['avatar_path'] : $caminho_avatar_padrao;
             ?>
             <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="post-link">
-                <section class="post">
-                    <div class="post-header">
-                        <img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil do usuário" class="avatar">
-                        <div class="user-info">
-                            <h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3>
-                            <p>@<?php echo htmlspecialchars($evento['username']); ?></p>
-                        </div>
-                    </div>
-
-                    <?php if (!empty($evento['imagem_path'])): ?>
-                        <img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img">
-                    <?php endif; ?>
-                    
-                    <div class="post-body">
-                        <div class="post-title-line">
-                            <div class="title-and-location">
-                                <h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4>
-                                <p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p>
-                            </div>
-                            <div class="activity-date">
-                                <i class="fa-solid fa-calendar-week"></i>
-                                <span>
-                                    <?php echo date("d/m/Y", strtotime($evento['dia'])); ?>
-                                </span>
-                            </div>
-                        </div>
-                        <p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p>
-                    </div>
+                 <section class="post">
+                    <div class="post-header"><img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil" class="avatar"><div class="user-info"><h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3><p>@<?php echo htmlspecialchars($evento['username']); ?></p></div></div>
+                    <?php if (!empty($evento['imagem_path'])): ?><img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img"><?php endif; ?>
+                    <div class="post-body"><div class="post-title-line"><div class="title-and-location"><h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4><p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p></div><div class="activity-date"><i class="fa-solid fa-calendar-week"></i><span><?php echo date("d/m/Y", strtotime($evento['dia'])); ?></span></div></div><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
                 </section>
             </a>
             <?php
-                } // Fim do while
+                }
             } else {
-                 echo "<p class='empty-message'>Você ainda não participou de nenhum evento.</p>";
+                echo "<p class='empty-message'>Você ainda não participou de nenhum evento.</p>";
             }
             ?>
         </div>
@@ -200,36 +175,17 @@ $resultado_historico = $stmt_historico->get_result();
     </a>
 
     <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'">
-            <i class="fa-solid fa-users"></i>
-            <span>Amigos</span>
-        </button>
-        <button class="nav-btn active">
-            <i class="fa-solid fa-person-walking"></i>
-            <span>Atividades</span>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'">
-            <i class="fa-solid fa-house"></i>
-            <span>Início</span>
-        </button>
-        <button class="nav-btn">
-            <i class="fa-solid fa-star"></i>
-            <span>Favoritos</span>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/teladeusuario/teladeusuario.php'">
-            <i class="fa-solid fa-user"></i>
-            <span>Conta</span>
-        </button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span>Amigos</span></button>
+        <button class="nav-btn active"><i class="fa-solid fa-person-walking"></i><span>Atividades</span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span>Início</span></button>
+        <button class="nav-btn"><i class="fa-solid fa-star"></i><span>Favoritos</span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/teladeusuario/teladeusuario.php'"><i class="fa-solid fa-user"></i><span>Conta</span></button>
     </nav>
 
     <script>
         function showTab(tabName) {
-            const tabContents = document.querySelectorAll('.tab-content');
-            tabContents.forEach(content => content.classList.remove('active'));
-
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => button.classList.remove('active'));
-
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`).classList.add('active');
         }
@@ -238,5 +194,6 @@ $resultado_historico = $stmt_historico->get_result();
 </html>
 <?php
 $stmt_historico->close();
+$stmt_meus_eventos->close();
 $conexao->close();
 ?>
