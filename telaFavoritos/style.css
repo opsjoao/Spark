@@ -1,99 +1,175 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+.main-content {
+    display: flex;
+    flex-direction: column; /* Organiza os itens verticalmente */
+    gap: 20px; /* Espaço entre a barra e o botão */
+    
+    /* ALTERAÇÃO AQUI: Centraliza os itens horizontalmente (a barra e o favorito) */
+    align-items: center; 
+    
+    padding-top: 50px; 
 }
-
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
+    font-family: sans-serif;
     display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-.container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.header {
-    background-color: #90ee90;
-    padding: 10px;
-    text-align: center;
-    display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0; /* Cor de fundo opcional */
 }
 
-.search-bar {
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    flex: 1;
-}
-
-h1 {
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-    margin-left: 10px;
-}
-
-.favorites-list {
-    flex: 1;
-    background-color: #f9f4ff;
-    padding: 20px;
-}
-
-.favorite-item {
+/* Contêiner da Barra de Pesquisa */
+.search-container {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
-    font-size: 16px;
-    color: #555;
+    background-color: #7CBD64; 
+    border-radius: 25px; 
+    padding: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* ALTERAÇÃO AQUI: De 300px para 80vw */
+    width: 80vw; 
 }
 
-.star-icon {
-    color: #ffd700;
-    font-size: 20px;
-    margin-right: 10px;
-}
-
-.add-friend-btn {
-    display: flex;
-    align-items: center;
-    background-color: #ddd;
-    padding: 10px;
+/* Estilo do Campo de Entrada (Input) */
+.search-input {
+    flex-grow: 1; /* Ocupa o máximo de espaço */
     border: none;
-    border-radius: 4px;
-    margin-top: 20px;
-    cursor: pointer;
-}
-
-.add-friend-btn:hover {
-    background-color: #ccc;
-}
-
-.plus-icon {
-    font-size: 20px;
-    margin-right: 10px;
-}
-
-.footer {
-    background-color: #90ee90;
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
-}
-
-.footer-item {
+    outline: none; /* Remove a borda de foco */
+    background-color: transparent; /* Fundo transparente */
+    padding: 10px 15px;
     font-size: 16px;
-    color: #333;
-    cursor: pointer;
+    color: white; /* Cor do texto digitado */
+
+    text-align: center;
 }
 
-.footer-item:hover {
-    color: #007b3a;
+/* Estilo do Placeholder (texto "spark") */
+.search-input::placeholder {
+    color: #ffffff99; /* Cor do placeholder mais clara, para contraste */
+    text-align: center;
+}
+
+/* Estilo do Botão/Ícone de Lupa */
+.search-button {
+    background-color: transparent; /* Fundo transparente */
+    border: none;
+    cursor: pointer; /* Indica que é clicável */
+    padding: 10px 15px;
+    color: white; /* Cor do ícone */
+    font-size: 18px;
+    border-radius: 0 25px 25px 0; /* Arredonda apenas a lateral direita (opcional) */
+    transition: background-color 0.2s; /* Efeito de transição ao passar o mouse */
+}
+
+/* Efeito ao passar o mouse (hover) */
+.search-button:hover {
+    background-color: #6aab58; /* Um tom um pouco mais escuro da cor original */
+}
+
+/* 3. NOVO: CONTAINER DE FAVORITO */
+.favorite-container {
+    display: flex;
+    align-items: center;
+    text-decoration: none; /* Remove sublinhado do link */
+    
+    /* Mesma cor e arredondamento da barra de pesquisa */
+    background-color: #7CBD64;
+    border-radius: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px; /* Mesma largura da barra de pesquisa */
+    padding: 5px;
+    
+    transition: transform 0.2s; /* Efeito ao clicar/tocar */
+}
+
+.favorite-container:hover {
+    opacity: 0.9;
+}
+
+/* Estilo do Ícone de Mais (na esquerda) */
+.plus-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Arredondado com borda */
+    border: 2px solid white;
+    border-radius: 50%; /* Torna o background circular */
+    height: 30px;
+    width: 30px;
+    
+    color: white; 
+    font-size: 16px;
+    margin-right: 15px; /* Espaço entre o ícone e o texto */
+    margin-left: 5px; /* Pequeno espaço da borda esquerda */
+}
+
+/* Estilo do Texto */
+.favorite-text {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.nav-bar {
+    /* Ocupa toda a largura */
+    width: 100%; 
+    height: 60px;
+    background-color: #fff;
+    
+    /* Laterais retas (borda superior opcional) */
+    border-top: 1px solid #ddd;
+    border-radius: 0; 
+    
+    /* Garante que fique no rodapé e cubra toda a largura */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    
+    /* Configuração Flexbox para centralizar e espaçar */
+    display: flex;
+    align-items: center;
+    justify-content: space-around; /* Espaço igual entre os ícones consecutivos */
+    z-index: 1000; /* Garante que fique acima de outros elementos */
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #555; /* Cor padrão dos ícones */
+    font-size: 12px;
+    padding: 5px;
+    flex-grow: 1; /* Garante que todos ocupem o mesmo espaço horizontal */
+    text-align: center;
+}
+
+.nav-item i {
+    font-size: 20px;
+    margin-bottom: 3px;
+}
+
+/* Destaque do Ícone de Favoritas */
+.nav-favorites {
+    color: #448019; /* Cor do texto Favoritas */
+}
+
+.highlight-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Cor do círculo de destaque: #448019 */
+    background-color: #448019; 
+    border-radius: 50%; /* Torna o background circular */
+    height: 40px; 
+    width: 40px;
+    margin-bottom: 3px;
+}
+
+.highlight-circle i {
+    color: white; /* Cor do ícone dentro do círculo */
+    font-size: 18px;
+    margin: 0; /* Remove a margem padrão do ícone */
 }
