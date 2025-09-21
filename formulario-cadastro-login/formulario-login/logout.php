@@ -10,6 +10,6 @@ session_destroy();
 
 // 4. Redireciona o usuário para a página de login
 // Use o caminho absoluto que funciona para o seu projeto
-header("Location: /Spark-main/formulario-login/login.php");
+header("Location: /Spark-main/formulario-cadastro-login/formulario-login/login.php");
 exit();
 ?>
