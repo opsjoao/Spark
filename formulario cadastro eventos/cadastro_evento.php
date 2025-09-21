@@ -1,14 +1,9 @@
 <?php
-// Inicia a sessão
-session_start();
+// Substitua o session_start() e o if(!isset(...)) por esta linha
+require_once('../formulario-cadastro-evento/verificacao.php');
 
-// Verifica se o usuário está logado
-if (!isset($_SESSION['id_usuario'])) {
-    // Usando o caminho absoluto que funcionou para você
-    $login_url = '/Spark-main/formulario-cadastro-login/formulario-login/login.php'; 
-    die("Erro: Você precisa estar logado para criar um evento. <a href='{$login_url}'>Fazer login</a>");
-}
-$idUsuario = $_SESSION['id_usuario'];
+// Pega o ID do usuário da sessão
+$idUsuarioLogado = $_SESSION['id_usuario'];
 
 // 1. Configurações do Banco de Dados
 $servidor = "localhost";
