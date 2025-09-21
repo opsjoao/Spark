@@ -1,16 +1,20 @@
 <?php
-// Inicia a sessão.
+// 1. Inicia a sessão
+// Esta função precisa ser a PRIMEIRA coisa no script, antes de qualquer HTML.
 session_start();
 
-// Verifica se a sessão 'loggedin' não existe ou não é verdadeira.
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    // Se o usuário não estiver logado, redireciona para a página de login.
-    // O caminho aqui é relativo A PARTIR DESTE ARQUIVO.
-    // Como login.html está na mesma pasta, o caminho é simples.
-    header("location: login.html");
-    exit;
+// 2. Verifica se a sessão 'id_usuario' NÃO foi criada
+// Usamos 'id_usuario' porque é isso que o seu 'processa_login.php' está criando.
+if (!isset($_SESSION['id_usuario'])) {
+    
+    // 3. Se não estiver logado, destrói qualquer resquício de sessão
+    session_destroy();
+    
+    // 4. Redireciona para a página de login com uma mensagem de erro (opcional)
+    // Usando o caminho absoluto para garantir que sempre funcione.
+    header("Location: /Spark-main/formulario-login/login.php?erro=restrito");
+    exit(); // Encerra o script para garantir que o redirecionamento aconteça
 }
 
-// Se o script continuar, significa que o usuário está logado.
-// O arquivo termina aqui. Nenhum HTML é necessário.
+// Se o script continuar, significa que o usuário está logado e pode ver a página.
 ?>
