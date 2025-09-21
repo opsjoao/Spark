@@ -81,7 +81,7 @@
 
     /* --- ESTILOS DE NAVEGAÇÃO --- */
 .bottombar {
-  background: #E6F5E6;
+  background: #ffffff;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -117,27 +117,32 @@
   font-size: 12px;
 }
 .bottombar .nav-btn.active {
-  color: #7CBD64;
-}
-.bottombar .nav-btn .icon-badge {
+  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 24px;
-  border-radius: 50%;
-  background-color: transparent;
-  margin-bottom: 2px;
 }
-.bottombar .nav-btn.active .icon-badge {
-  background-color: #7CBD64;
+
+.bottombar .nav-btn.active span {
+  color: #364b36; /* Cor do texto específica, se desejar */
 }
-.bottombar .nav-btn.active .icon-badge i {
-  color: white;
+
+/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
+.bottombar .nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #dcf8dc; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 .sidebar {
   display: none;
-}
   </style>
 </head>
 <body>
@@ -152,26 +157,21 @@
     <!-- Lista de amigos via JS -->
   </main>
 
-  <nav class="bottombar">
+ <nav class="bottombar">
     <button class="nav-btn active" onclick="window.location.href='../TelaPerfils/perfil.html'">
       <i class="fa-solid fa-users"></i>
-      <span>Amigos</span>
     </button>
-    <button class="nav-btn" onclick="window.location.href='../tela-atividades/atividades.php'">
+    <button class="nav-btn" onclick="window.location.href='/telas-mapas/index.html'">
       <i class="fa-solid fa-person-walking"></i>
-      <span>Atividades</span>
     </button>
     <button class="nav-btn" onclick="window.location.href='../tela-principal/telaprincipal.html'">
       <i class="fa-solid fa-house"></i>
-      <span>Início</span>
     </button>
-    <button class="nav-btn">
+    <button class="nav-btn" onclick="window.location.href='/telaFavoritos/index.html'">
       <i class="fa-solid fa-star"></i>
-      <span>Favoritos</span>
     </button>
-    <button class="nav-btn" onclick="window.location.href='../teladeusuario/teladeusuario.html'">
-      <span class="icon-badge"><i class="fa-solid fa-user"></i></span>
-      <span>Conta</span>
+    <button class="nav-btn" onclick="window.location.href='/teladeusuario/teladeusuario.html'">
+      <i class="fa-solid fa-user"></i>
     </button>
   </nav>
 
@@ -208,3 +208,4 @@
   </script>
 </body>
 </html>
+
