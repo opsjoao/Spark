@@ -1,14 +1,8 @@
 <?php
-// Inicia a sessão para obter os dados do usuário logado
-session_start();
+// Inclui o nosso guardião. Ele já faz o session_start() e a verificação.
+require_once('../formulario-cadastro-login/verificacao.php');
 
-// Verifica se o usuário está logado, se não, redireciona para o login
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: /Spark-main/formulario-cadastro-login/formulario-login/login.php");
-    exit();
-}
-
-// Pega o ID do usuário da sessão
+// Pega o ID do usuário da sessão (agora temos certeza que ele existe)
 $idUsuarioLogado = $_SESSION['id_usuario'];
 
 // --- BUSCANDO DADOS DO USUÁRIO NO BANCO ---
@@ -99,7 +93,7 @@ $email = !empty($usuario['email']) ? $usuario['email'] : 'email@naoencontrado.co
     <nav class="bottombar">
         <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span>Amigos</span></button>
         <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-atividades/atividades.php'"><i class="fa-solid fa-person-walking"></i><span>Atividades</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.html'"><i class="fa-solid fa-house"></i><span>Início</span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span>Início</span></button>
         <button class="nav-btn"><i class="fa-solid fa-star"></i><span>Favoritos</span></button>
         <button class="nav-btn active"><i class="fa-solid fa-user"></i><span>Conta</span></button>
     </nav>
