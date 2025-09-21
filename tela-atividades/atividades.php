@@ -1,15 +1,18 @@
 <?php
-// --- INÍCIO DA SUBSTITUIÇÃO ---
-// Inclui o nosso "guardião". Ele já faz o session_start() e a verificação de login.
-// Certifique-se de que o caminho relativo para o 'verificacao.php' está correto.
-require_once('../formulario-cadastro-login/verificacao.php');
+// Inicia a sessão para pegar o ID do usuário
+session_start();
 
-// Pega o ID do usuário da sessão (agora temos certeza que ele existe)
+// Garante que o usuário está logado
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: /Spark-main/formulario-login/login.php");
+    exit();
+}
 $idUsuarioLogado = $_SESSION['id_usuario'];
+
 
 // 1. Conexão com o Banco de Dados
 $servidor = "localhost";
-$usuario_db = "root"; // Renomeado para não conflitar com a sessão
+$usuario_db = "root";
 $senha_db = "";
 $banco = "spark";
 
@@ -18,31 +21,46 @@ if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
 }
 
-// 2. Consulta SQL para buscar PRÓXIMOS EVENTOS (eventos futuros)
+// 2. Consulta SQL para buscar PRÓXIMOS EVENTOS (com idEvento)
 $sql_proximos = "
     SELECT 
-        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
+        e.idEvento, 
+        e.nome AS nome_evento, 
+        e.descricao, 
+        e.dia, 
+        e.horario_inicio, 
+        e.imagem_path,
         p.nome AS nome_parque,
-        u.nome AS nome_usuario, u.username, u.avatar_path
+        u.nome AS nome_usuario, 
+        u.username, 
+        u.avatar_path
     FROM Evento AS e
     JOIN Parque AS p ON e.idParque = p.idParque
     JOIN Usuario AS u ON e.idUsuario = u.idUsuario
-    WHERE u.status = 'ativo' AND e.dia >= CURDATE()
+    WHERE u.status = 'ativo' AND STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_inicio), '%Y-%m-%d %H:%i:%s') >= NOW()
     ORDER BY e.dia, e.horario_inicio;
 ";
 $resultado_proximos = $conexao->query($sql_proximos);
 
-// 3. Consulta SQL para buscar o HISTÓRICO (eventos que o usuário participou)
+
+// 3. Consulta SQL para buscar o HISTÓRICO (com idEvento)
 $sql_historico = "
     SELECT 
-        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
+        e.idEvento, 
+        e.nome AS nome_evento, 
+        e.descricao, 
+        e.dia, 
+        e.horario_inicio, 
+        e.imagem_path,
         p.nome AS nome_parque,
-        u.nome AS nome_usuario, u.username, u.avatar_path
+        u.nome AS nome_usuario, 
+        u.username, 
+        u.avatar_path
     FROM Evento AS e
     JOIN Parque AS p ON e.idParque = p.idParque
     JOIN Usuario AS u ON e.idUsuario = u.idUsuario
     JOIN Participantes AS pa ON e.idEvento = pa.idEvento
-    WHERE pa.idUsuario = ? AND e.dia < CURDATE()
+    WHERE pa.idUsuario = ? AND STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_inicio), '%Y-%m-%d %H:%i:%s') < NOW()
     ORDER BY e.dia DESC, e.horario_inicio DESC;
 ";
 $stmt_historico = $conexao->prepare($sql_historico);
@@ -50,8 +68,6 @@ $stmt_historico->bind_param("i", $idUsuarioLogado);
 $stmt_historico->execute();
 $resultado_historico = $stmt_historico->get_result();
 
-// --- FIM DA SUBSTITUIÇÃO ---
-// O restante do arquivo (o HTML) permanece o mesmo.
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -104,7 +120,7 @@ $resultado_historico = $stmt_historico->get_result();
                     </div>
 
                     <?php if (!empty($evento['imagem_path'])): ?>
-                        <img src="/Spark-main/formulario cadastro eventos/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img">
+                        <img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img">
                     <?php endif; ?>
                     
                     <div class="post-body">
@@ -133,7 +149,7 @@ $resultado_historico = $stmt_historico->get_result();
         </div>
 
         <div id="historico" class="tab-content">
-            <?php
+             <?php
             if ($resultado_historico && $resultado_historico->num_rows > 0) {
                 while($evento = $resultado_historico->fetch_assoc()) {
                     $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
@@ -150,7 +166,7 @@ $resultado_historico = $stmt_historico->get_result();
                     </div>
 
                     <?php if (!empty($evento['imagem_path'])): ?>
-                        <img src="/Spark-main/formulario cadastro eventos/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img">
+                        <img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img">
                     <?php endif; ?>
                     
                     <div class="post-body">
@@ -173,7 +189,7 @@ $resultado_historico = $stmt_historico->get_result();
             <?php
                 } // Fim do while
             } else {
-                echo "<p class='empty-message'>Você ainda não participou de nenhum evento.</p>";
+                 echo "<p class='empty-message'>Você ainda não participou de nenhum evento.</p>";
             }
             ?>
         </div>
