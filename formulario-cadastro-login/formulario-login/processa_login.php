@@ -1,18 +1,5 @@
 <?php
-// INICIE A SESSÃO NO TOPO DE TUDO!
-session_start();
-
-// Detalhes de conexão com o banco de dados
-$servername = "localhost";
-$username = "root"; 
-$password = ""; 
-$dbname = "Spark";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Falha na conexão: " . $conn->connect_error);
-}
+require_once '../conexao.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $conn->real_escape_string($_POST['email']);
@@ -39,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Usando o caminho absoluto para o redirecionamento, baseado no que funcionou no seu teste.
             // Se o seu teste mostrou que você NÃO precisa do /Spark-main/, remova-o daqui.
             $redirect_url = '/Spark-main/tela-principal/telaprincipal.html';
-            header("Location: " . $redirect_url);
+            header("Location: /Spark-main/tela-principal/telaprincipal.html");
             exit();
 
         }
