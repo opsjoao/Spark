@@ -237,6 +237,7 @@ main {
   font-weight: 500;
 }
 
+/* --- ESTILOS DE NAVEGAÇÃO --- */
 .bottombar {
   background: #ffffff;
   display: flex;
@@ -276,6 +277,7 @@ main {
 .bottombar .nav-btn.active {
   color: #7CBD64; /* Cor do texto e do ícone quando ativo */
   font-weight: bold;
+  position: relative;
 }
 
 .bottombar .nav-btn.active span {
@@ -296,10 +298,10 @@ main {
   z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
+
 .sidebar {
   display: none;
 }
-
 /* --- REGRAS DE RESPONSIVIDADE PARA DESKTOP --- */
 @media (min-width: 768px) {
   .topbar {
@@ -370,3 +372,4 @@ main {
   }
 
 }
+
