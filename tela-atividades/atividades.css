@@ -14,16 +14,7 @@ body {
 main {
     padding: 10px;
     padding-top: 70px; /* Espaço para o header fixo */
-    /* Espaçamento inferior para não cobrir o último card com o FAB */
-    padding-bottom: 160px; 
-}
-
-/* Título da Seção */
-.section-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1c2b20;
-    margin-bottom: 10px;
+    padding-bottom: 160px; /* Espaço para a barra de navegação e FAB */
 }
 
 /* HEADER */
@@ -42,16 +33,66 @@ main {
     justify-content: space-between;
     z-index: 1000;
 }
+.topbar h1 { font-size: 18px; font-weight: 500; }
+.topbar i { font-size: 24px; cursor: pointer; }
 
-.topbar h1 {
-    font-size: 18px;
-    font-weight: 500;
+
+/* --- NOVO: ESTILOS PARA O SISTEMA DE ABAS --- */
+.tabs-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #eee;
 }
 
-.topbar i {
-    font-size: 24px;
+.tab-button {
+    flex: 1;
+    padding: 12px 10px;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    background-color: transparent;
+    border: none;
     cursor: pointer;
+    color: #888;
+    position: relative;
+    transition: color 0.3s ease;
 }
+
+.tab-button::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #7CBD64;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.tab-button.active {
+    color: #1c2b20;
+}
+
+.tab-button.active::after {
+    transform: scaleX(1);
+}
+
+.tab-content {
+    display: none; /* Esconde todas as abas por padrão */
+}
+
+.tab-content.active {
+    display: block; /* Mostra apenas a aba ativa */
+}
+
+.empty-message {
+    text-align: center;
+    color: #555;
+    padding: 40px 20px;
+}
+/* --- FIM DOS ESTILOS DAS ABAS --- */
 
 
 /* ESTILOS DO CARD DE POSTAGEM */
@@ -61,91 +102,31 @@ main {
     margin-bottom: 15px;
     padding: 10px;
 }
-
 .post-header {
     display: flex;
     align-items: center;
     padding: 0;
     margin-bottom: 10px;
 }
+.post-header h3 { font-size: 15px; font-weight: 700; color: #1c2b20; }
+.post-header p { font-size: 13px; color: #556B55; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 8px; }
+.user-info { flex-grow: 1; }
+.post-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
+.post-body { padding: 0; margin-top: 10px; }
+.post-title-line { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.title-and-location { flex-grow: 1; }
+.post-body h4 { font-size: 15px; font-weight: 700; color: #1c2b20; margin-bottom: 2px; }
+.post-body .local { font-size: 13px; color: #556B55; }
+.post-body > p:last-child { font-size: 13px; color: #445944; line-height: 1.4; }
+.activity-date { display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #556B55; flex-shrink: 0; padding-left: 10px; }
+.activity-date i { color: #7CBD64; margin-right: 5px; }
 
-.post-header h3 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1c2b20;
-}
-.post-header p {
-    font-size: 13px;
-    color: #556B55;
-}
+/* Link do card */
+a.post-link { text-decoration: none; color: inherit; display: block; }
+a.post-link:hover .post { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); transition: all 0.2s ease-in-out; }
 
-.avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    margin-right: 8px;
-}
-
-.user-info {
-    flex-grow: 1;
-}
-
-.post-img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.post-body {
-    padding: 0;
-    margin-top: 10px;
-}
-
-.post-title-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.title-and-location {
-    flex-grow: 1;
-}
-
-.post-body h4 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1c2b20;
-    margin-bottom: 2px;
-}
-
-.post-body .local {
-    font-size: 13px;
-    color: #556B55;
-}
-
-.post-body > p:last-child {
-    font-size: 13px;
-    color: #445944;
-    line-height: 1.4;
-}
-
-/* Estilo para a data da atividade no card */
-.activity-date {
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-    font-weight: 500;
-    color: #556B55;
-    flex-shrink: 0;
-    padding-left: 10px;
-}
-
-.activity-date i {
-    color: #7CBD64;
-    margin-right: 5px;
-}
+/* ... (resto do seu CSS para FAB, bottombar, sidebar, etc.) ... */
 
 /* Botão Flutuante (FAB - Floating Action Button) */
 .fab {
