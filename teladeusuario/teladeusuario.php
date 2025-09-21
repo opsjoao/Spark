@@ -74,7 +74,7 @@ $email = !empty($usuario['email']) ? $usuario['email'] : 'email@naoencontrado.co
                 <button class="list-item"><div class="li-left"><i class="fa-solid fa-circle-info"></i><span>Suporte</span></div><i class="fa-solid fa-angle-right"></i></button>
 
                 <button class="list-item danger" onclick="window.location.href='/Spark-main/formulario-cadastro-login/formulario-login/logout.php'">
-                    <div class="li-left"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></div>
+                        <div class="li-left"><i class="fa-solid fa-arrow-right-from-bracket"></i><span>Sair</span></div>
                 </button>
             </div>
         </section>
