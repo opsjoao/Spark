@@ -1,0 +1,246 @@
+/* RESET E ESTILOS GERAIS (baseado no seu telaprincipal.css) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #ffffff;
+    color: #333;
+}
+
+main {
+    padding: 10px;
+    padding-top: 20px; /* Espaço para o header fixo */
+    padding-bottom: 80px; /* Espaço para a barra de navegação fixa */
+}
+
+/* HEADER (estilo adaptado da sua tela principal) */
+.topbar {
+    background: #DCF8DC;
+    color: #333;
+    border-radius: 999px;
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 1000;
+}
+
+.topbar h1 {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.topbar i {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* CARD DE ATIVIDADE */
+.event-card {
+    background: #DCF8DC;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    overflow: hidden; /* Garante que a imagem respeite os cantos arredondados */
+}
+
+.event-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.event-content {
+    padding: 15px;
+}
+
+.event-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #1c2b20;
+    margin-bottom: 4px;
+}
+
+.event-park {
+    font-size: 16px;
+    color: #556B55;
+    margin-bottom: 20px;
+}
+
+.event-details {
+    list-style: none;
+    padding: 20px 0;
+    margin: 0;
+    border-top: 1px solid #c8e6c9;
+}
+
+.event-details li {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #445944;
+    margin-bottom: 15px;
+}
+
+.event-details li:last-child {
+    margin-bottom: 0;
+}
+
+.event-details i {
+    font-size: 18px;
+    color: #7CBD64;
+    width: 25px; /* Alinha os ícones */
+    text-align: center;
+    margin-right: 10px;
+}
+
+.cta-button {
+    width: 100%;
+    background-color: #7CBD64;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+.cta-button:hover {
+    background-color: #6aaa53;
+}
+
+/* SEÇÃO DE AVALIAÇÕES */
+.reviews-section h2 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1c2b20;
+    margin-bottom: 10px;
+}
+
+/* CARD DE AVALIAÇÃO (estilo idêntico ao .post da tela principal) */
+.review-card {
+    background: #DCF8DC;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.review-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-header .avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.review-header .user-info h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c2b20;
+}
+
+.review-header .user-info p {
+    font-size: 13px;
+    color: #556B55;
+}
+
+.review-body {
+    padding: 0;
+}
+
+.review-title-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.review-body .stars {
+    color: #FFC700;
+    font-size: 16px;
+}
+
+.review-body .stars i {
+    margin-right: 2px;
+}
+
+.review-body > p:last-child {
+    font-size: 13px;
+    color: #445944;
+    line-height: 1.4;
+}
+
+
+/* BARRA DE NAVEGAÇÃO INFERIOR (código idêntico ao seu) */
+.bottombar {
+    background: #E6F5E6;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    z-index: 1000;
+}
+.bottombar .nav-btn {
+    background: transparent;
+    border: none;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+    flex: 1;
+}
+.bottombar .nav-btn i {
+    font-size: 22px;
+    margin-bottom: 2px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+}
+.bottombar .nav-btn span {
+    font-size: 12px;
+}
+.bottombar .nav-btn.active {
+    color: #7CBD64;
+}
+
+/* REGRAS DE RESPONSIVIDADE (simplificadas para esta tela) */
+@media (min-width: 768px) {
+    .topbar {
+        left: 15px;
+        right: 15px;
+    }
+    main {
+        max-width: 700px;
+        margin: 0 auto;
+        padding-top: 40px; 
+        padding-bottom: 40px;
+    }
+    .bottombar {
+        display: none; /* Em desktop, a navegação seria pela sidebar, como no seu CSS */
+    }
+}
