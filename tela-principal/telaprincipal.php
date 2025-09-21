@@ -25,7 +25,7 @@
     <a href="../tela-atividades/atividades.php"><i class='bx bx-run'></i><span>Atividades</span></a>
     <a href="../TelaPerfils/perfil.html"><i class='bx bx-user'></i><span>Amigos</span></a>
     <a href="#"><i class='bx bx-star'></i><span>Favoritos</span></a>
-    <a href="../teladeusuario/teladeusuario.html"><i class='bx bx-cog'></i><span>Conta</span></a>
+    <a href="../teladeusuario/teladeusuario.php"><i class='bx bx-cog'></i><span>Conta</span></a>
   </nav>
 
   <main>
