@@ -13,7 +13,7 @@ function initMap() {
 
   const input = document.getElementById("pac-input");
   autocomplete = new google.maps.places.Autocomplete(input, {
-    fields: ['name','geometry','types','formatted_address']
+    fields: ['name','geometry','types','formatted_address','place_id']
   });
   autocomplete.bindTo("bounds", map);
 
@@ -194,3 +194,4 @@ document.addEventListener("DOMContentLoaded", function() {
         filterMenu.classList.add("filter-menu-hidden");
     });
 });
+
