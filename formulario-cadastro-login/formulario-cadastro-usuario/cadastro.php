@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     //execução
     if ($stmt->execute()) {
-        header('Location: ../formulario-cadastro-login/login.html');
+        header('Location: ../formulario-login/login.html');
         exit();
     } else {
         echo "Erro: " . $stmt->error;
