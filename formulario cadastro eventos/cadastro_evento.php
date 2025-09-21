@@ -1,6 +1,6 @@
 <?php
 // Substitua o session_start() e o if(!isset(...)) por esta linha
-require_once('../formulario-cadastro-evento/verificacao.php');
+require_once('../formulario-cadastro-login/verificacao.php');
 
 // Pega o ID do usuário da sessão
 $idUsuarioLogado = $_SESSION['id_usuario'];
