@@ -10,7 +10,7 @@
 <body>
     <main id="form_container">
         <div id="form_header">
-            <h1 id="form_title" style="font-size: 20pt;">
+            <h1 id="form_title" style="font-size: 18pt;">
                 Cadastrar Instituição
             </h1>
             <button class="btn-default" onclick="window.location.href='../formulario-login/login.html'">
@@ -21,20 +21,20 @@
         <div class="radio-container-1">
             <div id="gender_inputs">
                 <div class="radio-box">
-                        <input type="radio" name="form_type" id="user" class="form-control" onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
-                        <label for="usuario" class="form-label">Usuário</label>
+                    <input type="radio" name="form_type" id="user" class="form-control" onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
+                    <label for="usuario" class="form-label">Usuário</label>
                 </div>
                 <div class="radio-box">
-                        <input type="radio" name="form_type" id="institution" class="form-control" checked onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'">
-                        <label for="instituicao" class="form-label">Instituição</label>
+                    <input type="radio" name="form_type" id="institution" class="form-control" checked onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'">
+                    <label for="instituicao" class="form-label">Instituição</label>
                 </div>
             </div>
         </div>
-        <form action="cadastro.php" id="form" method="POST">
+        <form action="cadastro-instituicao.php" id="form" method="POST">
             <div id="input_container">
                 <div class="input-box">
                     <label 
-                        for="name" 
+                        for="nome_instituicao" 
                         class="form-label"
                     >
                         Nome da Instituição
@@ -42,10 +42,10 @@
                     <div class="input-field">
                         <input 
                             type="text"
-                            name="name"
-                            id="name"
+                            name="nome_instituicao"
+                            id="nome_instituicao"
                             class="form-control"
-                            placeholder="Digite o nome da instituição"
+                            placeholder="Nome da instituição"
                             required
                         >
                         <i class="fa-regular fa-user"></i>
@@ -54,7 +54,7 @@
 
                 <div class="input-box">
                     <label 
-                        for="tipo" 
+                        for="cnpj" 
                         class="form-label"
                     >
                         CNPJ (opcional)
@@ -67,16 +67,15 @@
                             class="form-control"
                             placeholder="00.000.000/0000-00"
                         >
-                        <i class="fa-regular fa-user"></i>
+                        <i class="fa-regular fa-address-card"></i>
                     </div>
                 </div>
 
                 <div class="input-box">
                     <label 
-                        for="cnpj" 
+                        for="email" 
                         class="form-label"
                     >
-                      
                         E-mail
                     </label>
                     <div class="input-field">
@@ -94,30 +93,28 @@
 
                 <div class="input-box">
                     <label 
-                        for="password" 
+                        for="tipo_instituicao" 
                         class="form-label"
                     >
-
-                     Tipo de instituição 
+                        Tipo de instituição 
                     </label>
                     <div class="input-field">
                         <input 
                             type="text"
-                            name="name"
-                            id="name"
+                            name="tipo_instituicao"
+                            id="tipo_instituicao"
                             class="form-control"
                             placeholder="(Ex: social, caritativa, ensino)"
                         >
-                        <i class="fa-regular fa-user"></i>
+                        <i class="fa-regular fa-handshake"></i>
                     </div>
                 </div>
 
                 <div class="input-box">
                     <label 
-                        for="tipo" 
+                        for="password" 
                         class="form-label"
                     >
-
                         Senha
                     </label>
                     <div class="input-field">
@@ -153,11 +150,11 @@
                     </div>
                 </div>
 
-       
                 <button type="submit" class="btn-default">
-                <i class="fa-solid fa-check"></i>
-                Criar conta
-            </button>
+                    <i class="fa-solid fa-check"></i>
+                    Criar conta
+                </button>
+            </div>
         </form>
     </main>
 
