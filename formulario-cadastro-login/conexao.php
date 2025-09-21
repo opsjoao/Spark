@@ -2,7 +2,7 @@
 // Detalhes de conexão com o banco de dados
 $servername = "localhost";
 $username = "root"; 
-$password = "1234"; 
+$password = ""; 
 $dbname = "Spark";
 
 // Cria a conexão
@@ -12,4 +12,5 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Falha na conexão: " . $conn->connect_error);
 }
+
 ?>
