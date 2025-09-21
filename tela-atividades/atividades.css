@@ -33,11 +33,16 @@ main {
     justify-content: space-between;
     z-index: 1000;
 }
-.topbar h1 { font-size: 18px; font-weight: 500; }
-.topbar i { font-size: 24px; cursor: pointer; }
+.topbar h1 {
+    font-size: 18px;
+    font-weight: 500;
+}
+.topbar i {
+    font-size: 24px;
+    cursor: pointer;
+}
 
-
-/* --- NOVO: ESTILOS PARA O SISTEMA DE ABAS --- */
+/* --- ESTILOS PARA O SISTEMA DE ABAS --- */
 .tabs-container {
     display: flex;
     gap: 10px;
@@ -62,21 +67,21 @@ main {
 .tab-button::after {
     content: '';
     position: absolute;
-    bottom: -2px;
+    bottom: -2px; /* Alinha com a borda do container */
     left: 0;
     width: 100%;
     height: 2px;
-    background-color: #7CBD64;
-    transform: scaleX(0);
+    background-color: #7CBD64; /* Cor verde do seu app */
+    transform: scaleX(0); /* Começa invisível */
     transition: transform 0.3s ease;
 }
 
 .tab-button.active {
-    color: #1c2b20;
+    color: #1c2b20; /* Cor mais escura para o texto ativo */
 }
 
 .tab-button.active::after {
-    transform: scaleX(1);
+    transform: scaleX(1); /* Torna a linha visível */
 }
 
 .tab-content {
@@ -92,15 +97,14 @@ main {
     color: #555;
     padding: 40px 20px;
 }
-/* --- FIM DOS ESTILOS DAS ABAS --- */
 
-
-/* ESTILOS DO CARD DE POSTAGEM */
+/* ESTILOS DO CARD DE EVENTO (POST) */
 .post {
     background: #DCF8DC;
     border-radius: 16px;
     margin-bottom: 15px;
     padding: 10px;
+    transition: all 0.2s ease-in-out;
 }
 .post-header {
     display: flex;
@@ -110,7 +114,7 @@ main {
 }
 .post-header h3 { font-size: 15px; font-weight: 700; color: #1c2b20; }
 .post-header p { font-size: 13px; color: #556B55; }
-.avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 8px; }
+.avatar { width: 36px; height: 36px; border-radius: 50%; margin-right: 8px; object-fit: cover; }
 .user-info { flex-grow: 1; }
 .post-img { width: 100%; height: 180px; object-fit: cover; border-radius: 10px; }
 .post-body { padding: 0; margin-top: 10px; }
@@ -122,111 +126,91 @@ main {
 .activity-date { display: flex; align-items: center; font-size: 13px; font-weight: 500; color: #556B55; flex-shrink: 0; padding-left: 10px; }
 .activity-date i { color: #7CBD64; margin-right: 5px; }
 
-/* Link do card */
-a.post-link { text-decoration: none; color: inherit; display: block; }
-a.post-link:hover .post { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08); transition: all 0.2s ease-in-out; }
+/* Estilo para o link que envolve o card */
+a.post-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+a.post-link:hover .post {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
 
-/* ... (resto do seu CSS para FAB, bottombar, sidebar, etc.) ... */
-
-/* Botão Flutuante (FAB - Floating Action Button) */
+/* BOTÃO FLUTUANTE (FAB) */
 .fab {
     position: fixed;
     z-index: 1000;
     bottom: 85px;
     right: 20px;
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
     background: linear-gradient(45deg, #7CBD64, #8BC34A);
     border-radius: 50%;
     color: white;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 0 6px rgba(0, 0, 0, 0.05);
     text-decoration: none;
     transition: all 0.2s ease-in-out;
-
-    /* Centralização do container */
     display: flex;
     align-items: center;
     justify-content: center;
-
-    /* --- ALTERAÇÃO 1: Tamanho do ícone ajustado --- */
-    font-size: 20px; 
+    font-size: 26px;
 }
-
-/* --- ALTERAÇÃO 2: Nova regra para empurrar o ícone --- */
-.fab i {
-    transform: translateX(1px); /* Empurra o ícone 1px para a direita */
+.fab .fa-calendar-plus {
+    position: relative;
+    left: 1px;
 }
-
-
-/* Hover */
 .fab:hover {
     transform: scale(1.08) translateY(-2px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-
+/* BARRA DE NAVEGAÇÃO INFERIOR */
 .bottombar {
-  background: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 8px 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  border-top: 1px solid #ddd;
-  z-index: 1000;
+    background: #E6F5E6;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    z-index: 1000;
 }
 .bottombar .nav-btn {
-  background: transparent;
-  border: none;
-  color: #333;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 5px;
-  flex: 1;
+    background: transparent;
+    border: none;
+    color: #333;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    padding: 5px;
+    flex: 1;
+    position: relative;
 }
 .bottombar .nav-btn i {
-  font-size: 22px;
-  margin-bottom: 2px;
-  height: 24px;
-  display: flex;
-  align-items: center;
+    font-size: 22px;
+    margin-bottom: 2px;
+    height: 24px;
+    display: flex;
+    align-items: center;
 }
-.bottombar .nav-btn span {
-  font-size: 12px;
-}
+.bottombar .nav-btn span { font-size: 12px; }
 .bottombar .nav-btn.active {
-  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
-  font-weight: bold;
+    color: #7CBD64;
+    font-weight: bold;
 }
 
-.bottombar .nav-btn.active span {
-  color: #364b36; /* Cor do texto específica, se desejar */
-}
-
-/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
-.bottombar .nav-btn.active::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px; /* Largura da "pílula" */
-  height: 40px; /* Altura da "pílula" */
-  background-color: #dcf8dc; /* Cor do fundo verde-claro */
-  border-radius: 999px; /* Arredonda totalmente a borda */
-  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
+/* Sidebar para desktop (inicialmente oculta) */
 .sidebar {
-  display: none;
+    display: none;
 }
+
 /* REGRAS DE RESPONSIVIDADE PARA DESKTOP */
 @media (min-width: 768px) {
     main {
@@ -234,7 +218,7 @@ a.post-link:hover .post { transform: translateY(-2px); box-shadow: 0 8px 16px rg
         margin: 0 auto;
         padding-top: 80px; 
         padding-left: 260px; 
-        padding-bottom: 40px; /* Padding menor no desktop pois não há bottombar nem fab atrapalhando */
+        padding-bottom: 40px;
     }
     .topbar {
         left: 250px;
@@ -286,5 +270,4 @@ a.post-link:hover .post { transform: translateY(-2px); box-shadow: 0 8px 16px rg
     .sidebar a:hover {
         background-color: #eef1ec;
     }
-
 }
