@@ -1,4 +1,4 @@
-<?php require_once('../formulario-login/verificacao.php'); ?>
+<?php require_once('../formulario-cadastro-login/verificacao.php'); ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
