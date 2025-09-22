@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela de Carregamento</title>
+    <style>
+        /* Estilo base */
+        * {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container da tela de carregamento */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #43a018;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .logo {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #1b8624;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 0.5s linear infinite;
+        }
+
+        .loading-text {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #27a03b;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Para esconder com fade */
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Tela de carregamento -->
+    <div id="loading-screen">
+        <img src="Spark (1).png" alt="Logo Spark" class="logo">
+        <div class="loader"></div>
+        <div class="loading-text">Carregando...</div>
+    </div>
+
+    <!-- Conteúdo da página (visível após carregamento) -->
+    <div id="main-content" style="display: none;">
+        <h1>Conteúdo da Página</h1>
+        <p>Bem-vindo ao site!</p>
+    </div>
+
+    <script> carregar
+        window.addEventListenero
+        // Quando a página terminar ad", function () {
+            const loadingScreen = document.getElementById("loading-screen");
+            const mainContent = document.getElementById("main-content");
+
+            // Esconde a tela de carregamento com fade
+            loadingScreen.classList.add("hidden");
+
+            // Aguarda o fade para mostrar o conteúdo principal
+            setTimeout(() => {
+                loadingScreen.style.display = "none";
+                mainContent.style.display = "block";
+            }, 500); // tempo do transition (0.5s)});
+    </script>
+
+</body>
+</html>
