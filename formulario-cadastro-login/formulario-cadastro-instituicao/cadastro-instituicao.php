@@ -2,13 +2,13 @@
 // Inclui o arquivo de conexão
 require_once '../conexao.php';
 
-// Verifica se o formulário foi submetido via POST
+// Verifica se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Filtra e recupera os dados do formulário com os novos nomes
+    // Recupera os dados do formulário
     $nome_instituicao = $conn->real_escape_string($_POST['nome_instituicao']);
+    $username = $conn->real_escape_string($_POST['username']);
     $cnpj = $conn->real_escape_string($_POST['cnpj']);
     $email = $conn->real_escape_string($_POST['email']);
-    $tipo_instituicao = $conn->real_escape_string($_POST['tipo_instituicao']);
     $senha = $_POST['password'];
     $confirm_senha = $_POST['confirm_password'];
 
@@ -16,45 +16,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($senha !== $confirm_senha) {
         die("As senhas não coincidem.");
     }
-
-    // Hash da senha para segurança
+    
+    // Hash da senha por segurança
     $senha_hashed = password_hash($senha, PASSWORD_DEFAULT);
+    
+    // Inicia a transação
+    $conn->begin_transaction();
 
-    // Usa o CNPJ como um valor temporário para o CPF, para evitar a violação da restrição UNIQUE
-    // Esta é uma solução temporária para a apresentação.
-    $cpf_placeholder = $cnpj;
+    try {
+        // 1. INSERE NA TABELA USUARIO PRIMEIRO
+        // Note que a data de nascimento é obrigatória, então colocamos uma data padrão.
+        // O ideal seria remover NOT NULL do banco ou adicionar o campo no formulário se for relevante.
+        $stmt_usuario = $conn->prepare(
+            "INSERT INTO Usuario (nome, username, tipo, email, senha, data_nasc) VALUES (?, ?, 'instituicao', ?, ?, '1900-01-01')"
+        );
+        $stmt_usuario->bind_param("ssss", $nome_instituicao, $username, $email, $senha_hashed);
+        $stmt_usuario->execute();
 
-    // 1. Inserir um novo registro na tabela Usuario
-    $tipo_usuario = "Institucional";
-    $data_placeholder = date("Y-m-d"); // Pega a data atual no formato YYYY-MM-DD
-$sql_usuario = "INSERT INTO Usuario (nome, tipo, email, senha, cpf, genero, data_nasc) VALUES (?, ?, ?, ?, ?, NULL, ?)";
-
-    $stmt_usuario = $conn->prepare($sql_usuario);
-    $stmt_usuario->bind_param("ssssss", $nome_instituicao, $tipo_usuario, $email, $senha_hashed, $cpf_placeholder, $data_placeholder);
-
-    if ($stmt_usuario->execute()) {
-        // Pega o ID do usuário recém-criado
-        $idUsuario = $conn->insert_id;
-
-        // 2. Agora insere na tabela Instituicao
-        $sql_instituicao = "INSERT INTO Instituicao (idUsuario, nome, senha, email, cnpj, tipo) VALUES (?, ?, ?, ?, ?, ?)";
-        $stmt_instituicao = $conn->prepare($sql_instituicao);
-        $stmt_instituicao->bind_param("isssss", $idUsuario, $nome_instituicao, $senha_hashed, $email, $cnpj, $tipo_instituicao);
-        
-        // Execução
-        if ($stmt_instituicao->execute()) {
-            // Redireciona para a página de login
-            header('Location: ../formulario-login/login.html');
-            exit();
-        } else {
-            echo "Erro ao cadastrar instituição: " . $stmt_instituicao->error;
+        // Pega o ID do usuário que acabamos de criar
+        $idUsuarioNovo = $conn->insert_id;
+        if ($idUsuarioNovo == 0) {
+            throw new Exception("Não foi possível criar a conta de usuário base.");
         }
-        $stmt_instituicao->close();
-    } else {
-        echo "Erro ao cadastrar usuário: " . $stmt_usuario->error;
-    }
+        $stmt_usuario->close();
 
-    $stmt_usuario->close();
+        // 2. INSERE NA TABELA INSTITUICAO, LIGANDO COM O ID DO USUÁRIO
+        $stmt_inst = $conn->prepare(
+            "INSERT INTO Instituicao (idUsuario, nome, senha, email, cnpj, tipo) VALUES (?, ?, ?, ?, ?, 'institucional')"
+        );
+        // A senha na tabela Instituicao parece redundante, mas seguimos o seu banco.
+        $stmt_inst->bind_param("issss", $idUsuarioNovo, $nome_instituicao, $senha_hashed, $email, $cnpj);
+        $stmt_inst->execute();
+        $stmt_inst->close();
+
+        // Se tudo deu certo, confirma as alterações
+        $conn->commit();
+        
+        // Redireciona para o login
+        header('Location: ../formulario-login/login.php');
+        exit();
+
+    } catch (mysqli_sql_exception $exception) {
+        // Se algo deu errado, desfaz tudo
+        $conn->rollback();
+        
+        if ($conn->errno == 1062) {
+            die("Erro: E-mail, CNPJ ou Nome de Usuário já cadastrado. <a href='javascript:history.back()'>Tente novamente</a>.");
+        } else {
+            die("Erro ao cadastrar a instituição: " . $exception->getMessage());
+        }
+    }
 }
 
 $conn->close();
