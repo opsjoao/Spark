@@ -1,45 +1,53 @@
 <?php
-//inclui o arquivo de conexão
+// Inclui o arquivo de conexão
 require_once '../conexao.php';
 
-//verifica se o formulário foi submetido
+// Verifica se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //filtra e recupera os dados do formulário
-    $nome = $conn->real_escape_string($_POST['name']);//o real_escape_string indica uma funçao de segurança
+    // Filtra e recupera os dados do formulário
+    $nome = $conn->real_escape_string($_POST['name']);
+    $username = $conn->real_escape_string($_POST['username']); // NOVO CAMPO
     $cpf = $conn->real_escape_string($_POST['cpf']);
     $data_nasc = $conn->real_escape_string($_POST['birthdate']);
     $email = $conn->real_escape_string($_POST['email']);
     $senha = $_POST['password']; // Senha bruta
     $confirm_senha = $_POST['confirm_password'];
-    $genero = $conn->real_escape_string($_POST['gender']);
+    $genero = $_POST['gender'] ?? 'Não informado'; // Define um padrão caso não seja enviado
+    $tipo = "comum"; // Define o tipo padrão como 'comum'
 
-    //preenche o campo tipi automaticamente no banco, pois não possui no formulário de cadastro 
-    $tipo = "Comum";
-
-    //valida se as senhas coincidem
+    // Valida se as senhas coincidem
     if ($senha !== $confirm_senha) {
-        die("As senhas não coincidem.");
+        die("As senhas não coincidem. Por favor, tente novamente.");
     }
 
-    //hash da senha por segurança
+    // Hash da senha por segurança
     $senha_hashed = password_hash($senha, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO Usuario (nome, tipo, email, senha, cpf, genero, data_nasc) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    // SQL ATUALIZADO para incluir a coluna 'username'
+    $sql = "INSERT INTO Usuario (nome, username, tipo, email, senha, cpf, genero, data_nasc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssss", $nome, $tipo, $email, $senha_hashed, $cpf, $genero, $data_nasc);
+    
+    // BIND PARAM ATUALIZADO para incluir a nova variável 'username'
+    // A ordem deve ser EXATAMENTE a mesma do INSERT: ssssssss (8 strings)
+    $stmt->bind_param("ssssssss", $nome, $username, $tipo, $email, $senha_hashed, $cpf, $genero, $data_nasc);
 
-    //execução
+    // Execução
     if ($stmt->execute()) {
-        header('Location: ../formulario-login/login.html');
+        // Redireciona para a tela de login após o sucesso
+        header('Location: ../formulario-login/login.php');
         exit();
     } else {
-        echo "Erro: " . $stmt->error;
+        // Verifica se o erro é de entrada duplicada para dar uma mensagem mais amigável
+        if ($conn->errno == 1062) {
+            echo "Erro: E-mail, CPF ou Nome de Usuário já cadastrado. <a href='javascript:history.back()'>Tente novamente</a>.";
+        } else {
+            echo "Erro ao cadastrar: " . $stmt->error;
+        }
     }
 
     $stmt->close();
 }
 
 $conn->close();
-
 ?>
