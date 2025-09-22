@@ -91,11 +91,11 @@ $email = !empty($usuario['email']) ? $usuario['email'] : 'email@naoencontrado.co
     </main>
     
     <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span>Amigos</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-atividades/atividades.php'"><i class="fa-solid fa-person-walking"></i><span>Atividades</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span>Início</span></button>
-        <button class="nav-btn"><i class="fa-solid fa-star"></i><span>Favoritos</span></button>
-        <button class="nav-btn active"><i class="fa-solid fa-user"></i><span>Conta</span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-atividades/atividades.php'"><i class="fa-solid fa-person-walking"></i></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/telaFavoritos/index.html'"><i class="fa-solid fa-star"></i></button>
+        <button class="nav-btn active"><i class="fa-solid fa-user"></i></button>
     </nav>
 
     <script src="script.js"></script>
