@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+
+:root {
+  --verde-claro: #DCF8DC;
+  --verde-selecao: #7CBD64;
+}
+body {
+      color: #023047;
+      margin: 0;
+      padding-bottom: 60px;
+    }
+
+/* --- ESTILOS DE NAVEGAÇÃO --- */
+.bottombar {
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
+.bottombar .nav-btn {
+  background: transparent;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  flex: 1;
+}
+.bottombar .nav-btn i {
+  font-size: 22px;
+  margin-bottom: 2px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.bottombar .nav-btn span {
+  font-size: 12px;
+}
+.bottombar .nav-btn.active {
+  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
+  position: relative;
+}
+
+.bottombar .nav-btn.active span {
+  color: #364b36; /* Cor do texto específica, se desejar */
+}
+
+/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
+.bottombar .nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #dcf8dc; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  display: none;
+}
+
+
+
+@media (min-width: 768px) {
+    .barra-tarefas {
+    display: none; 
+    }
+}
+    /* Defina o tamanho do mapa */
+    #map {
+      height: 90%;
+      width: 100%;
+    }
+
+    html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+
+.search-and-filter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    position: relative; /* Essencial para o posicionamento absoluto do menu */
+}
+
+.filter-menu-hidden {
+    display: none;
+}
+
+.filter-menu-visible {
+    display: block;
+    position: absolute;
+    top: 100%; /* Posiciona o menu abaixo do botão */
+    right: 0; /* Alinha o menu à direita do contêiner pai */
+    z-index: 10;
+    
+    /* Estilos de aparência para o menu */
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    min-width: 250px;
+    margin-top: 5px;
+}
+
+/* Estilos para os elementos internos do menu */
+.filter-menu-visible label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.apply-button {
+    width: 100%;
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+
+
+
+
+/* Estilo para o loader */
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 1000; /* Garante que ele fique na frente de tudo */
+}
+
+/* Exemplo de um spinner simples */
+.loader {
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #3498db;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Classe para esconder elementos */
+.hidden {
+    display: none;
+}
+
+

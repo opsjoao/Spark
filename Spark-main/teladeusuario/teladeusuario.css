@@ -1,0 +1,188 @@
+
+:root{
+  --bg: #F3F8F3;
+  --surface: #FFFFFF;
+  --primary-50:#E6F6E6;
+  --primary-100:#D8F1D7;  
+  --primary-300:#A8DBAD;
+  --primary-500:#6FBE74;   
+  --primary-600:#56A45B;
+  --text:#222;
+  --muted:#6B7280;
+  --line:#E5E7EB;
+  --danger:#E24C4C;
+  --shadow: 0 6px 20px rgba(23, 56, 38, 0.08);
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  height:100%;
+  margin:0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  color:var(--text);
+  background:var(--bg);
+}
+
+
+.appbar{
+  position:sticky; top:0;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 16px;
+  background:var(--primary-100);
+  border-bottom:1px solid var(--line);
+  z-index:10;
+}
+.appbar h1{margin:0; font-size:18px; font-weight:600;}
+.icon-btn{
+  background:none; border:0; font-size:18px; color:#2d2d2d; padding:6px; cursor:pointer;
+}
+
+
+.app-content{
+  padding:12px 12px 88px; 
+  max-width:480px;
+  margin:0 auto;
+}
+
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ===== Cards ===== */
+.card{
+  background:var(--surface);
+  border-radius:16px;
+  box-shadow: var(--shadow);
+}
+
+.profile-card{
+  display:flex; align-items:center; gap:12px;
+  padding:14px;
+}
+.avatar{width:64px; height:64px; border-radius:50%; object-fit:cover;}
+.avatar.big{width:96px; height:96px;}
+.profile-meta .hello{display:block; color:var(--muted); font-size:12px;}
+.profile-meta .username{margin:2px 0 2px; font-size:18px; font-weight:700;}
+.profile-meta .email{color:var(--muted); font-size:13px;}
+.pill-btn{
+  margin-left:auto;
+  border:0; cursor:pointer;
+  background:var(--primary-500); color:#fff;
+  padding:8px 12px; border-radius:999px; font-weight:600; display:flex; align-items:center; gap:6px;
+  box-shadow:0 4px 10px rgba(111,190,116,.25);
+}
+.pill-btn i{font-size:14px;}
+
+.list{margin-top:14px;}
+.list-item{
+  width:100%; border:0; background:var(--surface); cursor:pointer;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 14px; border-radius:14px; margin-bottom:10px;
+  box-shadow: var(--shadow);
+}
+.li-left{display:flex; align-items:center; gap:10px; font-weight:600;}
+.list-item i{color:#1f2937;}
+.list-item.danger{color:var(--danger);}
+.list-item.danger .li-left i{color:var(--danger);}
+
+.subbar{
+  position:sticky; top:0;
+  display:flex; align-items:center; justify-content:space-between;
+  background:var(--primary-100);
+  padding:10px 12px; border-bottom:1px solid var(--line);
+  border-top-left-radius:16px; border-top-right-radius:16px;
+}
+.subbar h2{margin:0; font-size:16px; font-weight:700;}
+.text-btn{
+  background:none; border:0; color:var(--primary-600); font-weight:800; cursor:pointer; font-size:14px;
+}
+.edit-wrap{
+  background:var(--surface);
+  border-radius:0 0 16px 16px;
+  box-shadow: var(--shadow);
+  padding:16px 16px 18px; margin-top:12px;
+}
+.avatar-wrap{ position:relative; width:fit-content; margin:8px auto 12px; }
+.avatar-fab{
+  position:absolute; right:-2px; bottom:-2px;
+  width:36px; height:36px; display:grid; place-items:center;
+  border-radius:50%; border:0; cursor:pointer;
+  background:var(--primary-500); color:#fff;
+  box-shadow:0 6px 14px rgba(111,190,116,.35);
+}
+
+.form{display:flex; flex-direction:column; gap:10px;}
+.form label{font-size:12px; color:var(--muted);}
+.form input{
+  width:100%; padding:12px 12px;
+  border:1px solid var(--line); border-radius:12px;
+  outline:none; font-size:15px; background:#fff;
+}
+.form input:focus{border-color:var(--primary-300); box-shadow:0 0 0 3px #a8dbad40}
+
+/* --- ESTILOS DE NAVEGAÇÃO --- */
+.bottombar {
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
+.bottombar .nav-btn {
+  background: transparent;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  flex: 1;
+}
+.bottombar .nav-btn i {
+  font-size: 22px;
+  margin-bottom: 2px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.bottombar .nav-btn span {
+  font-size: 12px;
+}
+.bottombar .nav-btn.active {
+  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
+  position: relative;
+}
+
+.bottombar .nav-btn.active span {
+  color: #364b36; /* Cor do texto específica, se desejar */
+}
+
+/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
+.bottombar .nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #dcf8dc; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  display: none;
+}
+

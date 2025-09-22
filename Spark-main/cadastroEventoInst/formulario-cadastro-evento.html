@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Inscrição</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="form_container">
+        <div id="form_header">
+            <h1 id="form_title">Formulário de Inscrição de Eventos</h1>
+        </div>
+        <form id="form" action="insituicao-evento-cadarso.php" method="POST">
+            <div id="input_container">
+                <div class="input-box">
+                    <label class="form-label" for="nomeInstiuicao">Nome da Instituição:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="nomeInstiuicao" name="nomeInstiuicao" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label" for="idUsuario">Identificador da Instituição:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="idInstituicao" name="idInstituicao" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label" for="nomeParque">Nome do Parque:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="nomeParque" name="nomeParque" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label" for="nomeEvento">Nome do Evento:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="text" id="nomeEvento" name="nomeEvento" required>
+                    </div>
+                </div>
+
+                <div>
+                    <input type="radio" id="semanal" name="evento" value="Semanal">
+                    <label for="semanal">Semanal</label><br>
+                    <input type="radio" id="pontual" name="evento" value="Pontual" required>
+                    <label for="pontual">Pontual</label><br>
+                </div>
+
+                <div id="diaPontual" style="display: none;">
+                    <label class="form-label" for="dataEvento">Data do Evento:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="date" id="dataEvento" name="dataEvento">
+                    </div>
+                </div>
+
+                    <div id="diasDaSemana" style="display: none;">
+            <label for="dias">Escolha um dia:</label>
+            <select id="dias" name="dias">
+                <option value="domingo">Domingo</option>
+                <option value="segunda">Segunda-feira</option>
+                <option value="terca">Terça-feira</option>
+                <option value="quarta">Quarta-feira</option>
+                <option value="quinta">Quinta-feira</option>
+                <option value="sexta">Sexta-feira</option>
+                <option value="sabado">Sábado</option>
+            </select>
+        </div>
+
+                <div class="input-box">
+                    <label class="form-label" for="horaInicio">Hora de Início:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="time" id="horaInicio" name="horaInicio" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label" for="horaTermino">Hora de Término:</label>
+                    <div class="input-field">
+                        <input class="form-control" type="time" id="horaTermino" name="horaTermino" required>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label class="form-label" for="descricaoEvento">Descrição:</label>
+                    <div class="input-field">
+                        <textarea class="form-control" id="descricaoEvento" name="descricaoEvento" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-default">
+                <i class="fa-solid fa-check"></i>
+                Cadastrar Evento
+            </button>
+    <script src="script.js"></script>
+    
+        </form>
+        <button class="btn-default" onclick="history.back()">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                Voltar
+            </button>
+    </div>
+</body>
+</html>
