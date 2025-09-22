@@ -1,16 +1,12 @@
 <?php
-// Inicia a sessão para pegar o ID do usuário
-session_start();
+// Define o fuso horário para São Paulo, garantindo que o tempo seja consistente
+date_default_timezone_set('America/Sao_Paulo');
 
-// Garante que o usuário está logado
-if (!isset($_SESSION['id_usuario'])) {
-    header("Location: /Spark-main/formulario-login/login.php");
-    exit();
-}
+// Inclui o guardião de sessão
+require_once('../formulario-cadastro-login/verificacao.php');
 $idUsuarioLogado = $_SESSION['id_usuario'];
 
-
-// 1. Conexão com o Banco de Dados
+// Conexão com o Banco de Dados
 $servidor = "localhost";
 $usuario_db = "root";
 $senha_db = "";
@@ -21,53 +17,63 @@ if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
 }
 
-// 2. Consulta SQL para buscar PRÓXIMOS EVENTOS (futuros)
+// Pega a data e hora atuais no formato do SQL, usando o fuso horário correto
+$agora_sql = date('Y-m-d H:i:s');
+
+// 1. Consulta para PRÓXIMOS EVENTOS (sem alterações)
 $sql_proximos = "
-    SELECT 
-        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
-        p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
+    SELECT e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path, p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
     FROM Evento AS e
-    JOIN Parque AS p ON e.idParque = p.idParque
-    JOIN Usuario AS u ON e.idUsuario = u.idUsuario
-    WHERE u.status = 'ativo' AND STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_inicio), '%Y-%m-%d %H:%i:%s') >= NOW()
+    JOIN Parque AS p ON e.idParque = p.idParque JOIN Usuario AS u ON e.idUsuario = u.idUsuario
+    WHERE u.status = 'ativo' AND STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_inicio), '%Y-%m-%d %H:%i:%s') >= ?
     ORDER BY e.dia, e.horario_inicio;
 ";
-$resultado_proximos = $conexao->query($sql_proximos);
+$stmt_proximos = $conexao->prepare($sql_proximos);
+$stmt_proximos->bind_param("s", $agora_sql);
+$stmt_proximos->execute();
+$resultado_proximos = $stmt_proximos->get_result();
 
 
-// 3. Consulta SQL para buscar o HISTÓRICO (eventos passados que o usuário participou)
-$sql_historico = "
-    SELECT 
-        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
-        p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
-    FROM Evento AS e
-    JOIN Parque AS p ON e.idParque = p.idParque
-    JOIN Usuario AS u ON e.idUsuario = u.idUsuario
-    JOIN Participantes AS pa ON e.idEvento = pa.idEvento
-    WHERE pa.idUsuario = ? AND STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_inicio), '%Y-%m-%d %H:%i:%s') < NOW()
-    ORDER BY e.dia DESC, e.horario_inicio DESC;
-";
-$stmt_historico = $conexao->prepare($sql_historico);
-$stmt_historico->bind_param("i", $idUsuarioLogado);
-$stmt_historico->execute();
-$resultado_historico = $stmt_historico->get_result();
-
-// 4. NOVA CONSULTA para MEUS EVENTOS (eventos que o usuário confirmou presença)
+// =================================================================================
+// 2. CONSULTA PARA MEUS EVENTOS (LÓGICA CORRIGIDA)
+// =================================================================================
 $sql_meus_eventos = "
-    SELECT 
-        e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path,
-        p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
+    SELECT e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path, 
+           p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
     FROM Evento AS e
-    JOIN Parque AS p ON e.idParque = p.idParque
-    JOIN Usuario AS u ON e.idUsuario = u.idUsuario
-    JOIN Participantes AS pa ON e.idEvento = pa.idEvento
-    WHERE pa.idUsuario = ?
+    JOIN Parque AS p ON e.idParque = p.idParque 
+    JOIN Usuario AS u ON e.idUsuario = u.idUsuario 
+    LEFT JOIN Participantes AS pa ON e.idEvento = pa.idEvento AND pa.idUsuario = ?
+    WHERE 
+        -- A CONDIÇÃO OR AGORA INCLUI O STATUS 'ativo'
+        (e.idUsuario = ? OR pa.status IN ('inscrito', 'ativo'))
+        AND STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_termino), '%Y-%m-%d %H:%i:%s') >= ?
+    GROUP BY e.idEvento
     ORDER BY e.dia, e.horario_inicio;
 ";
 $stmt_meus_eventos = $conexao->prepare($sql_meus_eventos);
-$stmt_meus_eventos->bind_param("i", $idUsuarioLogado);
+// Passa o ID do usuário duas vezes e a data
+$stmt_meus_eventos->bind_param("iis", $idUsuarioLogado, $idUsuarioLogado, $agora_sql);
 $stmt_meus_eventos->execute();
 $resultado_meus_eventos = $stmt_meus_eventos->get_result();
+// =================================================================================
+
+
+// 3. Consulta para HISTÓRICO (sem alterações)
+$sql_historico = "
+    SELECT e.idEvento, e.nome AS nome_evento, e.descricao, e.dia, e.horario_inicio, e.imagem_path, p.nome AS nome_parque, u.nome AS nome_usuario, u.username, u.avatar_path
+    FROM Evento AS e
+    JOIN Parque AS p ON e.idParque = p.idParque 
+    JOIN Usuario AS u ON e.idUsuario = u.idUsuario 
+    JOIN Participantes AS pa ON e.idEvento = pa.idEvento
+    WHERE pa.idUsuario = ? AND (pa.status = 'participou' OR STR_TO_DATE(CONCAT(e.dia, ' ', e.horario_termino), '%Y-%m-%d %H:%i:%s') < ?)
+    ORDER BY e.dia DESC, e.horario_inicio DESC;
+";
+$stmt_historico = $conexao->prepare($sql_historico);
+$stmt_historico->bind_param("is", $idUsuarioLogado, $agora_sql);
+$stmt_historico->execute();
+$resultado_historico = $stmt_historico->get_result();
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -103,21 +109,31 @@ $resultado_meus_eventos = $stmt_meus_eventos->get_result();
             <button class="tab-button" onclick="showTab('historico')">Histórico</button>
         </div>
 
+        <?php
+        // Função para renderizar um card de evento (evita repetição de código)
+        function renderEventCard($evento, $showYear = false) {
+            $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
+            $avatar = !empty($evento['avatar_path']) ? $evento['avatar_path'] : $caminho_avatar_padrao;
+            $dateFormat = $showYear ? "d/m/Y" : "d/m";
+
+            echo "<a href='/Spark-main/tela-evento/tela-evento.php?id={$evento['idEvento']}' class='post-link'>";
+            echo "<section class='post'>";
+            echo "<div class='post-header'><img src='/Spark-main/{$avatar}' alt='Foto de perfil' class='avatar'><div class='user-info'><h3>" . htmlspecialchars($evento['nome_usuario']) . "</h3><p>@" . htmlspecialchars($evento['username']) . "</p></div></div>";
+            
+            if (!empty($evento['imagem_path'])) {
+                echo "<img src='/Spark-main/" . htmlspecialchars($evento['imagem_path']) . "' alt='Imagem do Evento' class='post-img'>";
+            }
+
+            echo "<div class='post-body'><div class='post-title-line'><div class='title-and-location'><h4>" . htmlspecialchars($evento['nome_evento']) . "</h4><p class='local'>" . htmlspecialchars($evento['nome_parque']) . "</p></div><div class='activity-date'><i class='fa-solid fa-calendar-week'></i><span>" . date($dateFormat, strtotime($evento['dia'])) . ", " . date("H:i", strtotime($evento['horario_inicio'])) . "</span></div></div><p>" . nl2br(htmlspecialchars($evento['descricao'])) . "</p></div>";
+            echo "</section></a>";
+        }
+        ?>
+
         <div id="proximos" class="tab-content active">
             <?php
             if ($resultado_proximos && $resultado_proximos->num_rows > 0) {
                 while($evento = $resultado_proximos->fetch_assoc()) {
-                    $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
-                    $avatar = !empty($evento['avatar_path']) ? $evento['avatar_path'] : $caminho_avatar_padrao;
-            ?>
-            <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="post-link">
-                <section class="post">
-                    <div class="post-header"><img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil" class="avatar"><div class="user-info"><h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3><p>@<?php echo htmlspecialchars($evento['username']); ?></p></div></div>
-                    <?php if (!empty($evento['imagem_path'])): ?><img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img"><?php endif; ?>
-                    <div class="post-body"><div class="post-title-line"><div class="title-and-location"><h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4><p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p></div><div class="activity-date"><i class="fa-solid fa-calendar-week"></i><span><?php echo date("d/m", strtotime($evento['dia'])) . ", " . date("H:i", strtotime($evento['horario_inicio'])); ?></span></div></div><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
-                </section>
-            </a>
-            <?php
+                    renderEventCard($evento, false);
                 }
             } else {
                 echo "<p class='empty-message'>Nenhum próximo evento encontrado.</p>";
@@ -129,20 +145,10 @@ $resultado_meus_eventos = $stmt_meus_eventos->get_result();
             <?php
             if ($resultado_meus_eventos && $resultado_meus_eventos->num_rows > 0) {
                 while($evento = $resultado_meus_eventos->fetch_assoc()) {
-                    $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
-                    $avatar = !empty($evento['avatar_path']) ? $evento['avatar_path'] : $caminho_avatar_padrao;
-            ?>
-            <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="post-link">
-                 <section class="post">
-                    <div class="post-header"><img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil" class="avatar"><div class="user-info"><h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3><p>@<?php echo htmlspecialchars($evento['username']); ?></p></div></div>
-                    <?php if (!empty($evento['imagem_path'])): ?><img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img"><?php endif; ?>
-                    <div class="post-body"><div class="post-title-line"><div class="title-and-location"><h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4><p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p></div><div class="activity-date"><i class="fa-solid fa-calendar-week"></i><span><?php echo date("d/m", strtotime($evento['dia'])) . ", " . date("H:i", strtotime($evento['horario_inicio'])); ?></span></div></div><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
-                </section>
-            </a>
-            <?php
+                    renderEventCard($evento, false);
                 }
             } else {
-                echo "<p class='empty-message'>Você ainda não confirmou presença em nenhum evento.</p>";
+                echo "<p class='empty-message'>Você ainda não se inscreveu em nenhum evento futuro.</p>";
             }
             ?>
         </div>
@@ -151,20 +157,10 @@ $resultado_meus_eventos = $stmt_meus_eventos->get_result();
             <?php
             if ($resultado_historico && $resultado_historico->num_rows > 0) {
                 while($evento = $resultado_historico->fetch_assoc()) {
-                    $caminho_avatar_padrao = 'assets/images/avatar_padrao.png';
-                    $avatar = !empty($evento['avatar_path']) ? $evento['avatar_path'] : $caminho_avatar_padrao;
-            ?>
-            <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="post-link">
-                 <section class="post">
-                    <div class="post-header"><img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="Foto de perfil" class="avatar"><div class="user-info"><h3><?php echo htmlspecialchars($evento['nome_usuario']); ?></h3><p>@<?php echo htmlspecialchars($evento['username']); ?></p></div></div>
-                    <?php if (!empty($evento['imagem_path'])): ?><img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="post-img"><?php endif; ?>
-                    <div class="post-body"><div class="post-title-line"><div class="title-and-location"><h4><?php echo htmlspecialchars($evento['nome_evento']); ?></h4><p class="local"><?php echo htmlspecialchars($evento['nome_parque']); ?></p></div><div class="activity-date"><i class="fa-solid fa-calendar-week"></i><span><?php echo date("d/m/Y", strtotime($evento['dia'])); ?></span></div></div><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
-                </section>
-            </a>
-            <?php
+                    renderEventCard($evento, true); // Mostra o ano no histórico
                 }
             } else {
-                echo "<p class='empty-message'>Você ainda não participou de nenhum evento.</p>";
+                echo "<p class='empty-message'>Seu histórico de eventos está vazio.</p>";
             }
             ?>
         </div>
