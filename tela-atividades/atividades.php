@@ -171,12 +171,22 @@ $resultado_historico = $stmt_historico->get_result();
     </a>
 
     <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span>Amigos</span></button>
-        <button class="nav-btn active"><i class="fa-solid fa-person-walking"></i><span>Atividades</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span>Início</span></button>
-        <button class="nav-btn"><i class="fa-solid fa-star"></i><span>Favoritos</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/teladeusuario/teladeusuario.php'"><i class="fa-solid fa-user"></i><span>Conta</span></button>
-    </nav>
+    <button class="nav-btn" onclick="window.location.href='../TelaPerfils/perfil.html'">
+      <i class="fa-solid fa-users"></i>
+    </button>
+    <button class="nav-btn active" onclick="window.location.href='../tela-atividades/atividades.php'">
+      <i class="fa-solid fa-person-walking"></i>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='../tela-principal/telaprincipal.php'">
+      <i class="fa-solid fa-house"></i>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='../telaFavoritos/index.html'">
+      <i class="fa-solid fa-star"></i>
+    </button>
+    <button class="nav-btn" onclick="window.location.href='../teladeusuario/teladeusuario.php'">
+      <i class="fa-solid fa-user"></i>
+    </button>
+  </nav>
 
     <script>
         function showTab(tabName) {
