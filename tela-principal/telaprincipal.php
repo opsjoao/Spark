@@ -37,11 +37,11 @@
           <div class="carousel-item-text">Ginástica no Sapão-Ratão</div>
         </div>
         <div class="carousel-item">
-          <img src="https://vejasp.abril.com.br/wp-content/uploads/2023/04/Show-do-cantor-seu-jorge-no-parque-ibirapuera-credito-bruno-muti-01.jpg" alt="Show no Parque Ibirapuera">
+          <img src="show-ibirapuera.png" alt="Show no Parque Ibirapuera">
           <div class="carousel-item-text">Show no Parque Ibirapuera</div>
         </div>
         <div class="carousel-item">
-          <img src="https://media.static-allgather.com/MundoNipo/Upload/Images/Posts/750x422/1155_20170119131653.jpg" alt="Feira na Liberdade">
+          <img src="images.jpg">
           <div class="carousel-item-text">Festival das Estrelas na Liberdade</div>
         </div>
         </div>
