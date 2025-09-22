@@ -1,246 +1,295 @@
-/* RESET E ESTILOS GERAIS (baseado no seu telaprincipal.css) */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+/* RESET E CONFIGURAÇÕES GERAIS */
+:root {
+    --cor-principal: #6FBE74;
+    --fundo-pagina: #F8F9FA;
+    --fundo-card: #FFFFFF;
+    --fundo-card-claro: #F0FAF0;
+    --texto-escuro: #1A3A1A;
+    --texto-suave: #556B55;
+    --linha-divisoria: #e0e0e0;
+}
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: Arial, sans-serif; 
+}
+body { 
+    background-color: var(--fundo-pagina); 
+    color: var(--texto-escuro); 
 }
 
-body {
-    background: #ffffff;
-    color: #333;
-}
-
-main {
-    padding: 10px;
-    padding-top: 20px; /* Espaço para o header fixo */
-    padding-bottom: 80px; /* Espaço para a barra de navegação fixa */
-}
-
-/* HEADER (estilo adaptado da sua tela principal) */
+/* CABEÇALHO (TOPBAR) */
 .topbar {
-    background: #DCF8DC;
-    color: #333;
-    border-radius: 999px;
-    position: fixed;
-    top: 8px;
-    left: 8px;
-    right: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 10px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 1000;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    padding: 12px 16px; 
+    background-color: var(--fundo-card-claro);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    position: fixed; 
+    top: 0; 
+    width: 100%; 
+    z-index: 100;
+}
+.topbar h1 { 
+    font-size: 16px; 
+    font-weight: 600; 
+}
+.topbar .back-button { 
+    position: absolute; 
+    left: 16px; 
+    font-size: 20px; 
+    color: var(--texto-escuro); 
+    text-decoration: none; 
 }
 
-.topbar h1 {
-    font-size: 16px;
-    font-weight: 500;
+/* CONTEÚDO PRINCIPAL */
+main { 
+    padding: 80px 0 100px; /* Espaço para header e navbar */ 
 }
 
-.topbar i {
-    font-size: 24px;
-    cursor: pointer;
+/* IMAGEM DE CABEÇALHO DO EVENTO */
+.event-image-header { 
+    width: 100%; 
+    height: 220px; 
+    object-fit: cover; 
+    display: block; 
 }
 
-/* CARD DE ATIVIDADE */
-.event-card {
-    background: #DCF8DC;
-    border-radius: 16px;
-    margin-bottom: 25px;
-    overflow: hidden; /* Garante que a imagem respeite os cantos arredondados */
+/* CARD PRINCIPAL DE INFORMAÇÕES */
+.event-container { 
+    background-color: var(--fundo-card); 
+    padding: 20px 16px; 
+    margin: -30px 12px 24px; 
+    border-radius: 16px; 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+    position: relative; 
+    z-index: 10; 
 }
-
-.event-image {
-    width: 100%;
-    height: auto;
-    display: block;
+.event-title { 
+    font-size: 28px; 
+    font-weight: bold; 
+    margin-bottom: 4px; 
 }
-
-.event-content {
-    padding: 15px;
+.event-park { 
+    font-size: 16px; 
+    color: var(--texto-suave); 
+    margin-bottom: 20px; 
 }
-
-.event-title {
-    font-size: 26px;
-    font-weight: 700;
-    color: #1c2b20;
-    margin-bottom: 4px;
+.event-details { 
+    list-style: none; 
+    margin: 20px 0; 
+    padding-top: 20px; 
+    border-top: 1px solid var(--linha-divisoria); 
 }
-
-.event-park {
-    font-size: 16px;
-    color: #556B55;
-    margin-bottom: 20px;
+.event-details li { 
+    display: flex; 
+    align-items: center; 
+    margin-bottom: 15px; 
+    font-size: 15px; 
+    color: var(--texto-suave); 
 }
-
-.event-details {
-    list-style: none;
-    padding: 20px 0;
-    margin: 0;
-    border-top: 1px solid #c8e6c9;
+.event-details i { 
+    font-size: 20px; 
+    color: var(--cor-principal); 
+    width: 35px; 
+    text-align: center; 
+    margin-right: 10px; 
 }
-
-.event-details li {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #445944;
-    margin-bottom: 15px;
+.event-details span { 
+    color: var(--texto-escuro); 
 }
-
-.event-details li:last-child {
-    margin-bottom: 0;
+.event-description { 
+    margin: 20px 0; 
+    padding-top: 20px; 
+    border-top: 1px solid var(--linha-divisoria); 
 }
-
-.event-details i {
-    font-size: 18px;
-    color: #7CBD64;
-    width: 25px; /* Alinha os ícones */
-    text-align: center;
-    margin-right: 10px;
+.event-description h2 { 
+    font-size: 18px; 
+    color: var(--texto-escuro); 
+    margin-bottom: 8px; 
 }
-
-.cta-button {
-    width: 100%;
-    background-color: #7CBD64;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 20px;
-    transition: background-color 0.2s;
+.event-description p { 
+    font-size: 15px; 
+    color: var(--texto-suave); 
+    line-height: 1.6; 
 }
-
-.cta-button:hover {
-    background-color: #6aaa53;
+.cta-button { 
+    width: 100%; padding: 14px; 
+    background-color: var(--cor-principal); 
+    color: white; 
+    border: none; 
+    border-radius: 12px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    margin-top: 16px; 
+    transition: background-color 0.2s; 
+}
+.cta-button:hover { 
+    background-color: #5aa05f; 
 }
 
 /* SEÇÃO DE AVALIAÇÕES */
-.reviews-section h2 {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1c2b20;
-    margin-bottom: 10px;
+.reviews-section { 
+    padding: 0 16px; 
+}
+.reviews-section h2 { 
+    font-size: 20px; 
+    font-weight: bold; 
+    margin-bottom: 16px; 
+}
+.review-card { 
+    display: flex; 
+    gap: 12px; 
+    padding: 12px; 
+    background-color: var(--fundo-card); 
+    border: 1px solid #eee; 
+    border-radius: 12px; 
+    margin-bottom: 12px; 
+}
+.review-card .avatar { 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 50%; 
+    object-fit: cover; 
+}
+.review-header { 
+    display: flex; 
+    align-items: baseline; 
+    gap: 8px; 
+}
+.review-header h3 { 
+    font-size: 15px; 
+    margin: 0; 
+}
+.review-header span { 
+    font-size: 13px; 
+    color: var(--texto-suave); 
+}
+.review-card .stars { 
+    color: #FFC700; 
+    margin: 4px 0 8px; 
+    font-size: 14px; 
+}
+.review-card p { 
+    font-size: 14px; 
+    color: var(--texto-suave); 
+    line-height: 1.5; 
+}
+.no-reviews { 
+    color: var(--texto-suave); 
+    text-align: center; 
+    padding: 20px; 
 }
 
-/* CARD DE AVALIAÇÃO (estilo idêntico ao .post da tela principal) */
-.review-card {
-    background: #DCF8DC;
-    border-radius: 16px;
-    margin-bottom: 15px;
-    padding: 10px;
+/* --- BOTÕES DINÂMICOS E MODAL --- */
+.feedback { padding: 12px; border-radius: 8px; margin: 16px 0 0; text-align: center; font-weight: bold; }
+.feedback.success { background-color: #D4EDDA; color: #155724; }
+.feedback.info { background-color: #D1ECF1; color: #0C5460; }
+.feedback.error { background-color: #F8D7DA; color: #721C24; }
+.cta-button.disabled { background-color: #b0bec5; cursor: not-allowed; color: #78909c; }
+.cta-button.participate { background-color: #4285F4; }
+.cta-button.participate:hover { background-color: #3367D6; }
+
+.modal-overlay {
+    display: none; position: fixed; top: 0; left: 0; 
+    width: 100%; height: 100%; 
+    background-color: rgba(0,0,0,0.6); 
+    justify-content: center; align-items: center; z-index: 2000;
 }
-
-.review-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
+.modal-content {
+    background: white; padding: 25px; border-radius: 16px; 
+    width: 90%; max-width: 400px; position: relative;
+    animation: modal-appear 0.3s ease-out;
 }
-
-.review-header .avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    margin-right: 8px;
+.close-modal { 
+    position: absolute; top: 10px; right: 15px; 
+    background: none; border: none; font-size: 28px; 
+    cursor: pointer; color: #aaa; 
 }
+.modal-content h2 { margin-bottom: 8px; color: var(--texto-escuro); }
+.modal-content p { font-size: 14px; color: var(--texto-suave); margin-bottom: 20px; }
+.modal-content form { display: flex; flex-direction: column; gap: 15px; }
+.modal-content textarea { width: 100%; min-height: 80px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; font-size: 14px; }
+.file-upload-label { font-size: 14px; font-weight: bold; cursor: pointer; color: var(--cor-principal); text-align: center; padding: 8px; border: 1px dashed var(--cor-principal); border-radius: 8px; }
+.file-upload-label:hover { background-color: #f0faf0; }
 
-.review-header .user-info h3 {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1c2b20;
+.star-rating {
+    display: flex; flex-direction: row-reverse; 
+    justify-content: center; padding: 5px 0;
 }
+.star-rating input[type="radio"] { display: none; }
+.star-rating label { font-size: 36px; color: #ddd; cursor: pointer; transition: color 0.2s; }
+.star-rating label::before { content: '★'; }
+.star-rating label:hover,
+.star-rating label:hover ~ label { color: #FFC700; }
+.star-rating input[type="radio"]:checked ~ label { color: #FFC700; }
 
-.review-header .user-info p {
-    font-size: 13px;
-    color: #556B55;
-}
+#image-preview-container { margin-top: 10px; text-align: center; }
+.image-preview { max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; object-fit: cover; }
+.remove-image-btn { background-color: #F8D7DA; color: #721C24; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; display: block; width: 100%; transition: background-color 0.2s; }
+.remove-image-btn:hover { background-color: #f1c1c5; }
+@keyframes modal-appear { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-.review-body {
-    padding: 0;
-}
-
-.review-title-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.review-body .stars {
-    color: #FFC700;
-    font-size: 16px;
-}
-
-.review-body .stars i {
-    margin-right: 2px;
-}
-
-.review-body > p:last-child {
-    font-size: 13px;
-    color: #445944;
-    line-height: 1.4;
-}
-
-
-/* BARRA DE NAVEGAÇÃO INFERIOR (código idêntico ao seu) */
-.bottombar {
-    background: #E6F5E6;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 8px 0;
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid #ddd;
-    z-index: 1000;
+/* BARRA DE NAVEGAÇÃO INFERIOR */
+.bottombar { 
+    background: #E6F5E6; display: flex; justify-content: space-around;
+    align-items: center; padding: 8px 0; position: fixed;
+    bottom: 0; left: 0; width: 100%; 
+    border-top: 1px solid #ddd; z-index: 1000;
 }
 .bottombar .nav-btn {
-    background: transparent;
-    border: none;
-    color: #333;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    cursor: pointer;
-    padding: 5px;
-    flex: 1;
+    background: transparent; border: none; color: #333; text-decoration: none;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; font-size: 12px; cursor: pointer; padding: 5px; flex: 1;
 }
-.bottombar .nav-btn i {
-    font-size: 22px;
-    margin-bottom: 2px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-}
-.bottombar .nav-btn span {
-    font-size: 12px;
-}
-.bottombar .nav-btn.active {
-    color: #7CBD64;
+.bottombar .nav-btn i { font-size: 22px; margin-bottom: 2px; height: 24px; display: flex; align-items: center; }
+.bottombar .nav-btn span { font-size: 12px; }
+.bottombar .nav-btn.active { color: #7CBD64; font-weight: bold; }
+
+/* Estilo para a imagem dentro de um card de avaliação */
+.review-card .review-image {
+    width: 100%;
+    margin-top: 12px;
+    border-radius: 8px;
+    object-fit: cover;
 }
 
-/* REGRAS DE RESPONSIVIDADE (simplificadas para esta tela) */
-@media (min-width: 768px) {
-    .topbar {
-        left: 15px;
-        right: 15px;
-    }
-    main {
-        max-width: 700px;
-        margin: 0 auto;
-        padding-top: 40px; 
-        padding-bottom: 40px;
-    }
-    .bottombar {
-        display: none; /* Em desktop, a navegação seria pela sidebar, como no seu CSS */
-    }
+/* --- SEÇÃO DE PARTICIPANTES --- */
+.participants-section {
+    padding: 0 16px;
+    margin-bottom: 24px;
+}
+
+.participants-section h2 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+    color: var(--texto-escuro);
+}
+
+.participants-list {
+    display: flex;
+    flex-wrap: wrap; /* Permite que os avatares quebrem para a próxima linha */
+    gap: 8px;
+}
+
+.participant-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%; /* Deixa a imagem redonda */
+    object-fit: cover;   /* Evita que a imagem fique distorcida */
+    border: 2px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.no-participants {
+    color: var(--texto-suave);
+    background-color: #f0f0f0;
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    font-style: italic;
 }
