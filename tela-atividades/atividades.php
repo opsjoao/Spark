@@ -189,13 +189,28 @@ $resultado_historico = $stmt_historico->get_result();
   </nav>
 
     <script>
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
-            document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`).classList.add('active');
+    // Função para mostrar a aba (você já a tem)
+    function showTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        document.querySelector(`.tab-button[onclick="showTab('${tabName}')"]`).classList.add('active');
+    }
+
+    // NOVO: Lógica para ativar a aba correta ao carregar a página
+    document.addEventListener('DOMContentLoaded', function() {
+        // Pega os parâmetros da URL
+        const params = new URLSearchParams(window.location.search);
+        const abaParaAtivar = params.get('aba');
+
+        // Se a URL tiver o parâmetro 'aba' (ex: ?aba=meus-eventos)
+        if (abaParaAtivar) {
+            // Chama a função para mostrar a aba especificada
+            showTab(abaParaAtivar);
         }
-    </script>
+    });
+</script>
+
 </body>
 </html>
 <?php
