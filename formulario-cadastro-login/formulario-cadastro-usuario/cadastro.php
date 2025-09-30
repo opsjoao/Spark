@@ -2,7 +2,6 @@
 // Inclui o arquivo de conexão
 require_once '../conexao.php';
 
-<?php
 
 // Coloque esta função no início do seu arquivo cadastro.php
 
@@ -33,10 +32,6 @@ function validaCPF($cpf) {
     return true;
 }
 
-// ... O resto do seu código PHP começa aqui
-// Ex: include 'conexao.php';
-
-?>
 
 // Verifica se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

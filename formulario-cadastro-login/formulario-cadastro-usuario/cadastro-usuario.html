@@ -53,7 +53,7 @@
                         <input type="text" name="username" id="username" class="form-control" placeholder="(sem espaços)" maxlength="30" pattern="[^\s]+" title="O nome de usuário não pode conter espaços." required>
                         <i class="fa-solid fa-at"></i>
                     </div>
-                    <span id="username-feedback" class="username-feedback"></span>
+                    <span id="username-feedback" class="feedback-message"></span>
                 </div>
 
                 <div class="input-box">
@@ -72,7 +72,7 @@
                         >
                         <i class="fa-regular fa-address-card"></i>
                     </div>
-                    <span id="cpf-error" style="color: red; font-size: 12px; display: none;">CPF inválido</span>
+                    <span id="cpf-feedback" class="feedback-message"></span>
                 </div>
 
                 <div class="input-box">
@@ -80,7 +80,7 @@
                         Nascimento
                     </label>
                     <div class="input-field">
-                        <input type="date" name="birthdate" id="birthdate" class="form-control" required>
+                        <input type="date" name="birthdate" min="1905-09-30" id="birthdate" class="form-control" required>
                     </div>
                 </div>
 
