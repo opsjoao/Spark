@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="src/styles/styles.css">
     <title>Cadastrar Usuário</title>
 </head>
+
 <body>
     <main id="form_container">
         <div id="form_header">
@@ -17,68 +19,45 @@
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
         </div>
-          <div class="radio-container-1">
+
+        <div class="radio-container-1">
             <div id="gender_inputs">
                 <div class="radio-box">
-                        <input type="radio" name="form_type" id="user" class="form-control" checked onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
-                        <label for="usuario" class="form-label">Usuário</label>
+                    <input type="radio" name="form_type" id="user" class="form-control" checked onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
+                    <label for="usuario" class="form-label">Usuário</label>
                 </div>
                 <div class="radio-box">
-                        <input type="radio" name="form_type" id="institution" class="form-control" onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'">
-                        <label for="instituicao" class="form-label">Instituição</label>
+                    <input type="radio" name="form_type" id="institution" class="form-control" onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'">
+                    <label for="instituicao" class="form-label">Instituição</label>
                 </div>
             </div>
         </div>
+
         <form action="../formulario-cadastro-usuario/cadastro.php" id="form" method="POST">
             <div id="input_container">
-                <div class="input-box">
-                    <label 
-                        for="name" 
-                        class="form-label"
-                    >
+                <div class="input-box full-width">
+                    <label for="name" class="form-label">
                         Nome
                     </label>
                     <div class="input-field">
-                        <input 
-                            type="text"
-                            name="name"
-                            id="name"
-                            class="form-control"
-                            placeholder="Digite seu nome"
-                            required
-                        >
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Digite seu nome" required>
                         <i class="fa-regular fa-user"></i>
                     </div>
                 </div>
 
-  
-                <div id="input_container">
                 <div class="input-box">
-                    <label 
-                        for="username" 
-                        class="form-label"
-                    >
+                    <label for="username" class="form-label">
                         Nome de Usuário
                     </label>
                     <div class="input-field">
-                        <input 
-                            type="text"
-                            name="username"
-                            id="username"
-                            class="form-control"
-                            placeholder="@seu_usuario (sem espaços)"
-                            required
-                        >
+                        <input type="text" name="username" id="username" class="form-control" placeholder="(sem espaços)" maxlength="30" pattern="[^\s]+" title="O nome de usuário não pode conter espaços." required>
                         <i class="fa-solid fa-at"></i>
                     </div>
+                    <span id="username-feedback" class="username-feedback"></span>
                 </div>
 
-
                 <div class="input-box">
-                    <label 
-                        for="cpf" 
-                        class="form-label"
-                    >
+                    <label for="cpf" class="form-label">
                         CPF
                     </label>
                     <div class="input-field">
@@ -93,144 +72,73 @@
                         >
                         <i class="fa-regular fa-address-card"></i>
                     </div>
+                    <span id="cpf-error" style="color: red; font-size: 12px; display: none;">CPF inválido</span>
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="birthdate" 
-                        class="form-label"
-                    >
+                    <label for="birthdate" class="form-label">
                         Nascimento
                     </label>
                     <div class="input-field">
-                        <input 
-                            type="date"
-                            name="birthdate"
-                            id="birthdate"
-                            class="form-control"
-                            required
-                        >
+                        <input type="date" name="birthdate" id="birthdate" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="email" 
-                        class="form-label"
-                    >
+                    <label for="email" class="form-label">
                         E-mail
                     </label>
                     <div class="input-field">
-                        <input 
-                            type="email"
-                            name="email"
-                            id="email"
-                            class="form-control"
-                            placeholder="exemplo@gmail.com"
-                            required
-                        >
+                        <input type="email" name="email" id="email" class="form-control" placeholder="exemplo@gmail.com" required>
                         <i class="fa-regular fa-envelope"></i>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="password" 
-                        class="form-label"
-                    >
+                    <label for="password" class="form-label">
                         Senha
                     </label>
                     <div class="input-field">
-                        <input 
-                            type="password"
-                            name="password"
-                            id="password"
-                            class="form-control"
-                            placeholder="*******"
-                            required
-                        >
+                        <input type="password" name="password" id="password" class="form-control" placeholder="*******" required>
                         <i class="fa-regular fa-eye-slash password-icon"></i>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label 
-                        for="confirm_password" 
-                        class="form-label"
-                    >
+                    <label for="confirm_password" class="form-label">
                         Confirmar senha
                     </label>
                     <div class="input-field">
-                        <input 
-                            type="password"
-                            name="confirm_password"
-                            id="confirm_password"
-                            class="form-control"
-                            placeholder="*******"
-                            required
-                        >
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="*******" required>
                         <i class="fa-regular fa-eye-slash password-icon"></i>
                     </div>
                     <span id="password-error" style="color: red; font-size: 12px; display: none;"></span>
                 </div>
 
-                <div class="radio-container">
+                <div class="radio-container full-width">
                     <label class="form-label">
                         Gênero
                     </label>
-
                     <div id="gender_inputs">
                         <div class="radio-box">
-                            <input 
-                                type="radio"
-                                name="gender"
-                                id="female"
-                                class="form-control"
-                                value="Feminino"
-                                required
-                            >
-                            <label 
-                                for="female" 
-                                class="form-label"
-                            >
+                            <input type="radio" name="gender" id="female" class="form-control" value="Feminino" required>
+                            <label for="female" class="form-label">
                                 Feminino
                             </label>
                         </div>
-
                         <div class="radio-box">
-                            <input 
-                                type="radio"
-                                name="gender"
-                                id="male"
-                                class="form-control"
-                                value="Masculino"
-                            >
-                            <label 
-                                for="male" 
-                                class="form-label"
-                            >
+                            <input type="radio" name="gender" id="male" class="form-control" value="Masculino">
+                            <label for="male" class="form-label">
                                 Masculino
                             </label>
                         </div>
-
                         <div class="radio-box">
-                            <input 
-                                type="radio"
-                                name="gender"
-                                id="other"
-                                class="form-control"
-                                value="Outro"
-                            >
-                            <label 
-                                for="other" 
-                                class="form-label"
-                            >
+                            <input type="radio" name="gender" id="other" class="form-control" value="Outro">
+                            <label for="other" class="form-label">
                                 Outro
                             </label>
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
@@ -239,9 +147,10 @@
                 Criar conta
             </button>
         </form>
-        
+
     </main>
 
     <script src="src/javascript/script.js"></script>
 </body>
+
 </html>

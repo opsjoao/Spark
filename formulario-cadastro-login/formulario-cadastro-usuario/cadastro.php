@@ -2,6 +2,42 @@
 // Inclui o arquivo de conexão
 require_once '../conexao.php';
 
+<?php
+
+// Coloque esta função no início do seu arquivo cadastro.php
+
+function validaCPF($cpf) {
+    // Extrai somente os números
+    $cpf = preg_replace('/[^0-9]/is', '', $cpf);
+
+    // Verifica se foi informado todos os digitos corretamente
+    if (strlen($cpf) != 11) {
+        return false;
+    }
+
+    // Verifica se foi informada uma sequência de digitos repetidos. Ex: 111.111.111-11
+    if (preg_match('/(\d)\1{10}/', $cpf)) {
+        return false;
+    }
+
+    // Faz o cálculo para validar o CPF
+    for ($t = 9; $t < 11; $t++) {
+        for ($d = 0, $c = 0; $c < $t; $c++) {
+            $d += $cpf[$c] * (($t + 1) - $c);
+        }
+        $d = ((10 * $d) % 11) % 10;
+        if ($cpf[$c] != $d) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// ... O resto do seu código PHP começa aqui
+// Ex: include 'conexao.php';
+
+?>
+
 // Verifica se o formulário foi submetido
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Filtra e recupera os dados do formulário
@@ -14,6 +50,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_senha = $_POST['confirm_password'];
     $genero = $_POST['gender'] ?? 'Não informado'; // Define um padrão caso não seja enviado
     $tipo = "comum"; // Define o tipo padrão como 'comum'
+
+     // 1. Verifica se contém espaços
+    if (preg_match('/\s/', $username)) {
+        die("Erro: O nome de usuário não pode conter espaços. <a href='javascript:history.back()'>Tente novamente</a>.");
+    }
+
+    // 2. Verifica o comprimento (apesar do HTML já limitar, é uma boa segurança)
+    if (strlen($username) > 30) {
+        die("Erro: O nome de usuário não pode ter mais de 30 caracteres. <a href='javascript:history.back()'>Tente novamente</a>.");
+    }
+
+    // --- VERIFICAÇÃO DO CPF ---
+    if (validaCPF($cpf)) {
+        // CPF é válido, continue com o processo de cadastro
+        // Ex: Inserir no banco de dados
+        
+        echo "<h1>Cadastro realizado com sucesso!</h1>";
+        // header('Location: ../pagina-de-sucesso.html');
+        // exit();
+
+    } else {
+        // CPF é inválido, retorne uma mensagem de erro
+        // Você pode redirecionar de volta para o formulário com uma mensagem
+        
+        echo "<h1>Erro: CPF inválido!</h1>";
+        // header('Location: ./cadastro-usuario.html?erro=cpf_invalido');
+        // exit();
+    }
 
     // Valida se as senhas coincidem
     if ($senha !== $confirm_senha) {
@@ -31,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // BIND PARAM ATUALIZADO para incluir a nova variável 'username'
     // A ordem deve ser EXATAMENTE a mesma do INSERT: ssssssss (8 strings)
     $stmt->bind_param("ssssssss", $nome, $username, $tipo, $email, $senha_hashed, $cpf, $genero, $data_nasc);
+}
 
     // Execução
     if ($stmt->execute()) {
@@ -47,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $stmt->close();
-}
+
 
 $conn->close();
 ?>

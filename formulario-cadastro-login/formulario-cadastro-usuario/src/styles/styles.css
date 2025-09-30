@@ -81,8 +81,14 @@ body {
 
 #input_container {
     display: grid;
-    gap: 24px;
-    
+    /* Cria 2 colunas de tamanho igual */
+    grid-template-columns: repeat(2, 1fr);
+    /* Define um espaçamento entre os campos */
+    gap: 1.5rem; /* Ajuste o valor conforme necessário */
+}
+
+.full-width {
+    grid-column: 1 / -1; /* Ocupa o espaço da primeira à última coluna */
 }
 
 .form-label {
@@ -203,4 +209,48 @@ input:-webkit-autofill {
     20%, 40%, 60%, 80% {
         transform: translateX(6px);
     }
+}
+
+/* --- ESTILOS PARA FEEDBACK DE USERNAME --- */
+
+.username-feedback {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+    height: 15px; /* Altura fixa para não "empurrar" o layout */
+    transition: color 0.3s ease;
+}
+
+.username-feedback.disponivel {
+    color: #388E3C; /* Verde */
+}
+
+.username-feedback.indisponivel {
+    color: #D32F2F; /* Vermelho */
+}
+
+/* --- ESTILOS PARA FEEDBACK DE FORÇA DA SENHA --- */
+
+.password-feedback {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+    height: 15px; /* Altura fixa para não "empurrar" o layout */
+    transition: color 0.3s ease;
+    text-align: right; /* Alinha o texto à direita, abaixo do campo */
+    padding-right: 5px;
+}
+
+.password-feedback.fraca {
+    color: #D32F2F; /* Vermelho */
+}
+
+.password-feedback.media {
+    color: #F57C00; /* Laranja */
+}
+
+.password-feedback.forte {
+    color: #388E3C; /* Verde */
 }
