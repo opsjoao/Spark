@@ -79,15 +79,17 @@ $logout_url = '/Spark-main/formulario-cadastro-login/formulario-login/logout.php
             </a>
         </div>
         
-        <div class="list-group">
+       <div class="list-group">
             <h3 class="list-group-title">Configurações</h3>
-            <a href="#" class="list-item">
+            
+            <a href="<?php echo $url_base; ?>teladeusuario/alterar_senha.php" class="list-item">
                 <div class="li-left">
                     <i class="fa-solid fa-key icon-circle"></i>
                     <span>Alterar Senha</span>
                 </div>
                 <i class="fa-solid fa-angle-right"></i>
             </a>
+            
             <a href="#" class="list-item">
                 <div class="li-left">
                     <i class="fa-solid fa-circle-info icon-circle"></i>
