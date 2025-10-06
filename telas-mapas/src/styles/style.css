@@ -184,3 +184,13 @@ body {
 }
 
 
+#park-details{
+    /* Novos estilos cruciais para arrastar */
+    touch-action: none; /* Previne o comportamento padrão do navegador em dispositivos móveis */
+    transform: translateY(0);
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* Para animações suaves */
+    z-index: 10; /* Garante que fique acima do mapa */
+    cursor: grab; /* Para indicar que pode ser arrastado */
+    max-height: 80vh; /* Limita a altura para que não preencha toda a tela */
+    overflow-y: auto; /* Permite rolar o conteúdo se for muito longo */
+}
