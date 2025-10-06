@@ -10,19 +10,20 @@
 <body>
     <main id="form_container">
         <div id="form_header">
-            <h1 id="form_title" style="font-size: 20pt;">Cadastrar Instituição</h1>
+            <h1 id="form_title"><span>Cadastrar Instituição</span></h1>
             <button class="btn-default" onclick="window.location.href='../formulario-login/login.php'">
                 <i class="fa-solid fa-right-to-bracket"></i>
             </button>
         </div>
-        <div class="radio-container-1">
+        
+        <div class="radio-container-1 full-width">
             <div id="gender_inputs">
                 <div class="radio-box">
-                    <input type="radio" name="form_type" id="user" class="form-control" onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
+                    <input type="radio" name="form_type" id="user" onclick="window.location.href='../formulario-cadastro-usuario/cadastro-usuario.html'">
                     <label for="user" class="form-label">Usuário</label>
                 </div>
                 <div class="radio-box">
-                    <input type="radio" name="form_type" id="institution" class="form-control" checked>
+                    <input type="radio" name="form_type" id="institution" checked>
                     <label for="institution" class="form-label">Instituição</label>
                 </div>
             </div>
@@ -30,34 +31,37 @@
         
         <form action="cadastro-instituicao.php" id="form" method="POST">
             <div id="input_container">
+                
                 <div class="input-box">
                     <label for="nome_instituicao" class="form-label">Nome da Instituição</label>
                     <div class="input-field">
-                        <input type="text" name="nome_instituicao" id="nome_instituicao" class="form-control" required>
+                        <input type="text" name="nome_instituicao" id="nome_instituicao" class="form-control" placeholder="Nome oficial da instituição" required>
                         <i class="fa-solid fa-building"></i>
                     </div>
                 </div>
 
                 <div class="input-box">
-                    <label for="username" class="form-label">Nome de Usuário (login)</label>
+                    <label for="username" class="form-label">Nome de Usuário</label>
                     <div class="input-field">
-                        <input type="text" name="username" id="username" class="form-control" placeholder="@usuario_da_instituicao" required>
+                        <input type="text" name="username" id="username" class="form-control" placeholder="usuario_instituicao" required pattern="[^\s]+" maxlength="30">
                         <i class="fa-solid fa-at"></i>
                     </div>
+                    <span id="username-feedback" class="feedback-message"></span>
                 </div>
 
                 <div class="input-box">
-                    <label for="cnpj" class="form-label">CNPJ</label>
+                    <label for="cnpj" class="form-label">CNPJ (Opcional)</label>
                     <div class="input-field">
-                        <input type="text" name="cnpj" id="cnpj" class="form-control" required>
+                        <input type="text" name="cnpj" id="cnpj" class="form-control" placeholder="(Apenas Números)" maxlength="18">
                         <i class="fa-regular fa-id-card"></i>
                     </div>
+                    <span id="cnpj-feedback" class="feedback-message"></span>
                 </div>
-
+                
                 <div class="input-box">
                     <label for="email" class="form-label">E-mail</label>
                     <div class="input-field">
-                        <input type="email" name="email" id="email" class="form-control" required>
+                        <input type="email" name="email" id="email" class="form-control" placeholder="email@instituicao.com" required>
                         <i class="fa-regular fa-envelope"></i>
                     </div>
                 </div>
@@ -65,25 +69,29 @@
                 <div class="input-box">
                     <label for="password" class="form-label">Senha</label>
                     <div class="input-field">
-                        <input type="password" name="password" id="password" class="form-control" required>
-                        <i class="fa-regular fa-eye-slash"></i>
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Mínimo 6 caracteres" required>
+                        <i class="fa-regular fa-eye-slash password-icon"></i>
                     </div>
+                    <span id="password-feedback" class="password-feedback"></span>
                 </div>
 
-                 <div class="input-box">
-                    <label for="confirm_password" class="form-label">Confirmar Senha</label>
+                <div class="input-box">
+                    <label for="confirm_password" class="form-label">Confirmar senha</label>
                     <div class="input-field">
-                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
-                        <i class="fa-regular fa-eye-slash"></i>
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Repita a senha" required>
+                        <i class="fa-regular fa-eye-slash password-icon"></i>
                     </div>
+                    <span id="password-error" class="feedback-message fraca"></span>
                 </div>
             </div>
 
-            <button type="submit" class="btn-default">
+            <button type="submit" class="btn-default full-width">
                 <i class="fa-solid fa-check"></i>
                 Criar conta de Instituição
             </button>
         </form>
     </main>
+
+    <script src="src/javascript/script-instituicao.js"></script>
 </body>
 </html>

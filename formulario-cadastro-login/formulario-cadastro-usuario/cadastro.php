@@ -46,6 +46,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $genero = $_POST['gender'] ?? 'Não informado'; // Define um padrão caso não seja enviado
     $tipo = "comum"; // Define o tipo padrão como 'comum'
 
+     // Limpa a máscara do CPF antes de usar
+    $cpf_com_mascara = $_POST['cpf'];
+    $cpf_limpo = preg_replace('/[^0-9]/', '', $cpf_com_mascara);
+    $cpf = !empty($cpf_limpo) ? $conn->real_escape_string($cpf_limpo) : null;
+
      // 1. Verifica se contém espaços
     if (preg_match('/\s/', $username)) {
         die("Erro: O nome de usuário não pode conter espaços. <a href='javascript:history.back()'>Tente novamente</a>.");

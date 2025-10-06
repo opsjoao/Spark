@@ -12,6 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $senha = $_POST['password'];
     $confirm_senha = $_POST['confirm_password'];
 
+    $cnpj_raw = $_POST['cnpj'] ?? '';
+    $cnpj = !empty($cnpj_raw) ? $conn->real_escape_string($cnpj_raw) : NULL;
+    
     // Valida se as senhas coincidem
     if ($senha !== $confirm_senha) {
         die("As senhas não coincidem.");
