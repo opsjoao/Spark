@@ -1,29 +1,50 @@
-// Aguarda o carregamento completo da página antes de executar qualquer script
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    // Atalho para selecionar elementos por ID
+    const $ = id => document.getElementById(id);
+
+    // Seleção de todos os elementos
+    const form = $('form'),
+          cpfInput = $('cpf'),
+          usernameInput = $('username'),
+          emailInput = $('email'),
+          passwordInput = $('password'),
+          confirmPasswordInput = $('confirm_password'),
+          passwordIcons = document.querySelectorAll('.password-icon'),
+          submitButton = form.querySelector('button[type="submit"]'), // Seleciona o botão de criar conta
+          feedbackSpans = document.querySelectorAll('.feedback-message'); // Pega TODOS os spans de feedback
 
     // ==========================================================
-    // SELEÇÃO DE TODOS OS ELEMENTOS NO INÍCIO
+    // FUNÇÃO PRINCIPAL DE VALIDAÇÃO GERAL
     // ==========================================================
-    const form = document.getElementById('form');
-    const cpfInput = document.getElementById('cpf');
-    const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
-    const confirmPasswordInput = document.getElementById('confirm_password');
-    const passwordIcons = document.querySelectorAll('.password-icon');
-    
-    // Seleciona os spans de feedback que JÁ EXISTEM no HTML
-    const usernameFeedback = document.getElementById('username-feedback');
-    const cpfFeedback = document.getElementById('cpf-feedback');
-    const emailFeedback = document.getElementById('email-feedback'); // Certifique-se que <span id="email-feedback"> existe no seu HTML
-    const passwordFeedback = document.getElementById('password-feedback');
-    const passwordErrorSpan = document.getElementById('password-error');
+    function validateFormState() {
+        let isFormValid = true;
 
+        // 1. Verifica se algum span de feedback de erro está ativo
+        feedbackSpans.forEach(span => {
+            if (span.classList.contains('indisponivel') || span.classList.contains('fraca') || span.classList.contains('media')) {
+                isFormValid = false;
+            }
+        });
+        
+        // Verifica o span de erro de senhas que não coincidem
+        if (passwordErrorSpan && passwordErrorSpan.style.display === 'block') {
+            isFormValid = false;
+        }
 
-    // ==========================================================
-    // FUNÇÃO GERAL DE VALIDAÇÃO DE CPF
-    // ==========================================================
-    function validaCPF(cpf) {
+        // 2. Verifica se os campos obrigatórios estão preenchidos
+        const requiredInputs = form.querySelectorAll('input[required]');
+        requiredInputs.forEach(input => {
+            if (input.value.trim() === '') {
+                isFormValid = false;
+            }
+        });
+        
+        // 3. Habilita ou desabilita o botão com base na validade
+        submitButton.disabled = !isFormValid;
+    }
+
+    // --- FUNÇÃO DE VALIDAÇÃO DE CPF ---
+    const validaCPF = cpf => {
         cpf = String(cpf).replace(/\D/g, '');
         if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
         let soma = 0, resto;
@@ -37,7 +58,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (resto === 10 || resto === 11) resto = 0;
         if (resto !== parseInt(cpf.substring(10, 11))) return false;
         return true;
-    }
+    };
+
+    // --- LÓGICAS DE VALIDAÇÃO EM TEMPO REAL ---
+
+    // Adiciona um "ouvinte" a todos os inputs do formulário para validar continuamente
+    form.addEventListener('input', validateFormState);
 
 
     // ==========================================================
@@ -73,29 +99,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     // ==========================================================
-    // 3. VERIFICAÇÕES EM TEMPO REAL (USERNAME, CPF, E-MAIL, SENHA)
+    // 3. VERIFICAÇÕES EM TEMPO REAL (CPF, USERNAME, E-MAIL, SENHA)
     // ==========================================================
 
-    // Força da Senha
-    if (passwordInput && passwordFeedback) {
-        passwordInput.addEventListener('input', function() {
-            const senha = passwordInput.value;
-            let forca = 0, mensagem = '', classeCss = '';
-            if (senha.length > 0) {
-                if (senha.length >= 6) forca++;
-                if (senha.match(/[a-z]/)) forca++;
-                if (senha.match(/[A-Z]/)) forca++;
-                if (senha.match(/[0-9]/)) forca++;
-                if (senha.match(/[^a-zA-Z0-9]/)) forca++;
-                switch (forca) {
-                    case 1: case 2: mensagem = 'Senha fraca'; classeCss = 'fraca'; break;
-                    case 3: case 4: mensagem = 'Senha média'; classeCss = 'media'; break;
-                    case 5: mensagem = 'Senha forte'; classeCss = 'forte'; break;
-                    default: mensagem = 'Senha muito fraca'; classeCss = 'fraca';
-                }
+    // Validade e Disponibilidade do CPF
+    if (cpfInput && cpfFeedback) {
+        cpfInput.addEventListener('input', function() {
+            const cpfLimpo = cpfInput.value.replace(/\D/g, '');
+            if (cpfLimpo.length < 11) {
+                cpfFeedback.textContent = '';
+                cpfFeedback.className = 'feedback-message';
+                return;
             }
-            passwordFeedback.textContent = mensagem;
-            passwordFeedback.className = 'feedback-message ' + classeCss;
+            if (!validaCPF(cpfLimpo)) {
+                cpfFeedback.textContent = 'CPF inválido.';
+                cpfFeedback.className = 'feedback-message indisponivel';
+                return;
+            }
+            fetch(`verificar_cpf.php?cpf=${cpfLimpo}`)
+                .then(response => response.json())
+                .then(data => {
+                    cpfFeedback.textContent = data.disponivel ? 'CPF disponível!' : data.mensagem;
+                    cpfFeedback.className = data.disponivel ? 'feedback-message disponivel' : 'feedback-message indisponivel';
+                });
         });
     }
 
@@ -118,24 +144,17 @@ document.addEventListener('DOMContentLoaded', function() {
                             usernameFeedback.textContent = data.mensagem;
                             usernameFeedback.className = 'feedback-message indisponivel';
                         } else {
-                            usernameFeedback.textContent = '';
+                            usernameFeedback.textContent = ''; // Não mostra "disponível"
                             usernameFeedback.className = 'feedback-message';
                         }
                     });
             }, 500);
         });
     }
-
+    
     // Validade e Disponibilidade do E-mail
     let emailDebounceTimer;
-    if (emailInput) { // Apenas verifica se o input de e-mail existe
-        
-        // Cria o span para o feedback uma única vez
-        const emailFeedback = document.createElement('span');
-        emailFeedback.classList.add('feedback-message');
-        // Insere o span no local correto, dentro do .input-box
-        emailInput.closest('.input-box').appendChild(emailFeedback);
-
+    if (emailInput && emailFeedback) {
         emailInput.addEventListener('keyup', function() {
             clearTimeout(emailDebounceTimer);
             const email = emailInput.value;
@@ -159,45 +178,34 @@ document.addEventListener('DOMContentLoaded', function() {
                             emailFeedback.textContent = data.mensagem;
                             emailFeedback.className = 'feedback-message indisponivel';
                         } else {
-                            emailFeedback.textContent = 'E-mail disponível!';
-                            emailFeedback.className = 'feedback-message disponivel';
+                            emailFeedback.textContent = ''; // Não mostra "disponível"
+                            emailFeedback.className = 'feedback-message';
                         }
                     });
             }, 500);
         });
     }
 
-     // --- LÓGICA DE VALIDAÇÃO DE CPF EM TEMPO REAL (CORRIGIDA) ---
-    if (cpfInput && cpfFeedback) {
-        cpfInput.addEventListener('input', function() {
-            const cpfLimpo = cpfInput.value.replace(/\D/g, '');
-
-            if (cpfLimpo.length < 11) {
-                cpfFeedback.textContent = '';
-                cpfFeedback.className = 'feedback-message';
-                return;
+    // Força da Senha
+    if (passwordInput && passwordFeedback) {
+        passwordInput.addEventListener('input', function() {
+            const senha = passwordInput.value;
+            let forca = 0, mensagem = '', classeCss = '';
+            if (senha.length > 0) {
+                if (senha.length >= 6) forca++;
+                if (/[a-z]/.test(senha)) forca++;
+                if (/[A-Z]/.test(senha)) forca++;
+                if (/[0-9]/.test(senha)) forca++;
+                if (/[^a-zA-Z0-9]/.test(senha)) forca++;
+                switch (forca) {
+                    case 1: case 2: mensagem = 'Senha fraca'; classeCss = 'fraca'; break;
+                    case 3: case 4: mensagem = 'Senha média'; classeCss = 'media'; break;
+                    case 5: mensagem = 'Senha forte'; classeCss = 'forte'; break;
+                    default: mensagem = 'Senha muito fraca'; classeCss = 'fraca';
+                }
             }
-
-            if (!validaCPF(cpfLimpo)) {
-                cpfFeedback.textContent = 'CPF inválido.';
-                cpfFeedback.className = 'feedback-message indisponivel';
-                return;
-            }
-            
-            // Se o formato for válido, verifica no banco de dados se já está em uso
-            fetch(`verificar_cpf.php?cpf=${cpfLimpo}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.disponivel) {
-                        cpfFeedback.textContent = 'CPF disponível!';
-                        cpfFeedback.className = 'feedback-message disponivel';
-                    } else {
-                        // A mensagem de erro agora vem diretamente do PHP
-                        cpfFeedback.textContent = data.mensagem;
-                        cpfFeedback.className = 'feedback-message indisponivel';
-                    }
-                })
-                .catch(error => console.error('Erro ao verificar CPF:', error));
+            passwordFeedback.textContent = mensagem;
+            passwordFeedback.className = 'feedback-message ' + classeCss;
         });
     }
 
@@ -218,6 +226,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 passwordErrorSpan.classList.remove('shake-error');
                 void passwordErrorSpan.offsetWidth;
                 passwordErrorSpan.classList.add('shake-error');
+            } else {
+                passwordErrorSpan.textContent = '';
+                passwordErrorSpan.style.display = 'none';
             }
         });
     }

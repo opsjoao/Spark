@@ -39,3 +39,14 @@ input[type=radio]{accent-color:#448019}
 .btn-default{background:#448019;display:flex;align-items:center;justify-content:center;border:none;padding:12px;border-radius:8px;font-size:16px;font-weight:600;color:#fff;cursor:pointer;gap:8px;box-shadow:0 4px 10px rgba(0,0,0,.1);transition:background-color .3s}
 .btn-default:hover{background:#3a6d15}
 @media screen and (max-width:700px){#input_container{grid-template-columns:1fr;gap:20px}.full-width{grid-column:span 1}#form_container{padding:20px}}
+/* --- ESTILO PARA O BOTÃO DESABILITADO --- */
+
+.btn-default[disabled] {
+    background-color: #A5D6A7; /* Um tom de verde mais claro e 'apagado' */
+    cursor: not-allowed; /* Mostra um ícone de 'proibido' ao passar o mouse */
+    box-shadow: none;
+}
+
+.btn-default[disabled]:hover {
+    background-color: #A5D6A7; /* Garante que a cor não mude no hover */
+}
