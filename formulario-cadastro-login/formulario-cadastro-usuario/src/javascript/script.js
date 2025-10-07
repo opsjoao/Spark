@@ -3,15 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const $ = id => document.getElementById(id);
 
     // Seleção de todos os elementos
-    const form = $('form'),
-          cpfInput = $('cpf'),
-          usernameInput = $('username'),
-          emailInput = $('email'),
-          passwordInput = $('password'),
-          confirmPasswordInput = $('confirm_password'),
-          passwordIcons = document.querySelectorAll('.password-icon'),
-          submitButton = form.querySelector('button[type="submit"]'), // Seleciona o botão de criar conta
-          feedbackSpans = document.querySelectorAll('.feedback-message'); // Pega TODOS os spans de feedback
+    const form = $('form');
+    const cpfInput = $('cpf');
+    const usernameInput = $('username');
+    const emailInput = $('email');
+    const passwordInput = $('password');
+    const confirmPasswordInput = $('confirm_password');
+    const passwordIcons = document.querySelectorAll('.password-icon');
+    const submitButton = form.querySelector('button[type="submit"]');
+
+    // Seleciona os spans de feedback
+    const usernameFeedback = $('username-feedback');
+    const cpfFeedback = $('cpf-feedback');
+    const emailFeedback = $('email-feedback');
+    const passwordFeedback = $('password-feedback');
+    const passwordErrorSpan = $('password-error');
+
+    // Variáveis de estado para rastrear a validade de cada campo
+    let isUsernameValid = false;
+    let isEmailValid = false;
+    let isCpfValid = true; // Começa como true pois é opcional
 
     // ==========================================================
     // FUNÇÃO PRINCIPAL DE VALIDAÇÃO GERAL
@@ -19,51 +30,60 @@ document.addEventListener('DOMContentLoaded', () => {
     function validateFormState() {
         let isFormValid = true;
 
-        // 1. Verifica se algum span de feedback de erro está ativo
-        feedbackSpans.forEach(span => {
-            if (span.classList.contains('indisponivel') || span.classList.contains('fraca') || span.classList.contains('media')) {
-                isFormValid = false;
-            }
-        });
-        
-        // Verifica o span de erro de senhas que não coincidem
-        if (passwordErrorSpan && passwordErrorSpan.style.display === 'block') {
-            isFormValid = false;
-        }
-
-        // 2. Verifica se os campos obrigatórios estão preenchidos
-        const requiredInputs = form.querySelectorAll('input[required]');
-        requiredInputs.forEach(input => {
+        // 1. Verifica os campos obrigatórios
+        form.querySelectorAll('input[required]').forEach(input => {
             if (input.value.trim() === '') {
                 isFormValid = false;
             }
         });
-        
-        // 3. Habilita ou desabilita o botão com base na validade
+
+        // 2. Verifica o status das validações em tempo real
+        if (!isUsernameValid || !isEmailValid || !isCpfValid) {
+            isFormValid = false;
+        }
+
+        // 3. Verifica se as senhas coincidem
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            isFormValid = false;
+        }
+
+        // 4. Verifica se a senha é pelo menos 'média'
+        if (passwordFeedback.classList.contains('fraca') || passwordFeedback.classList.contains('muito-fraca')) {
+             isFormValid = false;
+        }
+
+        // Habilita ou desabilita o botão
         submitButton.disabled = !isFormValid;
     }
 
-    // --- FUNÇÃO DE VALIDAÇÃO DE CPF ---
-    const validaCPF = cpf => {
-        cpf = String(cpf).replace(/\D/g, '');
+
+    // ==========================================================
+    // FUNÇÃO GERAL DE VALIDAÇÃO DE CPF
+    // ==========================================================
+    function validaCPF(cpf) {
+        cpf = String(cpf).replace(/\D/g, ''); // Garante que é uma string e remove a máscara
         if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
-        let soma = 0, resto;
-        for (let i = 1; i <= 9; i++) soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        
+        let soma = 0;
+        let resto;
+
+        for (let i = 1; i <= 9; i++) {
+            soma += parseInt(cpf.substring(i - 1, i)) * (11 - i);
+        }
         resto = (soma * 10) % 11;
         if (resto === 10 || resto === 11) resto = 0;
         if (resto !== parseInt(cpf.substring(9, 10))) return false;
+
         soma = 0;
-        for (let i = 1; i <= 10; i++) soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        for (let i = 1; i <= 10; i++) {
+            soma += parseInt(cpf.substring(i - 1, i)) * (12 - i);
+        }
         resto = (soma * 10) % 11;
         if (resto === 10 || resto === 11) resto = 0;
         if (resto !== parseInt(cpf.substring(10, 11))) return false;
+        
         return true;
-    };
-
-    // --- LÓGICAS DE VALIDAÇÃO EM TEMPO REAL ---
-
-    // Adiciona um "ouvinte" a todos os inputs do formulário para validar continuamente
-    form.addEventListener('input', validateFormState);
+    }
 
 
     // ==========================================================
@@ -84,109 +104,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ==========================================================
-    // 2. LÓGICA DA MÁSCARA DE CPF
+    // LÓGICA UNIFICADA DE CPF (MÁSCARA E VALIDAÇÃO)
     // ==========================================================
-    if (cpfInput) {
-        cpfInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 11) value = value.slice(0, 11);
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-            e.target.value = value;
-        });
-    }
-
-
-    // ==========================================================
-    // 3. VERIFICAÇÕES EM TEMPO REAL (CPF, USERNAME, E-MAIL, SENHA)
-    // ==========================================================
-
-    // Validade e Disponibilidade do CPF
     if (cpfInput && cpfFeedback) {
-        cpfInput.addEventListener('input', function() {
-            const cpfLimpo = cpfInput.value.replace(/\D/g, '');
-            if (cpfLimpo.length < 11) {
+        cpfInput.addEventListener('input', e => {
+            // 1. Aplica a máscara
+            let value = e.target.value.replace(/\D/g, '').slice(0, 11);
+            e.target.value = value.replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d)/, '$1.$2').replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            
+            // 2. Faz a validação em tempo real
+            const cpfLimpo = value;
+            isCpfAvailable = false; // Assume que é inválido até que se prove o contrário
+
+            if (cpfLimpo.length === 0) {
                 cpfFeedback.textContent = '';
                 cpfFeedback.className = 'feedback-message';
+                isCpfAvailable = true; // Vazio é permitido (campo não obrigatório)
+                validateFormState();
                 return;
             }
+
+            if (cpfLimpo.length < 11) {
+                cpfFeedback.textContent = 'CPF incompleto.';
+                cpfFeedback.className = 'feedback-message indisponivel';
+                validateFormState();
+                return;
+            }
+
             if (!validaCPF(cpfLimpo)) {
                 cpfFeedback.textContent = 'CPF inválido.';
                 cpfFeedback.className = 'feedback-message indisponivel';
+                validateFormState();
                 return;
             }
+            
+            // 3. Se o formato for válido, verifica no banco
             fetch(`verificar_cpf.php?cpf=${cpfLimpo}`)
-                .then(response => response.json())
+                .then(r => r.json())
                 .then(data => {
-                    cpfFeedback.textContent = data.disponivel ? 'CPF disponível!' : data.mensagem;
-                    cpfFeedback.className = data.disponivel ? 'feedback-message disponivel' : 'feedback-message indisponivel';
+                    isCpfAvailable = data.disponivel; // Atualiza o estado
+                    cpfFeedback.textContent = data.disponivel ? '' : data.mensagem;
+                    cpfFeedback.className = 'feedback-message ' + (data.disponivel ? 'disponivel' : 'indisponivel');
+                    validateFormState();
                 });
         });
     }
-
-    // Disponibilidade do Username
-    let usernameDebounceTimer;
-    if (usernameInput && usernameFeedback) {
-        usernameInput.addEventListener('keyup', function() {
-            clearTimeout(usernameDebounceTimer);
-            const username = usernameInput.value;
-            if (username.length < 3) {
-                usernameFeedback.textContent = '';
-                usernameFeedback.className = 'feedback-message';
-                return;
-            }
-            usernameDebounceTimer = setTimeout(() => {
-                fetch(`verificar_username.php?username=${username}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.disponivel) {
-                            usernameFeedback.textContent = data.mensagem;
-                            usernameFeedback.className = 'feedback-message indisponivel';
-                        } else {
-                            usernameFeedback.textContent = ''; // Não mostra "disponível"
-                            usernameFeedback.className = 'feedback-message';
-                        }
-                    });
-            }, 500);
-        });
-    }
-    
-    // Validade e Disponibilidade do E-mail
-    let emailDebounceTimer;
-    if (emailInput && emailFeedback) {
-        emailInput.addEventListener('keyup', function() {
-            clearTimeout(emailDebounceTimer);
-            const email = emailInput.value;
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            
-            if (email.length > 0 && !emailRegex.test(email)) {
-                emailFeedback.textContent = 'Formato de e-mail inválido.';
-                emailFeedback.className = 'feedback-message indisponivel';
-                return;
-            } else if (email.length === 0) {
-                emailFeedback.textContent = '';
-                emailFeedback.className = 'feedback-message';
-                return;
-            }
-
-            emailDebounceTimer = setTimeout(() => {
-                fetch(`verificar_email.php?email=${email}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (!data.disponivel) {
-                            emailFeedback.textContent = data.mensagem;
-                            emailFeedback.className = 'feedback-message indisponivel';
-                        } else {
-                            emailFeedback.textContent = ''; // Não mostra "disponível"
-                            emailFeedback.className = 'feedback-message';
-                        }
-                    });
-            }, 500);
-        });
-    }
-
-    // Força da Senha
+    // ==========================================================
+    // 3. LÓGICA DE VERIFICAÇÃO DE FORÇA DA SENHA
+    // ==========================================================
     if (passwordInput && passwordFeedback) {
         passwordInput.addEventListener('input', function() {
             const senha = passwordInput.value;
@@ -208,28 +173,120 @@ document.addEventListener('DOMContentLoaded', () => {
             passwordFeedback.className = 'feedback-message ' + classeCss;
         });
     }
+    
+     // --- VERIFICAÇÕES EM TEMPO REAL ---
 
-    // ==========================================================
-    // 4. LÓGICA DE SUBMISSÃO DO FORMULÁRIO (VALIDAÇÃO FINAL)
-    // ==========================================================
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            const senhasCoincidem = (passwordInput.value === confirmPasswordInput.value);
-            
-            if (!senhasCoincidem) {
-                e.preventDefault(); // Impede o envio do formulário
-                
-                passwordErrorSpan.textContent = "As senhas não coincidem!";
-                passwordErrorSpan.style.display = "block";
-                
-                // Animação de erro
-                passwordErrorSpan.classList.remove('shake-error');
-                void passwordErrorSpan.offsetWidth;
-                passwordErrorSpan.classList.add('shake-error');
-            } else {
-                passwordErrorSpan.textContent = '';
-                passwordErrorSpan.style.display = 'none';
+    // Adiciona um "ouvinte" geral a todos os inputs para revalidar
+    form.addEventListener('input', validateFormState);
+
+    // Verificação de Username
+    let userTimer;
+    if (usernameInput) {
+        usernameInput.addEventListener('keyup', () => {
+            clearTimeout(userTimer);
+            const val = usernameInput.value;
+            if (val.length < 3) {
+                usernameFeedback.textContent = '';
+                isUsernameValid = false; // Inválido se for muito curto
+                validateFormState();
+                return;
             }
+            userTimer = setTimeout(() => {
+                fetch(`verificar_username.php?username=${val}`).then(r => r.json()).then(d => {
+                    isUsernameValid = d.disponivel; // Atualiza o estado
+                    usernameFeedback.textContent = d.disponivel ? '' : d.mensagem;
+                    usernameFeedback.className = 'feedback-message ' + (d.disponivel ? 'disponivel' : 'indisponivel');
+                    validateFormState();
+                });
+            }, 500);
         });
     }
+
+    // Verificação de E-mail
+    let emailTimer;
+    if (emailInput) {
+        emailInput.addEventListener('keyup', () => {
+            clearTimeout(emailTimer);
+            const val = emailInput.value;
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!re.test(val)) {
+                emailFeedback.textContent = 'Formato de e-mail inválido.';
+                emailFeedback.className = 'feedback-message indisponivel';
+                isEmailValid = false; // Inválido
+                validateFormState();
+                return;
+            }
+            
+            emailTimer = setTimeout(() => {
+                fetch(`verificar_email.php?email=${val}`).then(r => r.json()).then(d => {
+                    isEmailValid = d.disponivel; // Atualiza o estado
+                    emailFeedback.textContent = d.disponivel ? '' : d.mensagem;
+                    emailFeedback.className = 'feedback-message ' + (d.disponivel ? 'disponivel' : 'indisponivel');
+                    validateFormState();
+                });
+            }, 500);
+        });
+    }
+
+    // Verificação de CPF
+    if (cpfInput) {
+        cpfInput.addEventListener('input', () => {
+            const cpfLimpo = cpfInput.value.replace(/\D/g, '');
+            if (cpfLimpo.length === 0) {
+                cpfFeedback.textContent = '';
+                isCpfValid = true; // Vazio é válido
+                validateFormState();
+                return;
+            }
+            if (cpfLimpo.length < 11) {
+                cpfFeedback.textContent = '';
+                isCpfValid = false; // Incompleto é inválido
+                validateFormState();
+                return;
+            }
+            if (!validaCPF(cpfLimpo)) {
+                cpfFeedback.textContent = 'CPF inválido.';
+                cpfFeedback.className = 'feedback-message indisponivel';
+                isCpfValid = false; // Inválido
+                validateFormState();
+                return;
+            }
+            fetch(`verificar_cpf.php?cpf=${cpfLimpo}`).then(r => r.json()).then(d => {
+                isCpfValid = d.disponivel; // Atualiza o estado
+                cpfFeedback.textContent = d.disponivel ? '' : d.mensagem;
+                cpfFeedback.className = 'feedback-message ' + (d.disponivel ? 'disponivel' : 'indisponivel');
+                validateFormState();
+            });
+        });
+    }
+
+    // Verificação de Força da Senha
+    if (passwordInput) { /* ... sua lógica de força da senha ... */ }
+
+    // Verificação de Senhas que Coincidem
+    function checkPasswords() {
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            passwordErrorSpan.textContent = "As senhas não coincidem!";
+            passwordErrorSpan.classList.add('indisponivel');
+        } else {
+            passwordErrorSpan.textContent = "";
+            passwordErrorSpan.classList.remove('indisponivel');
+        }
+        validateFormState();
+    }
+    passwordInput?.addEventListener('keyup', checkPasswords);
+    confirmPasswordInput?.addEventListener('keyup', checkPasswords);
+
+    // Validação final ao enviar o formulário
+    form?.addEventListener('submit', e => {
+        validateFormState();
+        if (submitButton.disabled) {
+            e.preventDefault();
+            alert('Por favor, corrija os erros no formulário antes de continuar.');
+        }
+    });
+
+    // Chama a função no início para desabilitar o botão
+    validateFormState();
 });

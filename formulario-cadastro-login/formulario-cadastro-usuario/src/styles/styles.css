@@ -31,8 +31,21 @@ body{display:flex;justify-content:center;align-items:center;min-height:100vh;bac
 .radio-box{display:flex;gap:8px;align-items:center}
 .radio-box label{margin-bottom:0}
 input[type=radio]{accent-color:#448019}
-.feedback-message{display:block;font-size:12px;font-weight:500;margin-top:6px;height:15px;transition:color .3s}
-.password-feedback{text-align:right;padding-right:5px}
+/* DEPOIS (CORRIGIDO) */
+.feedback-message {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+    height: 15px; /* Reserva o espaço */
+    transition: color 0.3s ease;
+}
+
+/* Aplica o alinhamento à direita especificamente ao span de feedback da senha */
+#password-feedback {
+    text-align: right;
+    padding-right: 5px;
+}
 .feedback-message.disponivel,.feedback-message.forte{color:#388E3C}
 .feedback-message.indisponivel,.feedback-message.fraca{color:#D32F2F}
 .feedback-message.media{color:#F57C00}
