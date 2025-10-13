@@ -2,8 +2,11 @@
 // Inclui o nosso guardião para verificar se o usuário está logado.
 require_once('../formulario-cadastro-login/verificacao.php');
 
-// Define a URL base do projeto para links corretos.
+// Define a URL base do projeto para links corretetos.
 $url_base = '/Spark-main/';
+
+//importar fonte
+include('../header.php');
 
 // Define a URL para onde o formulário enviará os dados.
 $processar_alteracao_url = $url_base . 'teladeusuario/processar_alteracao_senha.php';
@@ -17,30 +20,23 @@ if (session_status() == PHP_SESSION_NONE) {
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Spark — Alterar Senha</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo $url_base; ?>teladeusuario/teladeusuario.css" />
-    <style>
-        /* Estilos para mensagens de feedback */
-        .message {
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            font-weight: 500;
-            text-align: center;
-        }
-        .message.error {
-            background-color: #FEE2E2;
-            color: #B91C1C;
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="alterar_senha.css">
+
 </head>
 <body>
-    <header class="appbar edit-appbar">
-        <button class="icon-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'" aria-label="Voltar"><i class="fa-solid fa-arrow-left"></i></button>
+    <header class="appbar">
+        <button class="icon-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'" aria-label="Voltar">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
         <h1>Alterar Senha</h1>
-    </header>
+        <div style="width: 24px;"></div> </header>
 
     <main class="app-content">
         <form action="<?php echo $processar_alteracao_url; ?>" method="POST">
@@ -48,7 +44,7 @@ if (session_status() == PHP_SESSION_NONE) {
             <?php if (isset($_SESSION['error_message'])): ?>
                 <div class="message error">
                     <?php 
-                        echo $_SESSION['error_message']; 
+                        echo htmlspecialchars($_SESSION['error_message']); 
                         unset($_SESSION['error_message']); // Limpa a mensagem após exibir
                     ?>
                 </div>
@@ -73,22 +69,5 @@ if (session_status() == PHP_SESSION_NONE) {
         </form>
     </main>
     
-    <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>TelaPerfils/perfil.html'">
-            <i class="fa-solid fa-users"></i>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-atividades/atividades.php'">
-            <i class="fa-solid fa-person-walking"></i>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-principal/telaprincipal.php'">
-            <i class="fa-solid fa-house"></i>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>telaFavoritos/index.html'">
-            <i class="fa-solid fa-star"></i>
-        </button>
-        <button class="nav-btn active">
-            <i class="fa-solid fa-user"></i>
-        </button>
-    </nav>
 </body>
 </html>
