@@ -1,33 +1,21 @@
 <?php
-// Define que a resposta será em formato JSON
+require_once '../conexao.php';
 header('Content-Type: application/json');
 
-// Inclui o arquivo de conexão
-require_once '../conexao.php';
-
-// Verifica se o username foi enviado via GET
+$response = ['disponivel' => false, 'mensagem' => 'Username não fornecido.'];
 if (isset($_GET['username'])) {
     $username = $_GET['username'];
-
-    // Prepara a consulta para contar quantos usuários têm esse username
-    $stmt = $conn->prepare("SELECT COUNT(*) AS total FROM Usuario WHERE username = ?");
+    $stmt = $conn->prepare("SELECT idUsuario FROM Usuario WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
-    $result = $stmt->get_result();
-    $data = $result->fetch_assoc();
-
-    // Se a contagem for maior que 0, o username já existe
-    if ($data['total'] > 0) {
-        echo json_encode(['disponivel' => false, 'mensagem' => 'Este nome de usuário já está em uso.']);
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        $response = ['disponivel' => false, 'mensagem' => 'Este nome de usuário já está em uso.'];
     } else {
-        echo json_encode(['disponivel' => true, 'mensagem' => 'Nome de usuário disponível!']);
+        $response = ['disponivel' => true];
     }
-
     $stmt->close();
-} else {
-    // Se nenhum username for fornecido, retorna um erro
-    echo json_encode(['disponivel' => false, 'mensagem' => 'Nenhum nome de usuário fornecido.']);
 }
-
 $conn->close();
+echo json_encode($response);
 ?>
