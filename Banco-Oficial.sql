@@ -130,3 +130,65 @@ UPDATE Participantes SET status = 'inscrito';
 -- Adiciona o novo status 'ativo' à coluna existente
 ALTER TABLE Participantes 
 MODIFY COLUMN status ENUM('inscrito', 'ativo', 'participou') NOT NULL DEFAULT 'inscrito';
+
+UPDATE Usuario SET cpf = REPLACE(REPLACE(cpf, '.', ''), '-', '');
+
+INSERT INTO Usuario 
+    (nome, username, tipo, email, senha, data_nasc, status) 
+VALUES 
+    ('Vladmin', 'vladmin', 'admin', 'admin@admin.com', '$2y$10$ATL08KCn0PCG/nLm8ESkS.HmbMaKoUXpgnTTaKZrkUDeqmynyAmPe', '2000-01-01', 'ativo');
+
+-- INSERINDO NOVOS EVENTOS PARA TESTE
+
+-- Evento Futuro 1 (criado pelo usuário 1)
+INSERT INTO Evento (idParque, idUsuario, nome, dia, horario_inicio, horario_termino, descricao, imagem_path) VALUES
+(1, 1, 'Piquenique Comunitário', '2025-10-25', '14:00:00', '17:00:00', 'Vamos nos reunir para um piquenique no gramado central. Traga sua toalha, um lanche para compartilhar e sua alegria!', 'uploads/evento_piquenique.jpg');
+
+-- Evento Futuro 2 (criado pelo usuário 2)
+INSERT INTO Evento (idParque, idUsuario, nome, dia, horario_inicio, horario_termino, descricao, imagem_path) VALUES
+(2, 2, 'Aula de Yoga ao Pôr do Sol', '2025-11-15', '17:30:00', '18:30:00', 'Uma aula de Hatha Yoga para todos os níveis, aproveitando a energia do fim de tarde. Traga seu tapete!', 'uploads/evento_yoga.jpg');
+
+-- Evento Passado (criado pelo usuário 1)
+INSERT INTO Evento (idParque, idUsuario, nome, dia, horario_inicio, horario_termino, descricao, imagem_path) VALUES
+(1, 1, 'Torneio de Vôlei de Areia', '2025-09-20', '09:00:00', '13:00:00', 'Torneio amador de vôlei de areia. Inscrições abertas para duplas masculinas e femininas no local.', 'uploads/evento_volei.jpg');
+
+-- Evento que acontecerá HOJE (criado pelo usuário 2)
+INSERT INTO Evento (idParque, idUsuario, nome, dia, horario_inicio, horario_termino, descricao, imagem_path) VALUES
+(2, 2, 'Caminhada Matinal no Parque', CURDATE(), '08:00:00', '09:00:00', 'Vamos começar o dia com uma caminhada leve pelo parque. Ponto de encontro no portão principal.', NULL);
+
+
+-- INSCREVENDO USUÁRIOS NOS EVENTOS PARA TESTAR "MEUS EVENTOS" E "HISTÓRICO"
+
+-- Supondo que o "Piquenique" tenha o idEvento 2 (ajuste se for diferente)
+-- Usuário 2 se inscreve no evento do usuário 1
+INSERT INTO Participantes (idUsuario, idEvento, dataInscricao, dataParticipacao, status) VALUES
+(2, 2, CURDATE(), CURDATE(), 'inscrito');
+
+-- Supondo que o "Torneio de Vôlei" tenha o idEvento 4 (ajuste se for diferente)
+-- Usuário 2 participou do evento passado
+INSERT INTO Participantes (idUsuario, idEvento, dataInscricao, dataParticipacao, status) VALUES
+(2, 4, '2025-09-18', '2025-09-20', 'participou');
+
+-- Supondo que a "Caminhada Matinal" tenha o idEvento 5 (ajuste se for diferente)
+-- Usuário 1 se inscreve no evento de hoje
+INSERT INTO Participantes (idUsuario, idEvento, dataInscricao, dataParticipacao, status) VALUES
+(1, 5, CURDATE(), CURDATE(), 'inscrito');
+
+-- INSERINDO AVALIAÇÕES DE TESTE PARA A TABELA 'Avaliacao_evento'
+
+-- Usuário 2 avaliando o evento "Torneio de Vôlei de Areia" (idEvento = 4)
+INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path) VALUES
+(4, 2, 5, 'O torneio foi incrível! Super bem organizado e o pessoal muito animado. Com certeza participarei dos próximos!', NULL);
+
+-- Usuário 1 avaliando o mesmo evento "Torneio de Vôlei de Areia" (idEvento = 4)
+-- Adicionando um segundo comentário para o mesmo evento
+INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path) VALUES
+(4, 1, 4, 'Muito bom, mas poderia ter mais quadras disponíveis. A espera foi um pouco longa.', NULL);
+
+-- Usuário 1 avaliando o evento "Capoeira Daora" (idEvento = 1), incluindo uma imagem
+INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path) VALUES
+(1, 1, 5, 'Energia contagiante! O mestre é excelente e o grupo super acolhedor. Recomendo a todos!', 'uploads/avaliacoes/foto_capoeira_teste.jpg');
+
+-- Usuário 2 avaliando o evento "Piquenique Comunitário" (idEvento = 2)
+INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path) VALUES
+(2, 2, 4, 'Ótima iniciativa! Conheci muita gente legal. Só faltou um pouco de sombra no local escolhido.', NULL);
