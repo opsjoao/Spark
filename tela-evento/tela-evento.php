@@ -154,11 +154,11 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
     </main>
     
     <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span>Amigos</span></button>
-        <button class="nav-btn active"><i class="fa-solid fa-person-walking"></i><span>Atividades</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span>Início</span></button>
-        <button class="nav-btn"><i class="fa-solid fa-star"></i><span>Favoritos</span></button>
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/teladeusuario/teladeusuario.php'"><i class="fa-solid fa-user"></i><span>Conta</span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span></span></button>
+        <button class="nav-btn active"><i class="fa-solid fa-person-walking"></i><span></span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span></span></button>
+        <button class="nav-btn"><i class="fa-solid fa-star"></i><span></span></button>
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/teladeusuario/teladeusuario.php'"><i class="fa-solid fa-user"></i><span></span></button>
     </nav>
 
     <div id="evaluation-modal" class="modal-overlay">
