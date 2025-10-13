@@ -1,53 +1,72 @@
-    // --- Variáveis de elementos DOM ---
+
+    // --- Variáveis de elementos DOM (Mantidas do exemplo anterior) ---
     const estrelas = document.querySelectorAll('input[name="rate"]');
     const displayDiv = document.getElementById('valor-selecionado');
     const submitButton = document.getElementById('submit');
-    const savedDisplayDiv = document.getElementById('avaliacao-salva'); // Vamos reutilizar esta div
+    const savedDisplayDiv = document.getElementById('avaliacao-salva');
 
-    let valorAtual = null; // Variável para rastrear o valor selecionado
+    let valorAtual = null; 
 
     // --- Funções de Manipulação do Array no localStorage ---
 
-    // Função para obter o array de avaliações do localStorage
     function getTodasAvaliacoes() {
         const avaliacoesJSON = localStorage.getItem('todasAvaliacoes');
-        // Se houver dados, retorna o array. Se não, retorna um array vazio.
         return avaliacoesJSON ? JSON.parse(avaliacoesJSON) : [];
     }
 
-    // Função para salvar o array de avaliações no localStorage
     function saveTodasAvaliacoes(avaliacoes) {
         localStorage.setItem('todasAvaliacoes', JSON.stringify(avaliacoes));
     }
 
-    // Função principal para calcular e exibir a Média
-    function calcularEMostrarMedia() {
+    // --- NOVO: Função para calcular, contar e exibir a Média e o Detalhe das Notas ---
+    function calcularEMostrarDetalhes() {
         const todasAvaliacoes = getTodasAvaliacoes();
         const totalAvaliacoes = todasAvaliacoes.length;
 
         if (totalAvaliacoes === 0) {
-            savedDisplayDiv.innerHTML = 'Ainda não há avaliações salvas para calcular a média.';
+            savedDisplayDiv.innerHTML = 'Ainda não há avaliações salvas.';
             return;
         }
 
-        // 1. Somar todas as avaliações
-        // Usamos reduce para somar. O valor inicial da soma é 0.
-        const somaTotal = todasAvaliacoes.reduce((soma, avaliacao) => {
-            // Os valores vêm como string, então precisamos converter para número (parseInt)
-            return soma + parseInt(avaliacao, 10); 
-        }, 0);
+        // Variáveis de Cálculo
+        let somaTotal = 0;
+        
+        // Objeto para Contagem: { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 }
+        const contagemNotas = { "1": 0, "2": 0, "3": 0, "4": 0, "5": 0 };
 
-        // 2. Calcular a média
+        // Itera sobre todas as avaliações para somar e contar
+        todasAvaliacoes.forEach(avaliacao => {
+            const nota = parseInt(avaliacao, 10); // Converte a string para número
+            
+            // 1. Soma para calcular a Média
+            somaTotal += nota;
+            
+            // 2. Conta a Ocorrência da Nota
+            // Usa a nota (como string) para incrementar o contador no objeto
+            if (contagemNotas[avaliacao] !== undefined) {
+                 contagemNotas[avaliacao]++;
+            }
+        });
+
+        // 3. Calcula a Média
         const media = somaTotal / totalAvaliacoes;
+        
+        // 4. Cria o HTML para exibir a contagem detalhada
+        let detalheHtml = '<h3>Contagem por Nota:</h3><ul>';
+        for (const nota in contagemNotas) {
+            detalheHtml += `<li><strong>${nota} estrela(s):</strong> ${contagemNotas[nota]} voto(s)</li>`;
+        }
+        detalheHtml += '</ul>';
 
-        // 3. Exibir o resultado
+        // 5. Exibe o resultado final com a média e o detalhe
         savedDisplayDiv.innerHTML = `
-            Total de Avaliações Salvas: <strong>${totalAvaliacoes}</strong><br>
-            Soma Total dos Valores: <strong>${somaTotal}</strong><br>
-            Média das Avaliações: <strong>${media.toFixed(2)}</strong> estrelas.
+            <h2>Resultado Geral:</h2>
+            <p>Total de Avaliações Registradas: <strong>${totalAvaliacoes}</strong></p>
+            <p>Média Geral: <strong>${media.toFixed(2)}</strong> estrelas</p>
+            <hr>
+            ${detalheHtml}
         `;
     }
-
 
     // --- 1. Lógica de SELEÇÃO (Feedback imediato) ---
     estrelas.forEach(estrela => {
@@ -60,28 +79,18 @@
     // --- 2. Lógica de SALVAR (Ao clicar no botão) ---
     submitButton.addEventListener('click', function() {
         if (valorAtual) {
-            // 1. Pega a lista atual
             const avaliacoes = getTodasAvaliacoes();
-            
-            // 2. Adiciona a nova avaliação
             avaliacoes.push(valorAtual);
-            
-            // 3. Salva a lista atualizada
             saveTodasAvaliacoes(avaliacoes);
             
-            // 4. Recalcula e mostra a nova média
-            calcularEMostrarMedia();
+            // Chama a nova função de exibição
+            calcularEMostrarDetalhes(); 
 
-            alert('Avaliação de ' + valorAtual + ' estrela(s) salva e média atualizada!');
-            
-            // Opcional: Desmarca a estrela após salvar, se desejar
-            // document.querySelector('input[name="rate"]:checked').checked = false;
-            // displayDiv.textContent = 'Selecione uma avaliação.';
-
+            alert('Avaliação de ' + valorAtual + ' estrela(s) salva e resultados atualizados!');
         } else {
             alert('Por favor, selecione uma estrela antes de salvar.');
         }
     });
 
-    // 4. Chamamos a função ao carregar a página para mostrar a média atual
-    calcularEMostrarMedia(); 
+    // 3. Chamamos a função ao carregar a página para mostrar os resultados atuais
+    calcularEMostrarDetalhes(); 
