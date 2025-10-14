@@ -192,3 +192,5 @@ INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path
 -- Usuário 2 avaliando o evento "Piquenique Comunitário" (idEvento = 2)
 INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path) VALUES
 (2, 2, 4, 'Ótima iniciativa! Conheci muita gente legal. Só faltou um pouco de sombra no local escolhido.', NULL);
+
+ALTER TABLE Participantes MODIFY COLUMN dataParticipacao DATE NULL DEFAULT NULL;
