@@ -43,7 +43,8 @@ $processar_edicao_url = $url_base . 'teladeusuario/processar_edicao_perfil.php';
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Spark — Editar Perfil</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo $url_base; ?>teladeusuario/teladeusuario.css" />
+    <link rel="stylesheet" href="<?php echo $url_base; ?>style.css" />
+    <link rel="stylesheet" href="<?php echo $url_base; ?>teladeusuario/editar_perfil.css" />
 </head>
 <body>
     <header class="appbar edit-appbar">

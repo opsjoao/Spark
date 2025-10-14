@@ -1,0 +1,127 @@
+
+
+/* Define o fundo da página inteira, como na imagem de referência */
+body {
+    background-color: #f0f0f8; /* Um cinza-azulado bem claro */
+}
+
+/* 1. Cabeçalho (Appbar) */
+.edit-appbar {
+    background-color: #2E8B57; /* Mesmo verde primário do global.css */
+    color: var(--texto-claro);
+    border-bottom: none;
+    justify-content: flex-start; /* Alinha itens à esquerda */
+    gap: 16px;
+}
+
+.edit-appbar .icon-btn {
+    color: var(--texto-claro);
+    font-size: 20px;
+}
+
+.edit-appbar h1 {
+    flex-grow: 1;
+    text-align: center;
+    /* Adiciona margem negativa para compensar o espaço do botão e centralizar perfeitamente */
+    margin-left: -40px; 
+}
+
+/* 2. Conteúdo Principal (O "card" branco) */
+.app-content {
+    background-color: #FFFFFF;
+    /* Cantos superiores arredondados para criar o efeito de card */
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    padding: 24px;
+    margin-top: -10px; /* Puxa o card um pouco para cima, sobrepondo o header */
+    position: relative;
+    z-index: 2;
+}
+
+/* 3. Seção de Edição do Perfil (Avatar) */
+.profile-edit-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.avatar-large {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+    border: 4px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.btn-upload-avatar {
+    background: none;
+    border: none;
+    color: var(--cor-primaria);
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn-upload-avatar i {
+    margin-right: 8px;
+}
+
+/* 4. Campos do Formulário (Estilo Minimalista) */
+.form-field-group {
+    margin-bottom: 24px;
+    position: relative;
+}
+
+.form-field-group label {
+    display: block;
+    color: var(--texto-mutado);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.form-field-group input {
+    width: 100%;
+    border: none;
+    border-bottom: 1px solid var(--cor-divisor);
+    padding: 10px 4px;
+    font-size: 16px;
+    background-color: transparent;
+    transition: border-color 0.3s;
+}
+
+.form-field-group input:focus {
+    outline: none;
+    border-bottom: 2px solid var(--cor-primaria);
+}
+/* Estilo para campo readonly */
+.form-field-group input[readonly] {
+    color: var(--texto-mutado);
+    cursor: not-allowed;
+}
+
+
+/* 5. Botão Principal de Salvar */
+.btn-primary-large {
+    width: 100%;
+    padding: 16px;
+    background-color: #65a30d; /* Verde limão vibrante */
+    color: var(--texto-claro);
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 24px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary-large:hover {
+    background-color: #4d7c0f;
+}
+
+/* Oculta a barra de navegação inferior APENAS nesta tela, como na imagem */
+.bottombar {
+    display: none;
+}
