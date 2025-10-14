@@ -1,4 +1,84 @@
-body {
+/* /css/global.css */
+
+/* 1. Importação da Fonte */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* 2. Paleta de Cores e Variáveis Globais (Baseado na Imagem) */
+:root {
+    --cor-primaria: #1A9929; /* Verde escuro do header (SeaGreen) */
+    --cor-perigo: #EB0000;
+    --cor-detalhes: #5ED925;
+    
+    --texto-claro: #FFFFFF;
+    --texto-escuro: #212529;
+    --texto-mutado: #6c757d;
+
+    --fundo-claro: #F8F9FA;
+    --cor-divisor: #E9ECEF;
+    --cor-icone-padrao: #FFFFFF;
+}
+
+/* 3. Estilos Gerais e Reset */
+* { 
+    box-sizing: border-box; 
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
     font-family: 'Inter', sans-serif;
-    /* ...outros estilos... */
+    color: var(--texto-escuro);
+    background-color: var(--fundo-claro);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 4. Layout Principal */
+body { 
+    display: flex; 
+    flex-direction: column; 
+    min-height: 100vh; 
+}
+.app-content { 
+    flex: 1; 
+    padding: 0 0 88px;
+    max-width: 480px; 
+    width: 100%; 
+    margin: 0 auto; 
+}
+
+/* 5. Barra de Navegação Inferior (Estilo Global) */
+.bottombar {
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+}
+.bottombar .nav-btn {
+  background: transparent; border: none; color: var(--texto-escuro);
+  flex-direction: column; align-items: center; justify-content: center;
+  font-size: 12px; cursor: pointer; padding: 5px; flex: 1; display: flex;
+}
+.bottombar .nav-btn i { font-size: 22px; margin-bottom: 2px; }
+.bottombar .nav-btn.active { 
+    color: var(--cor-primaria); 
+    font-weight: 600;  
+    border-radius: 999px;
+    width: 10px; 
+    height: 36px;
+   background-color: var(--cor-detalhes);
+}
+.bottombar .nav-btn.active::before {
+    content: '';
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: -1;
 }
