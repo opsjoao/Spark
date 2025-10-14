@@ -293,3 +293,17 @@ main {
     text-align: center;
     font-style: italic;
 }
+
+/* --- ESTILOS PARA O DESTAQUE DO COMENTÁRIO --- */
+.review-card.highlight {
+    /* Aplica a animação 'highlight-fade' que definimos abaixo */
+    animation: highlight-fade 2.5s ease-out;
+    border-color: #FFD700; /* Borda amarela temporária */
+}
+
+/* @keyframes define a animação passo a passo */
+@keyframes highlight-fade {
+    /* A animação começa com um fundo amarelo e termina transparente */
+    0% { background-color: #FFFACD; } /* Amarelo bem claro */
+    100% { background-color: var(--fundo-card); } /* Volta para a cor de fundo normal do card */
+}
