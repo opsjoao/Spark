@@ -21,21 +21,30 @@
     <label for="star1" title="text">1 star</label>
   </div>
 
-
-    <div id="valor-selecionado" style="margin-top: 10px;">
-        Selecione uma avaliação.
-    </div>
+  <h3 style="margin-top: 20px; margin-bottom: 10px;">Quais características você avaliou? (Opcional)</h3>
+  <div id="category-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+    <button class="category-button" data-category="Atracoes">Atrações</button>
+    <button class="category-button" data-category="Limpeza">Limpeza</button>
+    <button class="category-button" data-category="Atendimento">Atendimento</button>
+    <button class="category-button" data-category="Filas">Filas</button>
+    <button class="category-button" data-category="Alimentacao">Alimentação</button>
+    <button class="category-button" data-category="Preco">Preço</button>
+  </div>
     
-    <button id="submit" style="margin-top: 20px; padding: 10px; background-color: #5ED925; color: white; border: none; cursor: pointer;">
-        Salvar Avaliação
-    </button>
+  <div id="valor-selecionado" style="margin-top: 10px;">
+    Selecione uma avaliação.
+  </div>
     
-    <hr style="margin-top: 20px;">
+  <button id="submit" style="margin-top: 20px; padding: 10px; background-color: #5ED925; color: white; border: none; cursor: pointer;">
+    Salvar Avaliação
+  </button>
     
-    <h2>Avaliação Salva:</h2>
-    <div id="avaliacao-salva" style="font-weight: bold;">
-        Ainda não há avaliação salva.
-    </div>
+  <hr style="margin-top: 20px;">
+    
+  <h2>Avaliação Salva:</h2>
+  <div id="avaliacao-salva" style="font-weight: bold;">
+    Ainda não há avaliação salva.
+  </div>
 
 <script src="avaliacoes.js"></script>
 </body>
