@@ -373,3 +373,26 @@ main {
 
 }
 
+/* --- CORREÇÃO PARA REMOVER SUBLINHADO DOS LINKS DO FEED --- */
+
+/* Esta regra seleciona qualquer link <a> que tenha a classe .post-link
+  e remove a decoração de texto (sublinhado).
+*/
+a.post-link {
+    text-decoration: none;
+    color: inherit; /* Faz com que o texto herde a cor do elemento pai, em vez de ficar azul */
+    display: block; /* Garante que o link ocupe todo o espaço do card */
+}
+
+/* Efeito opcional, mas recomendado:
+  Um leve "salto" no card ao passar o mouse por cima para indicar que é clicável.
+*/
+a.post-link:hover .post {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Garante que o card tenha uma transição suave */
+.post {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
