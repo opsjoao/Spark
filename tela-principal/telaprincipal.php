@@ -15,26 +15,24 @@ $sql_destaques = "
 ";
 $resultado_destaques = $conexao->query($sql_destaques);
 
-// --- CONSULTA PARA O FEED CORRIGIDA ---
+// --- CONSULTA PARA O FEED (CORRIGIDA PARA PEGAR O ID DA AVALIAÇÃO) ---
 $sql_feed = "
     SELECT 
         e.idEvento, e.nome AS nome_evento, e.imagem_path AS imagem_evento,
         p.nome AS nome_parque,
         criador.nome AS nome_criador, criador.username AS username_criador, criador.avatar_path AS avatar_criador,
-        av.nota AS nota_avaliacao,
-        av.comentario AS comentario_avaliacao,
-        avaliador.nome AS nome_avaliador,
-        av.data_avaliacao -- Adicionado para poder ordenar
+        av.idAvaliacao, av.nota AS nota_avaliacao, av.comentario AS comentario_avaliacao, av.data_avaliacao,
+        avaliador.nome AS nome_avaliador
     FROM Evento AS e
     JOIN Parque AS p ON e.idParque = p.idParque
     JOIN Usuario AS criador ON e.idUsuario = criador.idUsuario
     JOIN (
-        -- CORREÇÃO APLICADA AQUI: Adicionado 'data_avaliacao' à seleção
-        SELECT idEvento, nota, comentario, idUsuario, data_avaliacao, ROW_NUMBER() OVER(PARTITION BY idEvento ORDER BY data_avaliacao DESC) as rn
+        -- Seleciona a avaliação mais recente de cada evento
+        SELECT idAvaliacao, idEvento, nota, comentario, idUsuario, data_avaliacao, ROW_NUMBER() OVER(PARTITION BY idEvento ORDER BY data_avaliacao DESC) as rn
         FROM Avaliacao_evento
     ) AS av ON e.idEvento = av.idEvento AND av.rn = 1
     JOIN Usuario AS avaliador ON av.idUsuario = avaliador.idUsuario
-    ORDER BY av.data_avaliacao DESC -- Agora a ordenação funciona
+    ORDER BY av.data_avaliacao DESC
     LIMIT 10;
 ";
 $resultado_feed = $conexao->query($sql_feed);
@@ -89,44 +87,40 @@ $resultado_feed = $conexao->query($sql_feed);
             while($post = $resultado_feed->fetch_assoc()) {
                 $avatar = !empty($post['avatar_criador']) ? $post['avatar_criador'] : 'assets/images/avatar_padrao.png';
         ?>
-        <section class="post">
-            <div class="post-header">
-                <img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="user" class="avatar">
-                <div class="user-info">
-                    <h3><?php echo htmlspecialchars($post['nome_criador']); ?></h3>
-                    <p>@<?php echo htmlspecialchars($post['username_criador']); ?></p>
-                </div>
-                 <div class="post-menu">
-                    <i class='bx bx-dots-vertical-rounded post-menu-toggle'></i>
-                    <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item denunciar-btn">Denunciar</a>
-                        <a href="#" class="dropdown-item ocultar-btn">Ocultar</a>
+        <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $post['idEvento']; ?>&highlight=<?php echo $post['idAvaliacao']; ?>" class="post-link">
+            <section class="post">
+                <div class="post-header">
+                    <img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="user" class="avatar">
+                    <div class="user-info">
+                        <h3><?php echo htmlspecialchars($post['nome_criador']); ?></h3>
+                        <p>@<?php echo htmlspecialchars($post['username_criador']); ?></p>
                     </div>
+                    <div class="post-menu"></div>
                 </div>
-            </div>
-            
-            <?php if (!empty($post['imagem_evento'])): ?>
-                <img src="/Spark-main/<?php echo htmlspecialchars($post['imagem_evento']); ?>" alt="Imagem do Evento" class="post-img">
-            <?php endif; ?>
-            
-            <div class="post-body">
-                <div class="post-title-line">
-                    <div class="title-and-location">
-                        <h4><?php echo htmlspecialchars($post['nome_evento']); ?></h4>
-                        <p class="local"><?php echo htmlspecialchars($post['nome_parque']); ?></p>
+                
+                <?php if (!empty($post['imagem_evento'])): ?>
+                    <img src="/Spark-main/<?php echo htmlspecialchars($post['imagem_evento']); ?>" alt="Imagem do Evento" class="post-img">
+                <?php endif; ?>
+                
+                <div class="post-body">
+                    <div class="post-title-line">
+                        <div class="title-and-location">
+                            <h4><?php echo htmlspecialchars($post['nome_evento']); ?></h4>
+                            <p class="local"><?php echo htmlspecialchars($post['nome_parque']); ?></p>
+                        </div>
+                        <?php if (!empty($post['nota_avaliacao'])): ?>
+                            <p class="stars">
+                                <?php for ($i = 1; $i <= 5; $i++) { echo ($i <= $post['nota_avaliacao']) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>'; } ?>
+                            </p>
+                        <?php endif; ?>
                     </div>
-                    <?php if (!empty($post['nota_avaliacao'])): ?>
-                        <p class="stars">
-                            <?php for ($i = 1; $i <= 5; $i++) { echo ($i <= $post['nota_avaliacao']) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>'; } ?>
-                        </p>
-                    <?php endif; ?>
+                    <p>
+                        <strong><?php echo htmlspecialchars($post['nome_avaliador']); ?>:</strong>
+                        <?php echo htmlspecialchars($post['comentario_avaliacao']); ?>
+                    </p>
                 </div>
-                <p>
-                    <strong><?php echo htmlspecialchars($post['nome_avaliador']); ?>:</strong>
-                    <?php echo htmlspecialchars($post['comentario_avaliacao']); ?>
-                </p>
-            </div>
-        </section>
+            </section>
+        </a>
         <?php
             } // Fim do while
         } else {
