@@ -88,7 +88,7 @@ body {
   font-size: 12px;
 }
 .bottombar .nav-btn.active {
-  color: #5ED925; /* Cor do texto e do ícone quando ativo */
+  color: #FFFFFF; /* Cor do texto e do ícone quando ativo */
   font-weight: bold;
   position: relative;
 }
@@ -115,3 +115,4 @@ body {
 .sidebar {
   display: none;
 }
+
