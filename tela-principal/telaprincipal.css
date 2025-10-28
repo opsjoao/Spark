@@ -109,7 +109,7 @@ main {
 /* --- ESTILOS DO CARD DE POSTAGEM --- */
 
 .post {
-  background: #DCF8DC;
+  background: #FFFFFF;
   border-radius: 16px;
   margin-bottom: 15px;
   padding: 10px;
@@ -237,72 +237,7 @@ main {
   font-weight: 500;
 }
 
-/* --- ESTILOS DE NAVEGAÇÃO --- */
-.bottombar {
-  background: #ffffff;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 8px 0;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  border-top: 1px solid #ddd;
-  z-index: 1000;
-}
-.bottombar .nav-btn {
-  background: transparent;
-  border: none;
-  color: #333;
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  cursor: pointer;
-  padding: 5px;
-  flex: 1;
-}
-.bottombar .nav-btn i {
-  font-size: 22px;
-  margin-bottom: 2px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-}
-.bottombar .nav-btn span {
-  font-size: 12px;
-}
-.bottombar .nav-btn.active {
-  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
-  font-weight: bold;
-  position: relative;
-}
 
-.bottombar .nav-btn.active span {
-  color: #364b36; /* Cor do texto específica, se desejar */
-}
-
-/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
-.bottombar .nav-btn.active::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80px; /* Largura da "pílula" */
-  height: 40px; /* Altura da "pílula" */
-  background-color: #dcf8dc; /* Cor do fundo verde-claro */
-  border-radius: 999px; /* Arredonda totalmente a borda */
-  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.sidebar {
-  display: none;
-}
-/* --- REGRAS DE RESPONSIVIDADE PARA DESKTOP --- */
 @media (min-width: 768px) {
   .topbar {
     background: #DCF8DC;
