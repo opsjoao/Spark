@@ -17,8 +17,9 @@ body {
 .edit-appbar .icon-btn {
     color: var(--texto-claro);
     font-size: 20px;
+    position: relative; /* Informa ao navegador que este item pode ser empilhado */
+    z-index: 1; /* Coloca ele na frente de outros itens (como o h1) */
 }
-
 .edit-appbar h1 {
     flex-grow: 1;
     text-align: center;
