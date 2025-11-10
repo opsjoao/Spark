@@ -5,68 +5,106 @@ body {
     background-color: #f0f0f8; /* Um cinza-azulado bem claro */
 }
 
-/* 1. Cabeçalho (Appbar) */
+/* 1. Cabeçalho (Appbar) - MODIFICADO */
 .edit-appbar {
-    background-color: #2E8B57; /* Mesmo verde primário do global.css */
+    background-color: #1A9929; /* Mesmo verde primário do global.css */
     color: var(--texto-claro);
+    
+    /* ADICIONE ESTES DOIS VALORES para aumentar a altura */
+    padding-bottom: 250px; /* Aumenta o espaço inferior */
+
     border-bottom: none;
     justify-content: flex-start; /* Alinha itens à esquerda */
     gap: 16px;
+    /* Certifique-se que o display: flex está definido em uma classe pai ou global */
+    display: flex; /* Adicione se não estiver definido */
+    align-items: center; /* Centraliza verticalmente o conteúdo */
+    position: relative; 
+    overflow: visible; /* Garante que o avatar possa 'sair' da área do cabeçalho se necessário */
 }
 
 .edit-appbar .icon-btn {
     color: var(--texto-claro);
     font-size: 20px;
-    position: relative; /* Informa ao navegador que este item pode ser empilhado */
-    z-index: 1; /* Coloca ele na frente de outros itens (como o h1) */
+    position: relative; 
+    z-index: 1; 
 }
 .edit-appbar h1 {
     flex-grow: 1;
     text-align: center;
-    /* Adiciona margem negativa para compensar o espaço do botão e centralizar perfeitamente */
+    /* Mantido o ajuste negativo para centralizar */
     margin-left: -40px; 
 }
-
 /* 2. Conteúdo Principal (O "card" branco) */
 .app-content {
     background-color: #FFFFFF;
-    /* Cantos superiores arredondados para criar o efeito de card */
-    border-top-left-radius: 24px;
-    border-top-right-radius: 24px;
-    padding: 24px;
-    margin-top: -10px; /* Puxa o card um pouco para cima, sobrepondo o header */
     position: relative;
     z-index: 2;
 }
 
-/* 3. Seção de Edição do Perfil (Avatar) */
+/* 3. Seção de Edição do Perfil (Avatar) - MODIFICAR */
 .profile-edit-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 32px;
+    margin-bottom: 32px; /* Esta margem pode ser ajustada ou removida */
+    
+    /* ONDE O TRUQUE ACONTECE */
+    position: absolute; 
+    bottom: -60px; /* Ajuste este valor. -60px puxa 60px para baixo (fora do header) */
+    left: 50%; /* Centraliza horizontalmente */
+    transform: translateX(-50%); /* Ajuste final para centralizar perfeitamente */
+    z-index: 10; /* Garante que a foto fique acima do conteúdo abaixo */
 }
 
+/* 1. Container de Posicionamento */
+.avatar-container {
+    /* ESSENCIAL: Permite que elementos filhos absolutos se posicionem em relação a ele */
+    position: relative; 
+    display: inline-block; /* Garante que o container tenha apenas o tamanho da imagem */
+    margin-bottom: 16px; /* Mantém o espaçamento que estava no .avatar-large */
+}
+
+/* 2. Estilo do Ícone/Botão de Upload (label) */
+.btn-upload-avatar {
+    /* ESSENCIAL: Retira o ícone do fluxo normal e o posiciona */
+    position: absolute; 
+    
+    /* Posição no canto inferior direito */
+    bottom: 0; 
+    right: 0;
+    
+    /* Estilização para o ícone */
+    background-color: var(--cor-primaria, #1A9929); /* Use a cor primária ou um fundo sólido */
+    color: white;
+    border-radius: 50%;
+    width: 36px; /* Tamanho do círculo do botão */
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border: 2px solid white; /* Borda branca para destacar sobre a foto */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    
+    /* Ajuste fino se a borda da foto for grande */
+    transform: translate(5px, 5px); /* Move ligeiramente para fora da borda */
+}
+
+.btn-upload-avatar i {
+    font-size: 16px; /* Tamanho do ícone de câmera */
+    margin: 0; /* Remove margem desnecessária */
+}
+
+/* 3. Ajuste no Avatar */
 .avatar-large {
+    /* Mantém o estilo, mas pode remover o margin-bottom (movido para o .avatar-container) */
     width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 16px;
     border: 4px solid white;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-
-.btn-upload-avatar {
-    background: none;
-    border: none;
-    color: var(--cor-primaria);
-    font-weight: 600;
-    cursor: pointer;
-    font-size: 16px;
-}
-.btn-upload-avatar i {
-    margin-right: 8px;
+    /* Remover margin-bottom: 16px; se movido para o container */
 }
 
 /* 4. Campos do Formulário (Estilo Minimalista) */
@@ -107,7 +145,7 @@ body {
 .btn-primary-large {
     width: 100%;
     padding: 16px;
-    background-color: #65a30d; /* Verde limão vibrante */
+    background-color: #1A9929; /* Verde limão vibrante */
     color: var(--texto-claro);
     border: none;
     border-radius: 12px;
