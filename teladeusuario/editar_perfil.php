@@ -50,17 +50,22 @@ $processar_edicao_url = $url_base . 'teladeusuario/processar_edicao_perfil.php';
     <header class="appbar edit-appbar">
         <button class="icon-btn" onclick="window.history.back()" aria-label="Voltar"><i class="fa-solid fa-arrow-left"></i></button>
         <h1>Editar Perfil</h1>
+
+        <div class="profile-edit-section">
+            <div class="avatar-container"> 
+                <img class="avatar-large" id="avatarPreview" src="<?php echo $url_base . $avatarAtual; ?>" alt="Foto do perfil" />
+                
+                <label for="avatarUpload" class="btn-upload-avatar">
+                    <i class="fa-solid fa-camera"></i>
+                </label>
+            </div>
+            <input type="file" id="avatarUpload" name="avatar" accept="image/*" style="display: none;">
+</div>
     </header>
 
     <main class="app-content">
         <form id="editProfileForm" action="<?php echo $processar_edicao_url; ?>" method="POST" enctype="multipart/form-data">
-            <div class="profile-edit-section">
-                <img class="avatar-large" id="avatarPreview" src="<?php echo $url_base . $avatarAtual; ?>" alt="Foto do perfil" />
-                <label for="avatarUpload" class="btn-upload-avatar">
-                    <i class="fa-solid fa-camera"></i> Alterar Foto
-                </label>
-                <input type="file" id="avatarUpload" name="avatar" accept="image/*" style="display: none;">
-            </div>
+
 
             <div class="form-field-group">
                 <label for="nome">Nome</label>
