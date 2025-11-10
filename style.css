@@ -17,8 +17,10 @@
     --cor-do-form: #D1D5DB;
     --fundo-claro: #F8F9FA;
     --cor-divisor: #E9ECEF;
-    --cor-icone-padrao: #1A9929;
-    --cor-icone-secundario: #FFFFFF;
+    --cor-icone-padrao: #FFFFFF;
+    --cor-icone-secundario: #1A9929;
+    --cor-icone-perigo: #991A1A;
+
 }
 
 /* 3. Estilos Gerais e Reset */
@@ -225,6 +227,7 @@ form {
     background-color: #FEE2E2;
     color: var(--cor-perigo);
 }
+
 
 
 
