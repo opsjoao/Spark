@@ -88,6 +88,28 @@
     background-color: var(--cor-detalhes);
 }
 
+.item-content-perigo .icon-circle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--cor-icone-perigo);
+    background-color: var(--cor-detalhes);
+}
+
+.item-content-secundario .icon-circle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--cor-icone-secundario);
+    background-color: var(--cor-detalhes);
+}
+
 .item-content span {
     font-size: 16px;
     font-weight: 500;
@@ -107,4 +129,5 @@
 
 .angle {
     color: #B4B4B4;
+
 }
