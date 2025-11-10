@@ -77,6 +77,20 @@
     color: #B4B4B4;
 }
 
+.item-content-perigo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #B4B4B4;
+}
+
+.item-content-secundario {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #B4B4B4;
+}
+
 .item-content .icon-circle {
     display: grid;
     place-items: center;
@@ -131,3 +145,4 @@
     color: #B4B4B4;
 
 }
+
