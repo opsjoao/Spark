@@ -6,7 +6,7 @@
 /* 2. Paleta de Cores e Variáveis Globais (Baseado na Imagem) */
 :root {
     --cor-primaria: #1A9929; /* Verde escuro do header (SeaGreen) */
-    --cor-perigo: #EB0000;
+    --cor-perigo: #991A1A;
     --cor-detalhes: #5ED925;
     
     --texto-claro: #FFFFFF;
@@ -224,3 +224,4 @@ form {
     background-color: #FEE2E2;
     color: var(--cor-perigo);
 }
+
