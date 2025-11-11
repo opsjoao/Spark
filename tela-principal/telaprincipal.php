@@ -51,7 +51,7 @@ $result_eventos = $conexao->query($sql_eventos);
 
  $sql_categorias = "SELECT * FROM Categorias LIMIT 8";
  $result_categorias = $conexao->query($sql_categorias);
-
+$url_base = '/Spark-main/';
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -60,6 +60,7 @@ $result_eventos = $conexao->query($sql_eventos);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spark - Início</title>
     <link rel="stylesheet" href="telaprincipal.css">
+    <link rel="stylesheet" href="<?php echo $url_base; ?>style.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -160,26 +161,22 @@ $result_eventos = $conexao->query($sql_eventos);
 </section>
 
     </main> 
-    <nav class="bottom-navbar">
-        <a href="telaprincipal.php" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>Início</span>
-        </a>
-        <a href="mapa.php" class="nav-item">
-            <i class="fas fa-map-marked-alt"></i>
-            <span>Mapa</span>
-        </a>
-        <a href="criar_evento.php" class="nav-item">
-            <i class="fas fa-plus-circle fa-lg"></i>
-        </a>
-        <a href="amigos.php" class="nav-item">
-            <i class="fas fa-users"></i>
-            <span>Amigos</span>
-        </a>
-        <a href="perfil.php" class="nav-item">
-            <i class="fas fa-user"></i>
-            <span>Perfil</span>
-        </a>
+    <nav class="bottombar">
+        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>TelaPerfils/perfil.html'">
+            <i class="fa-solid fa-users"></i>
+        </button>
+        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-atividades/atividades.php'">
+            <i class="fa-solid fa-person-walking"></i>
+        </button>
+        <button class="nav-btn active" onclick="window.location.href='<?php echo $url_base; ?>tela-principal/telaprincipal.php'">
+            <i class="fa-solid fa-house"></i>
+        </button>
+        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>telaFavoritos/index.html'">
+            <i class="fa-solid fa-star"></i>
+        </button>
+        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'">
+            <i class="fa-solid fa-user"></i>
+        </button>
     </nav>
 </body>
 </html>
