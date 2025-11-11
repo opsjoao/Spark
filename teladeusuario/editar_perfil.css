@@ -2,7 +2,7 @@
 
 /* Define o fundo da página inteira, como na imagem de referência */
 body {
-    background-color: #f0f0f8; /* Um cinza-azulado bem claro */
+    background-color: #ffffff; /* Um cinza-azulado bem claro */
 }
 
 /* 1. Cabeçalho (Appbar) - MODIFICADO */
@@ -11,7 +11,7 @@ body {
     color: var(--texto-claro);
     
     /* ADICIONE ESTES DOIS VALORES para aumentar a altura */
-    padding-bottom: 250px; /* Aumenta o espaço inferior */
+    padding-bottom: 150px; /* Aumenta o espaço inferior */
 
     border-bottom: none;
     justify-content: flex-start; /* Alinha itens à esquerda */
@@ -40,6 +40,7 @@ body {
     background-color: #FFFFFF;
     position: relative;
     z-index: 2;
+    margin-top: 100px;
 }
 
 /* 3. Seção de Edição do Perfil (Avatar) - MODIFICAR */
@@ -75,36 +76,34 @@ body {
     right: 0;
     
     /* Estilização para o ícone */
-    background-color: var(--cor-primaria, #1A9929); /* Use a cor primária ou um fundo sólido */
-    color: white;
+    background-color: var(--cor-detalhes); /* Use a cor primária ou um fundo sólido */
     border-radius: 50%;
-    width: 36px; /* Tamanho do círculo do botão */
-    height: 36px;
+    width: 46px; /* Tamanho do círculo do botão */
+    height: 46px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border: 2px solid white; /* Borda branca para destacar sobre a foto */
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     
     /* Ajuste fino se a borda da foto for grande */
-    transform: translate(5px, 5px); /* Move ligeiramente para fora da borda */
+    transform: translate(5px, 30px); /* Move ligeiramente para fora da borda */
 }
 
 .btn-upload-avatar i {
-    font-size: 16px; /* Tamanho do ícone de câmera */
+    font-size: 22px; /* Tamanho do ícone de câmera */
     margin: 0; /* Remove margem desnecessária */
 }
 
 /* 3. Ajuste no Avatar */
 .avatar-large {
     /* Mantém o estilo, mas pode remover o margin-bottom (movido para o .avatar-container) */
-    width: 120px;
-    height: 120px;
+    width: 200px;
+    height: 200px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid white;
     /* Remover margin-bottom: 16px; se movido para o container */
+    transform: translate(0px, 70px); /* Move ligeiramente para fora da borda */
+
 }
 
 /* 4. Campos do Formulário (Estilo Minimalista) */
