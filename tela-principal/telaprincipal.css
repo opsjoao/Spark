@@ -1,333 +1,256 @@
-/* RESET */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
+/* --- Reset Básico e Estilos Globais --- */
 body {
-  background: #ffffff;
-  color: #333;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f2f5; 
 }
 
-main {
-  padding: 10px;
-  padding-bottom: 80px; 
+.container {
+    max-width: 450px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 0 12px; /* Ajustado para o header sticky */
 }
 
-/* HEADER */
-.topbar {
-  background: #DCF8DC;
-  color: #333;
-  border-radius: 999px;
-  position: sticky;
-  top: 8px;
-  left: 8px;
-  right: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 10px 16px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  z-index: 1000;
-}
-
-.topbar h1 {
-  font-size: 18px;
-  font-weight: 500;
-}
-
-.topbar i {
-  font-size: 24px;
-  cursor: pointer;
-}
-
-/* --- DESTAQUE / CARROSSEL --- */
-.destaque {
-  margin: 15px 0;
-}
-
-.destaque h2 {
-  font-size: 16px;
-  font-weight: 700;
-  color: #1c2b20;
-  margin-bottom: 10px;
-}
-
-.carousel-container {
-  display: flex;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  cursor: grab; /* NOVO: Indica que a área é "agarrável" */
-}
-
-.carousel-container.active-drag {
-  cursor: grabbing; /* NOVO: Muda o cursor quando o usuário está arrastando */
-  cursor: -webkit-grabbing;
-}
-
-.carousel-container::-webkit-scrollbar {
-  display: none;
-}
-
-.carousel-item {
-  flex: 0 0 85%;
-  margin-right: 10px;
-  position: relative;
-  scroll-snap-align: start;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.carousel-item:last-child {
-  margin-right: 0;
-}
-
-.carousel-item img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-  display: block;
-}
-
-.carousel-item-text {
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(0,0,0,0.5);
-  color: white;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-
-/* --- ESTILOS DO CARD DE POSTAGEM --- */
-
-.post {
-  background: #FFFFFF;
-  border-radius: 16px;
-  margin-bottom: 15px;
-  padding: 10px;
-}
-
-.post-header {
-  display: flex;
-  align-items: center;
-  padding: 0;
-  margin-bottom: 10px;
-}
-
-.post-header h3 {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1c2b20;
-}
-.post-header p {
-  font-size: 13px;
-  color: #556B55;
-}
-
-.avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-
-.post-img {
-  width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.post-body {
-  padding: 0;
-  margin-top: 10px;
-}
-
-.post-title-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 8px;
-}
-
-.title-and-location {
-  flex-grow: 1;
-}
-
-.post-body h4 {
-  font-size: 15px;
-  font-weight: 700;
-  color: #1c2b20;
-  margin-bottom: 2px;
-}
-
-.post-body .local {
-  font-size: 13px;
-  color: #556B55;
-}
-
-.post-body .stars {
-  color: #FFC700;
-  font-size: 16px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  flex-shrink: 0;
-  padding-left: 10px;
-}
-
-.post-body .stars i {
-  margin-left: 2px;
-}
-
-.post-body > p:last-child {
-  font-size: 13px;
-  color: #445944;
-  line-height: 1.4;
-}
-
-/* --- ESTILOS DO MENU DO POST --- */
-.user-info {
-  flex-grow: 1;
-}
-.post-menu {
-  position: relative;
-  margin-left: auto;
-}
-.post-menu-toggle {
-  font-size: 24px;
-  cursor: pointer;
-  color: #555;
-}
-.dropdown-menu {
-  display: none;
-  position: absolute;
-  right: 0;
-  top: 25px;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  z-index: 100;
-  width: 120px;
-  overflow: hidden;
-}
-.dropdown-menu.show {
-  display: block;
-}
-.dropdown-item {
-  display: block;
-  padding: 10px 15px;
-  color: #333;
-  text-decoration: none;
-  font-size: 14px;
-}
-.dropdown-item:hover {
-  background-color: #f5f5f5;
-}
-.denunciar-btn {
-  color: #E74C3C;
-  font-weight: 500;
-}
-
-
-@media (min-width: 768px) {
-  .topbar {
-    background: #DCF8DC;
-    color: #333;
-    border-radius: 999px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    position: fixed;
-    z-index: 1000;
-    top: 8px;
-    left: 250px;
-    right: 15px;
-    width: auto; 
-  }
-  .topbar .bx-menu {
-    display: none;
-  }
-  
-  /* ATUALIZAÇÃO: Itens do carrossel no desktop */
-  .carousel-item {
-    flex: 0 0 320px; /* Define uma largura fixa para os itens no desktop */
-  }
-
-  .bottombar {
-    display: none;
-  }
-  .sidebar {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    left: 0;
+/* --- 1. Barra de Busca (AGORA STICKY) --- */
+.search-header {
+    /* NOVO: Faz o cabeçalho "grudar" no topo */
+    position: sticky;
     top: 0;
-    width: 240px;
-    height: 100vh;
-    background: #f8fdf8;
-    padding: 20px;
-    border-right: 1px solid #ddd;
-    z-index: 1001; 
-  }
-  .sidebar a {
-    color: #333;
-    text-decoration: none;
+    z-index: 10; /* Garante que fique acima do conteúdo */
+    
+    /* NOVO: Fundo branco para não ficar transparente ao rolar */
+    background-color: #ffffff; 
+    
+    /* Espaçamento para o conteúdo não colar no topo */
+    padding-top: 10px; 
+    padding-bottom: 10px;
+}
+
+.search-bar {
     display: flex;
     align-items: center;
-    padding: 15px 10px;
-    border-radius: 8px;
+    background-color: #f0f2f5; /* Cor cinza claro da imagem */
+    border-radius: 10px; /* Bordas levemente arredondadas */
+    padding: 10px 15px;
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    flex-grow: 1; 
     font-size: 16px;
-    margin-bottom: 5px;
-  }
-  .sidebar a i {
-    font-size: 24px;
-    margin-right: 15px;
-  }
-  .sidebar a.active {
-    background-color: #E6F5E6;
-    color: #7CBD64;
+    margin-right: 10px;
+}
+.search-bar input:focus {
+    outline: none;
+}
+.search-bar .fa-search {
+    color: #555;
+    font-size: 18px;
     font-weight: bold;
-  }
-  .sidebar a:hover {
-    background-color: #eef1ec;
-  }
-  main {
-    max-width: 900px;
-    margin: 0 auto;
-    padding-top: 80px; 
-    padding-left: 260px; 
-    padding-bottom: 20px;
-  }
-
 }
 
-/* --- CORREÇÃO PARA REMOVER SUBLINHADO DOS LINKS DO FEED --- */
+/* --- 2. Seção de Categorias --- */
+.categories-section {
+    padding-top: 10px; /* Espaço do header */
+}
 
-/* Esta regra seleciona qualquer link <a> que tenha a classe .post-link
-  e remove a decoração de texto (sublinhado).
-*/
-a.post-link {
+.categories-section h2 {
+    font-size: 20px;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.category-list {
+    /* IMPORTANTE: Faz a lista rolar horizontalmente */
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 15px;
+    
+    /* Esconde a barra de rolagem */
+    scrollbar-width: none; /* Firefox */
+}
+.category-list::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.category-item {
+    position: relative;
+    min-width: 90px; /* Largura fixa */
+    height: 90px;
+    margin-right: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.category-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 0;
+    /* A cor de fundo vem do PHP/inline style */
+}
+
+/* --- 3. Feed de Eventos --- */
+.events-feed {
+    margin-top: 20px;
+    padding-bottom: 20px; /* Espaço no fim da lista */
+}
+
+.event-card {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+/* Card Destaque (Peteca) - Estilização precisa */
+.event-card.featured {
+    position: relative;
+    height: 350px;
+    color: white;
+    background-size: cover;
+    background-position: center;
+}
+
+/* Sombra (gradiente) para legibilidade do texto */
+.event-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+    z-index: 1; /* Fica abaixo do conteúdo */
+}
+
+.event-card.featured .card-content {
+    position: relative;
+    z-index: 2; /* Fica acima da sombra */
+    padding: 15px;
+    height: 100%;
+    box-sizing: border-box; /* Garante que o padding não quebre a altura */
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Alinha o texto no topo e o host no rodapé */
+}
+
+.event-info h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+.event-info p {
+    margin: 5px 0 0;
+    font-size: 16px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+
+.event-host {
+    display: flex;
+    align-items: center;
+    
+    /* NOVO: Fundo verde translúcido como na imagem */
+    background-color: rgba(102, 204, 51, 0.7); /* Verde (lightgreen) com 70% de opacidade */
+    padding: 5px 10px;
+    border-radius: 20px;
+    width: fit-content; /* Faz o fundo se ajustar ao conteúdo */
+}
+.event-host img {
+    width: 30px; /* Menor, como na imagem */
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 1px solid white;
+}
+.event-host span {
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: none; /* Texto do host não tem sombra na imagem */
+    color: #ffffff; /* Cor do texto do host */
+}
+
+/* Card Banner (Anime) */
+.event-card.banner img {
+    width: 100%;
+    display: block; 
+}
+
+/* --- 4. Barra de Navegação Inferior --- */
+
+/* O "corpo" da página precisa saber que tem espaço sendo ocupado pela navbar */
+body {
+    /* Adiciona um "calço" na parte de baixo da página */
+    padding-bottom: 70px; /* A altura aproximada da sua navbar */
+}
+
+.bottom-navbar {
+    /* A MÁGICA: Posição Fixa */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    
+    /* Estilo e Aparência */
+    background-color: #ffffff;
+    border-top: 1px solid #e0e0e0;
+    box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Sombra leve no topo */
+    
+    /* Layout dos Itens */
+    display: flex;
+    justify-content: space-around; /* Distribui os ícones igualmente */
+    align-items: center;
+    height: 60px; /* Altura fixa */
+
+    /* Para centralizar no Desktop (como seu header):
+      Seu container tem 450px. Vamos centralizar a navbar também.
+    */
+    max-width: 450px;
+    margin: 0 auto; /* Centraliza a barra */
+}
+
+.nav-item {
+    /* Layout interno de cada item (ícone e texto) */
+    display: flex;
+    flex-direction: column; /* Coloca o texto abaixo do ícone */
+    align-items: center;
+    justify-content: center;
+    
+    /* Remove decoração de link */
     text-decoration: none;
-    color: inherit; /* Faz com que o texto herde a cor do elemento pai, em vez de ficar azul */
-    display: block; /* Garante que o link ocupe todo o espaço do card */
+    color: #999; /* Cor dos ícones inativos */
+    
+    /* Tamanho e espaçamento */
+    flex-grow: 1; /* Faz todos os itens ocuparem o mesmo espaço */
+    padding: 5px 0;
 }
 
-/* Efeito opcional, mas recomendado:
-  Um leve "salto" no card ao passar o mouse por cima para indicar que é clicável.
-*/
-a.post-link:hover .post {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+.nav-item span {
+    font-size: 11px;
+    margin-top: 3px;
 }
 
-/* Garante que o card tenha uma transição suave */
-.post {
-    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+/* Item Ativo (a página atual) */
+.nav-item.active {
+    color: #A020F0; /* Use a cor principal do seu app (ex: roxo) */
+}
+
+/* Estilo especial para o botão de "Criar" */
+.nav-item .fa-plus-circle {
+    font-size: 28px; /* Deixa o ícone de "mais" maior */
+    color: #A020F0; /* Cor de destaque */
 }

@@ -1,146 +1,185 @@
 <?php
-// Inclui o guardião de sessão
-require_once('../formulario-cadastro-login/verificacao.php');
+// --- 1. CONEXÃO COM O BANCO DE DADOS ---
+$servidor = "localhost";
+$usuario = "root";
+$senha = "";
+$banco = "Spark"; // Seu banco de dados se chama "Spark"
 
-// Conexão com o Banco de Dados
-$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "Spark";
-$conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
-if ($conexao->connect_error) { die("Falha na conexão: " . $conexao->connect_error); }
+$conexao = new mysqli($servidor, $usuario, $senha, $banco);
 
-// --- CONSULTA PARA ATIVIDADES EM DESTAQUE (Carrossel) ---
-$sql_destaques = "
-    SELECT idEvento, nome, imagem_path FROM Evento
-    WHERE imagem_path IS NOT NULL AND STR_TO_DATE(CONCAT(dia, ' ', horario_inicio), '%Y-%m-%d %H:%i:%s') >= NOW()
-    ORDER BY dia ASC, horario_inicio ASC LIMIT 5;
+if ($conexao->connect_error) {
+    die("Falha na conexão: " . $conexao->connect_error);
+}
+
+// --- 2. CONSULTA SQL PARA OS EVENTOS (A MÁGICA ACONTECE AQUI) ---
+/*
+ * Esta consulta faz o seguinte:
+ * 1. Pega dados do 'Evento' (e).
+ * 2. Pega o nome do 'Parque' (p) usando o idParque.
+ * 3. Pega o nome do 'Usuario' (u_criador) SE o evento foi criado por um usuário.
+ * 4. Pega o nome da 'Instituicao' (i) SE foi criado por uma instituição.
+ * 5. Pega o 'avatar_path' do usuário criador (u_criador) OU do usuário ligado à instituição (u_inst).
+ * 6. Usa COALESCE para mostrar o nome do 'host' (seja usuário ou instituição).
+ * 7. Usa COALESCE para mostrar o avatar (seja do usuário ou da instituição).
+ * 8. Filtra (WHERE) para mostrar apenas eventos de HOJE (CURDATE()) em diante.
+ * 9. Ordena (ORDER BY) para mostrar os eventos mais próximos primeiro.
+ */
+$sql_eventos = "
+    SELECT
+        e.nome AS evento_nome,
+        e.imagem_path AS evento_imagem,
+        p.nome AS parque_nome,
+        COALESCE(u_criador.nome, i.nome) AS host_nome,
+        COALESCE(u_criador.avatar_path, u_inst.avatar_path) AS host_avatar
+    FROM
+        Evento AS e
+    JOIN
+        Parque AS p ON e.idParque = p.idParque
+    LEFT JOIN
+        Usuario AS u_criador ON e.idUsuario = u_criador.idUsuario
+    LEFT JOIN
+        Instituicao AS i ON e.idInstituicao = i.idInstituicao
+    LEFT JOIN
+        Usuario AS u_inst ON i.idUsuario = u_inst.idUsuario
+    WHERE
+        e.dia >= CURDATE()
+    ORDER BY
+        e.dia ASC, e.horario_inicio ASC;
 ";
-$resultado_destaques = $conexao->query($sql_destaques);
 
-// --- CONSULTA PARA O FEED (CORRIGIDA PARA PEGAR O ID DA AVALIAÇÃO) ---
-$sql_feed = "
-    SELECT 
-        e.idEvento, e.nome AS nome_evento, e.imagem_path AS imagem_evento,
-        p.nome AS nome_parque,
-        criador.nome AS nome_criador, criador.username AS username_criador, criador.avatar_path AS avatar_criador,
-        av.idAvaliacao, av.nota AS nota_avaliacao, av.comentario AS comentario_avaliacao, av.data_avaliacao,
-        avaliador.nome AS nome_avaliador
-    FROM Evento AS e
-    JOIN Parque AS p ON e.idParque = p.idParque
-    JOIN Usuario AS criador ON e.idUsuario = criador.idUsuario
-    JOIN (
-        -- Seleciona a avaliação mais recente de cada evento
-        SELECT idAvaliacao, idEvento, nota, comentario, idUsuario, data_avaliacao, ROW_NUMBER() OVER(PARTITION BY idEvento ORDER BY data_avaliacao DESC) as rn
-        FROM Avaliacao_evento
-    ) AS av ON e.idEvento = av.idEvento AND av.rn = 1
-    JOIN Usuario AS avaliador ON av.idUsuario = avaliador.idUsuario
-    ORDER BY av.data_avaliacao DESC
-    LIMIT 10;
-";
-$resultado_feed = $conexao->query($sql_feed);
+$result_eventos = $conexao->query($sql_eventos);
+
+ $sql_categorias = "SELECT * FROM Categorias LIMIT 8";
+ $result_categorias = $conexao->query($sql_categorias);
 
 ?>
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spark</title>
+    <title>Spark - Início</title>
     <link rel="stylesheet" href="telaprincipal.css">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="../style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <header class="topbar">
-        <i class='bx bx-menu'></i>
-        <h1>Procure por um parque</h1>
-        <i class='bx bx-search' onclick="window.location.href='../telas-mapas/index.html'"></i>
-    </header>
 
-    <nav class="sidebar">
-        <a href="/Spark-main/tela-principal/telaprincipal.php" class="active"><i class='bx bx-home'></i><span>Início</span></a>
-        <a href="../tela-atividades/atividades.php"><i class='bx bx-run'></i><span>Atividades</span></a>
-        <a href="../TelaPerfils/perfil.html"><i class='bx bx-user'></i><span>Amigos</span></a>
-        <a href="#"><i class='bx bx-star'></i><span>Favoritos</span></a>
-        <a href="../teladeusuario/teladeusuario.php"><i class='bx bx-cog'></i><span>Conta</span></a>
-    </nav>
+    <main class="container">
+        <header class="search-header">
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar...">
+                <i class="fas fa-search"></i>
+            </div>
+        </header>
 
-    <main>
-        <section class="destaque">
-            <h2>Atividades em Destaque</h2>
-            <div class="carousel-container">
+        <section class="categories-section">
+            <h2>Categorias</h2>
+            <div class="category-list">
                 <?php
-                if ($resultado_destaques && $resultado_destaques->num_rows > 0) {
-                    while($evento = $resultado_destaques->fetch_assoc()) {
-                        echo "<a href='/Spark-main/tela-evento/tela-evento.php?id={$evento['idEvento']}' class='carousel-item'>";
-                        echo "<img src='/Spark-main/{$evento['imagem_path']}' alt='Imagem do evento {$evento['nome']}'>";
-                        echo "<div class='carousel-item-text'>{$evento['nome']}</div>";
-                        echo "</a>";
-                    }
+                
+                if ($result_categorias && $result_categorias->num_rows > 0) {
+                    while($categoria = $result_categorias->fetch_assoc()) {
+                ?>
+                        <div class="category-item">
+                            <img src="<?php echo htmlspecialchars($categoria['imagem_url']); ?>" alt="<?php echo htmlspecialchars($categoria['nome']); ?>">
+                            <span class="category-label" style="background-color: <?php echo htmlspecialchars($categoria['cor_fundo']); ?>;">
+                                <?php echo htmlspecialchars($categoria['nome']); ?>
+                            </span>
+                        </div>
+                <?php
+                    } // Fim do while
                 } else {
-                    echo "<p>Nenhuma atividade em destaque no momento.</p>";
+                    echo "<p>Crie a tabela 'Categorias' para vê-las aqui.</p>";
                 }
+                
                 ?>
             </div>
         </section>
+
+        <section class="events-feed">
+    
+    <?php
+    // --- 4. LOOP DOS EVENTOS ---
+    // Verificamos se a consulta foi bem-sucedida E se retornou mais de 0 linhas
+    if ($result_eventos && $result_eventos->num_rows > 0) {
         
-        <?php
-        if ($resultado_feed && $resultado_feed->num_rows > 0) {
-            while($post = $resultado_feed->fetch_assoc()) {
-                $avatar = !empty($post['avatar_criador']) ? $post['avatar_criador'] : 'assets/images/avatar_padrao.png';
-        ?>
-        <a href="/Spark-main/tela-evento/tela-evento.php?id=<?php echo $post['idEvento']; ?>&highlight=<?php echo $post['idAvaliacao']; ?>" class="post-link">
-            <section class="post">
-                <div class="post-header">
-                    <img src="/Spark-main/<?php echo htmlspecialchars($avatar); ?>" alt="user" class="avatar">
-                    <div class="user-info">
-                        <h3><?php echo htmlspecialchars($post['nome_criador']); ?></h3>
-                        <p>@<?php echo htmlspecialchars($post['username_criador']); ?></p>
-                    </div>
-                    <div class="post-menu"></div>
-                </div>
-                
-                <?php if (!empty($post['imagem_evento'])): ?>
-                    <img src="/Spark-main/<?php echo htmlspecialchars($post['imagem_evento']); ?>" alt="Imagem do Evento" class="post-img">
-                <?php endif; ?>
-                
-                <div class="post-body">
-                    <div class="post-title-line">
-                        <div class="title-and-location">
-                            <h4><?php echo htmlspecialchars($post['nome_evento']); ?></h4>
-                            <p class="local"><?php echo htmlspecialchars($post['nome_parque']); ?></p>
-                        </div>
-                        <?php if (!empty($post['nota_avaliacao'])): ?>
-                            <p class="stars">
-                                <?php for ($i = 1; $i <= 5; $i++) { echo ($i <= $post['nota_avaliacao']) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>'; } ?>
-                            </p>
-                        <?php endif; ?>
-                    </div>
-                    <p>
-                        <strong><?php echo htmlspecialchars($post['nome_avaliador']); ?>:</strong>
-                        <?php echo htmlspecialchars($post['comentario_avaliacao']); ?>
-                    </p>
-                </div>
-            </section>
+        // Defina a URL base DO SEU PROJETO. 
+        // Se o seu site está em http://localhost/Spark-main/, isso está correto.
+        $base_url = "/Spark-main/"; 
+
+        while($evento = $result_eventos->fetch_assoc()) {
+            
+            // --- LÓGICA DA IMAGEM DE FUNDO DO EVENTO ---
+            $imagem_padrao_evento = $base_url . "uploads/eventos/default_event.jpg"; // Crie uma imagem padrão nesta pasta
+            $caminho_relativo_evento = $evento['evento_imagem']; // ex: 'uploads/evento_piquenique.jpg'
+
+            if (!empty($caminho_relativo_evento)) {
+                $imagem_fundo = $base_url . $caminho_relativo_evento;
+            } else {
+                $imagem_fundo = $imagem_padrao_evento;
+            }
+            
+            // --- LÓGICA DO AVATAR DO HOST ---
+            $avatar_padrao_host = $base_url . "uploads/avatars/default_avatar.png"; // Crie um avatar padrão nesta pasta
+            $caminho_relativo_avatar = $evento['host_avatar']; // ex: 'uploads/avatars/murilo.jpg'
+
+            if (!empty($caminho_relativo_avatar)) {
+                $avatar_host = $base_url . $caminho_relativo_avatar;
+            } else {
+                $avatar_host = $avatar_padrao_host;
+            }
+    ?>
+    
+    <div class="event-card featured" style="background-image: url('<?php echo htmlspecialchars($imagem_fundo); ?>');">
+        <div class="card-content">
+            <div class="event-info">
+                <h3><?php echo htmlspecialchars($evento['evento_nome']); ?></h3>
+                <p><?php echo htmlspecialchars($evento['parque_nome']); ?></p>
+            </div>
+            
+            <div class="event-host">
+                <img src="<?php echo htmlspecialchars($avatar_host); ?>" alt="Avatar do Host">
+                <span><?php echo htmlspecialchars($evento['host_nome']); ?></span>
+            </div>
+        </div>
+    </div>
+
+    <?php
+        } // Fim do while
+    } else {
+        // Se o IF falhar (0 linhas), esta mensagem DEVE aparecer.
+        echo "<h3>Nenhum evento futuro encontrado no momento.</h3>";
+    }
+    
+    // --- 5. FECHAR A CONEXÃO ---
+    if (isset($conexao)) { // Boa prática: verificar se a conexão existe antes de fechar
+        $conexao->close();
+    }
+    ?>
+
+</section>
+
+    </main> 
+    <nav class="bottom-navbar">
+        <a href="telaprincipal.php" class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
         </a>
-        <?php
-            } // Fim do while
-        } else {
-            echo "<p style='text-align: center; color: #555; padding: 20px;'>Nenhum evento avaliado para mostrar no feed.</p>";
-        }
-        ?>
-    </main>
-
-    <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='../TelaPerfils/perfil.html'"><i class="fa-solid fa-users"></i><span></span></button>
-        <button class="nav-btn" onclick="window.location.href='../tela-atividades/atividades.php'"><i class="fa-solid fa-person-walking"></i><span></span></button>
-        <button class="nav-btn active" onclick="window.location.href='/Spark-main/tela-principal/telaprincipal.php'"><i class="fa-solid fa-house"></i><span></span></button>
-        <button class="nav-btn" onclick="window.location.href='../telaFavoritos/index.html'"><i class="fa-solid fa-star"></i><span></span></button>
-        <button class="nav-btn" onclick="window.location.href='../teladeusuario/teladeusuario.php'"><i class="fa-solid fa-user"></i><span></span></button>
+        <a href="mapa.php" class="nav-item">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>Mapa</span>
+        </a>
+        <a href="criar_evento.php" class="nav-item">
+            <i class="fas fa-plus-circle fa-lg"></i>
+        </a>
+        <a href="amigos.php" class="nav-item">
+            <i class="fas fa-users"></i>
+            <span>Amigos</span>
+        </a>
+        <a href="perfil.php" class="nav-item">
+            <i class="fas fa-user"></i>
+            <span>Perfil</span>
+        </a>
     </nav>
-
-    <script src="telaprincipal.js"></script>
 </body>
 </html>
-<?php
-$conexao->close();
-?>
