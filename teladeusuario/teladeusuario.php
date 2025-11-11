@@ -108,7 +108,6 @@ $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php
                         <i class="fa-solid fa-arrow-right-from-bracket icon-circle"></i>
                         <span>Sair da Conta</span>
                     </div>
-                    <i class="angle fa-solid fa-angle-left"></i>
                 </div>
             </a>
         </div>
@@ -133,3 +132,4 @@ $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php
     </nav>
 </body>
 </html>
+
