@@ -21,11 +21,10 @@
 }
 
 .user-info .avatar {
-    width: 60px;
-    height: 60px;
+    width: 68px;
+    height: 68px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--texto-claro);
 }
 
 .user-meta span {
@@ -145,4 +144,5 @@
     color: #B4B4B4;
 
 }
+
 
