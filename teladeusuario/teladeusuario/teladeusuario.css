@@ -1,0 +1,147 @@
+/* /teladeusuario/teladeusuario.css */
+
+/* Cabeçalho da Página de Usuário */
+.user-header {
+    background-color: var(--cor-primaria);
+    color: var(--texto-claro);
+    padding: 24px 16px;
+    padding-top: 48px; /* Mais espaço no topo para status bar */
+}
+
+.user-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-info .avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.user-meta span {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.user-meta h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.user-info .edit-link {
+    margin-left: auto;
+    color: white;
+    font-size: 22px;
+}
+
+/* Lista de Configurações */
+.settings-list {
+    background-color: #FFFFFF;
+}
+
+/* Item da Lista */
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    cursor: pointer;
+}
+.settings-list a:last-child .settings-item {
+    border-bottom: none;
+}
+
+.settings-divisor{
+    border-bottom: 2px solid var(--cor-divisor);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.item-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #B4B4B4;
+}
+
+.item-content-perigo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #B4B4B4;
+}
+
+.item-content-secundario {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #B4B4B4;
+}
+
+.item-content .icon-circle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--cor-icone-padrao);
+    background-color: var(--cor-detalhes);
+}
+
+.item-content-perigo .icon-circle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--cor-icone-perigo);
+    background-color: var(--cor-detalhes);
+}
+
+.item-content-secundario .icon-circle {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    color: var(--cor-icone-secundario);
+    background-color: var(--cor-detalhes);
+}
+
+.item-content span {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.settings-item .fa-angle-right {
+    color: #B4B4B4;
+}
+
+/* Variação para item de perigo (Sair) */
+.settings-item.danger .icon-circle {
+    background-color: var(--cor-perigo);
+}
+.settings-item.danger .item-content span {
+    color: var(--cor-perigo);
+}
+
+.angle {
+    color: #B4B4B4;
+
+}
+
