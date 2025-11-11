@@ -11,19 +11,7 @@ if ($conexao->connect_error) {
     die("Falha na conexão: " . $conexao->connect_error);
 }
 
-// --- 2. CONSULTA SQL PARA OS EVENTOS (A MÁGICA ACONTECE AQUI) ---
-/*
- * Esta consulta faz o seguinte:
- * 1. Pega dados do 'Evento' (e).
- * 2. Pega o nome do 'Parque' (p) usando o idParque.
- * 3. Pega o nome do 'Usuario' (u_criador) SE o evento foi criado por um usuário.
- * 4. Pega o nome da 'Instituicao' (i) SE foi criado por uma instituição.
- * 5. Pega o 'avatar_path' do usuário criador (u_criador) OU do usuário ligado à instituição (u_inst).
- * 6. Usa COALESCE para mostrar o nome do 'host' (seja usuário ou instituição).
- * 7. Usa COALESCE para mostrar o avatar (seja do usuário ou da instituição).
- * 8. Filtra (WHERE) para mostrar apenas eventos de HOJE (CURDATE()) em diante.
- * 9. Ordena (ORDER BY) para mostrar os eventos mais próximos primeiro.
- */
+// --- 2. CONSULTA SQL PARA OS EVENTOS ---
 $sql_eventos = "
     SELECT
         e.nome AS evento_nome,
@@ -49,8 +37,11 @@ $sql_eventos = "
 
 $result_eventos = $conexao->query($sql_eventos);
 
- $sql_categorias = "SELECT * FROM Categorias LIMIT 8";
- $result_categorias = $conexao->query($sql_categorias);
+// --- 3. CONSULTA SQL PARA CATEGORIAS ---
+$sql_categorias = "SELECT * FROM Categorias LIMIT 8";
+$result_categorias = $conexao->query($sql_categorias);
+
+// --- 4. URL BASE ---
 $url_base = '/Spark-main/';
 ?>
 <!DOCTYPE html>
@@ -59,13 +50,26 @@ $url_base = '/Spark-main/';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spark - Início</title>
+    
+    <!-- MUDANÇA AQUI: Carrega o global.css (que você me passou) -->
+    <link rel="stylesheet" href="<?php echo $url_base; ?>style.css">
+    
+    <!-- Carrega o CSS específico da tela (que vai corrigir o global) -->
     <link rel="stylesheet" href="telaprincipal.css">
-    <link rel="stylesheet" href="<?php echo $url_base; ?>style.css" />
+    
+    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-    <main class="container">
+    <!-- 
+      MUDANÇA PRINCIPAL AQUI:
+      A classe agora é "app-content home" para funcionar com seu global.css
+      e permitir correções (com a classe .home)
+    -->
+    <main class="app-content home">
+    
+        <!-- 1. BARRA DE BUSCA (Sticky) -->
         <header class="search-header">
             <div class="search-bar">
                 <input type="text" placeholder="Buscar...">
@@ -73,16 +77,18 @@ $url_base = '/Spark-main/';
             </div>
         </header>
 
+        <!-- 2. SEÇÃO DE CATEGORIAS -->
         <section class="categories-section">
             <h2>Categorias</h2>
             <div class="category-list">
                 <?php
-                
                 if ($result_categorias && $result_categorias->num_rows > 0) {
                     while($categoria = $result_categorias->fetch_assoc()) {
+                        // Define uma imagem padrão se não houver
+                        $img_path = !empty($categoria['imagem_url']) ? $url_base . $categoria['imagem_url'] : $url_base . 'uploads/categorias/default.png';
                 ?>
                         <div class="category-item">
-                            <img src="<?php echo htmlspecialchars($categoria['imagem_url']); ?>" alt="<?php echo htmlspecialchars($categoria['nome']); ?>">
+                            <img src="<?php echo htmlspecialchars($img_path); ?>" alt="<?php echo htmlspecialchars($categoria['nome']); ?>">
                             <span class="category-label" style="background-color: <?php echo htmlspecialchars($categoria['cor_fundo']); ?>;">
                                 <?php echo htmlspecialchars($categoria['nome']); ?>
                             </span>
@@ -90,93 +96,97 @@ $url_base = '/Spark-main/';
                 <?php
                     } // Fim do while
                 } else {
-                    echo "<p>Crie a tabela 'Categorias' para vê-las aqui.</p>";
+                    echo "<p style='padding-left: 12px;'>Nenhuma categoria encontrada.</p>";
                 }
-                
                 ?>
             </div>
         </section>
 
+        <!-- 3. FEED DE EVENTOS -->
         <section class="events-feed">
     
-    <?php
-    // --- 4. LOOP DOS EVENTOS ---
-    // Verificamos se a consulta foi bem-sucedida E se retornou mais de 0 linhas
-    if ($result_eventos && $result_eventos->num_rows > 0) {
-        
-        // Defina a URL base DO SEU PROJETO. 
-        // Se o seu site está em http://localhost/Spark-main/, isso está correto.
-        $base_url = "/Spark-main/"; 
+            <?php
+            // --- 4. LOOP DOS EVENTOS ---
+            if ($result_eventos && $result_eventos->num_rows > 0) {
+                while($evento = $result_eventos->fetch_assoc()) {
+                    
+                    // --- LÓGICA DA IMAGEM DE FUNDO DO EVENTO ---
+                    $imagem_padrao_evento = $url_base . "uploads/eventos/default_event.jpg";
+                    $caminho_relativo_evento = $evento['evento_imagem'];
 
-        while($evento = $result_eventos->fetch_assoc()) {
+                    if (!empty($caminho_relativo_evento)) {
+                        $imagem_fundo = $url_base . $caminho_relativo_evento;
+                    } else {
+                        $imagem_fundo = $imagem_padrao_evento;
+                    }
+                    
+                    // --- LÓGICA DO AVATAR DO HOST ---
+                    $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.png";
+                    $caminho_relativo_avatar = $evento['host_avatar'];
+
+                    if (!empty($caminho_relativo_avatar)) {
+                        $avatar_host = $url_base . $caminho_relativo_avatar;
+                    } else {
+                        $avatar_host = $avatar_padrao_host;
+                    }
+            ?>
             
-            // --- LÓGICA DA IMAGEM DE FUNDO DO EVENTO ---
-            $imagem_padrao_evento = $base_url . "uploads/eventos/default_event.jpg"; // Crie uma imagem padrão nesta pasta
-            $caminho_relativo_evento = $evento['evento_imagem']; // ex: 'uploads/evento_piquenique.jpg'
+            <div class="event-card featured" style="background-image: url('<?php echo htmlspecialchars($imagem_fundo); ?>');">
+                <div class="card-content">
+                    <div class="event-info">
+                        <h3><?php echo htmlspecialchars($evento['evento_nome']); ?></h3>
+                        <p><?php echo htmlspecialchars($evento['parque_nome']); ?></p>
+                    </div>
+                    
+                    <div class="event-host">
+                        <img src="<?php echo htmlspecialchars($avatar_host); ?>" alt="Avatar do Host">
+                        <span><?php echo htmlspecialchars($evento['host_nome']); ?></span>
+                    </div>
+                </div>
+            </div>
 
-            if (!empty($caminho_relativo_evento)) {
-                $imagem_fundo = $base_url . $caminho_relativo_evento;
+            <?php
+                } // Fim do while
             } else {
-                $imagem_fundo = $imagem_padrao_evento;
+                echo "<h3>Nenhum evento futuro encontrado no momento.</h3>";
             }
             
-            // --- LÓGICA DO AVATAR DO HOST ---
-            $avatar_padrao_host = $base_url . "uploads/avatars/default_avatar.png"; // Crie um avatar padrão nesta pasta
-            $caminho_relativo_avatar = $evento['host_avatar']; // ex: 'uploads/avatars/murilo.jpg'
-
-            if (!empty($caminho_relativo_avatar)) {
-                $avatar_host = $base_url . $caminho_relativo_avatar;
-            } else {
-                $avatar_host = $avatar_padrao_host;
+            // --- 5. FECHAR A CONEXÃO ---
+            if (isset($conexao)) {
+                $conexao->close();
             }
-    ?>
+            ?>
+
+        </section>
+
+    </main> <!-- FIM DO .app-content -->
     
-    <div class="event-card featured" style="background-image: url('<?php echo htmlspecialchars($imagem_fundo); ?>');">
-        <div class="card-content">
-            <div class="event-info">
-                <h3><?php echo htmlspecialchars($evento['evento_nome']); ?></h3>
-                <p><?php echo htmlspecialchars($evento['parque_nome']); ?></p>
-            </div>
-            
-            <div class="event-host">
-                <img src="<?php echo htmlspecialchars($avatar_host); ?>" alt="Avatar do Host">
-                <span><?php echo htmlspecialchars($evento['host_nome']); ?></span>
-            </div>
-        </div>
-    </div>
-
-    <?php
-        } // Fim do while
-    } else {
-        // Se o IF falhar (0 linhas), esta mensagem DEVE aparecer.
-        echo "<h3>Nenhum evento futuro encontrado no momento.</h3>";
-    }
-    
-    // --- 5. FECHAR A CONEXÃO ---
-    if (isset($conexao)) { // Boa prática: verificar se a conexão existe antes de fechar
-        $conexao->close();
-    }
-    ?>
-
-</section>
-
-    </main> 
+    <!-- 
+      A BOTTOMBAR FICA FORA DO <main>
+      MUDANÇA AQUI: Trocado <button> por <a> (links) para a classe .active funcionar
+    -->
     <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>TelaPerfils/perfil.html'">
+        <a href="<?php echo $url_base; ?>TelaPerfils/perfil.html" class="nav-btn">
             <i class="fa-solid fa-users"></i>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-atividades/atividades.php'">
+            <span></span>
+        </a>
+        <a href="<?php echo $url_base; ?>tela-atividades/atividades.php" class="nav-btn">
             <i class="fa-solid fa-person-walking"></i>
-        </button>
-        <button class="nav-btn active" onclick="window.location.href='<?php echo $url_base; ?>tela-principal/telaprincipal.php'">
+            <span></span>
+        </a>
+        <a href="<?php echo $url_base; ?>tela-principal/telaprincipal.php" class="nav-btn active">
             <i class="fa-solid fa-house"></i>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>telaFavoritos/index.html'">
+            <span></span>
+        </a>
+        <a href="<?php echo $url_base; ?>telaFavoritos/index.html" class="nav-btn">
             <i class="fa-solid fa-star"></i>
-        </button>
-        <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'">
+            <span></span>
+        </a>
+        <a href="<?php echo $url_base; ?>teladeusuario/teladeusuario.php" class="nav-btn">
             <i class="fa-solid fa-user"></i>
-        </button>
+            <span></span>
+        </a>
     </nav>
+
 </body>
 </html>

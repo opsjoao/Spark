@@ -1,40 +1,44 @@
-/* --- Reset Básico e Estilos Globais --- */
-body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    margin: 0;
-    background-color: #f0f2f5; 
+/*
+ * ARQUIVO: telaprincipal.css
+ * Este CSS corrige e sobrescreve o global.css APENAS para a tela principal.
+ */
+
+/* 1. CORREÇÃO DO LAYOUT PRINCIPAL */
+/* * O global.css aplica 'padding: 24px' em '.app-content'.
+ * Isso "corta" as categorias.
+ * Aqui, usamos a classe '.home' para remover esse padding
+ * e adicionar o "calço" (padding-bottom) correto para a bottombar.
+ */
+.app-content.home {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    
+    /* * ESTA É A CORREÇÃO PRINCIPAL!
+     * O global.css tem uma regra que zera o padding-bottom.
+     * Esta regra força o "calço" de 88px de volta,
+     * impedindo que o último card fique atrás da navbar.
+     */
+    padding-bottom: 55px !important; 
 }
 
-.container {
-    max-width: 450px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    padding: 0 12px; /* Ajustado para o header sticky */
-}
 
-/* --- 1. Barra de Busca (AGORA STICKY) --- */
+/* 2. BARRA DE BUSCA (STICKY) */
 .search-header {
-    /* NOVO: Faz o cabeçalho "grudar" no topo */
     position: sticky;
     top: 0;
-    z-index: 10; /* Garante que fique acima do conteúdo */
-    
-    /* NOVO: Fundo branco para não ficar transparente ao rolar */
+    z-index: 10;
     background-color: #ffffff; 
-    
-    /* Espaçamento para o conteúdo não colar no topo */
-    padding-top: 10px; 
-    padding-bottom: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
 }
-
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: #f0f2f5; /* Cor cinza claro da imagem */
-    border-radius: 10px; /* Bordas levemente arredondadas */
+    background-color: #f0f2f5;
+    border-radius: 10px;
     padding: 10px 15px;
 }
-
 .search-bar input {
     border: none;
     background: transparent;
@@ -42,55 +46,45 @@ body {
     font-size: 16px;
     margin-right: 10px;
 }
-.search-bar input:focus {
-    outline: none;
-}
+.search-bar input:focus { outline: none; }
 .search-bar .fa-search {
     color: #555;
     font-size: 18px;
     font-weight: bold;
 }
 
-/* --- 2. Seção de Categorias --- */
-.categories-section {
-    padding-top: 10px; /* Espaço do header */
-}
 
+/* 3. SEÇÃO DE CATEGORIAS */
+.categories-section {
+    padding-left: 12px; 
+}
 .categories-section h2 {
     font-size: 20px;
-    margin-top: 0;
     margin-bottom: 10px;
+    padding-right: 12px; /* Padding para o título "Categorias" */
 }
-
 .category-list {
-    /* IMPORTANTE: Faz a lista rolar horizontalmente */
     display: flex;
-    overflow-x: auto;
-    padding-bottom: 15px;
-    
-    /* Esconde a barra de rolagem */
+    overflow-x: auto; /* Permite rolar horizontalmente */
+    padding-bottom: 8px;
     scrollbar-width: none; /* Firefox */
 }
-.category-list::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
-}
+.category-list::-webkit-scrollbar { display: none; } /* Chrome, Safari */
 
 .category-item {
     position: relative;
-    min-width: 90px; /* Largura fixa */
+    min-width: 90px; 
     height: 90px;
     margin-right: 10px;
     border-radius: 8px;
     overflow: hidden;
     cursor: pointer;
 }
-
 .category-item img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 .category-label {
     position: absolute;
     bottom: 0;
@@ -101,15 +95,17 @@ body {
     font-size: 13px;
     font-weight: bold;
     padding: 4px 0;
-    /* A cor de fundo vem do PHP/inline style */
 }
 
-/* --- 3. Feed de Eventos --- */
+
+/* 4. FEED DE EVENTOS */
 .events-feed {
     margin-top: 20px;
-    padding-bottom: 20px; /* Espaço no fim da lista */
+    padding-left: 12px;
+    padding-right: 12px; 
 }
 
+/* (O restante dos estilos do card permanecem os mesmos) */
 .event-card {
     border-radius: 10px;
     overflow: hidden;
@@ -117,8 +113,6 @@ body {
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     cursor: pointer;
 }
-
-/* Card Destaque (Peteca) - Estilização precisa */
 .event-card.featured {
     position: relative;
     height: 350px;
@@ -126,28 +120,23 @@ body {
     background-size: cover;
     background-position: center;
 }
-
-/* Sombra (gradiente) para legibilidade do texto */
 .event-card.featured::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
-    z-index: 1; /* Fica abaixo do conteúdo */
+    z-index: 1; 
 }
-
 .event-card.featured .card-content {
     position: relative;
-    z-index: 2; /* Fica acima da sombra */
+    z-index: 2;
     padding: 15px;
     height: 100%;
-    box-sizing: border-box; /* Garante que o padding não quebre a altura */
-    
+    box-sizing: border-box; 
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Alinha o texto no topo e o host no rodapé */
+    justify-content: space-between; 
 }
-
 .event-info h3 {
     margin: 0;
     font-size: 24px;
@@ -159,19 +148,16 @@ body {
     font-size: 16px;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
 }
-
 .event-host {
     display: flex;
     align-items: center;
-    
-    /* NOVO: Fundo verde translúcido como na imagem */
-    background-color: rgba(102, 204, 51, 0.7); /* Verde (lightgreen) com 70% de opacidade */
+    background-color: #3CA849;
     padding: 5px 10px;
     border-radius: 20px;
-    width: fit-content; /* Faz o fundo se ajustar ao conteúdo */
+    width: fit-content;
 }
 .event-host img {
-    width: 30px; /* Menor, como na imagem */
+    width: 30px;
     height: 30px;
     border-radius: 50%;
     margin-right: 8px;
@@ -180,77 +166,5 @@ body {
 .event-host span {
     font-weight: bold;
     font-size: 14px;
-    text-shadow: none; /* Texto do host não tem sombra na imagem */
-    color: #ffffff; /* Cor do texto do host */
-}
-
-/* Card Banner (Anime) */
-.event-card.banner img {
-    width: 100%;
-    display: block; 
-}
-
-/* --- 4. Barra de Navegação Inferior --- */
-
-/* O "corpo" da página precisa saber que tem espaço sendo ocupado pela navbar */
-body {
-    /* Adiciona um "calço" na parte de baixo da página */
-    padding-bottom: 70px; /* A altura aproximada da sua navbar */
-}
-
-.bottom-navbar {
-    /* A MÁGICA: Posição Fixa */
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    
-    /* Estilo e Aparência */
-    background-color: #ffffff;
-    border-top: 1px solid #e0e0e0;
-    box-shadow: 0 -2px 5px rgba(0,0,0,0.05); /* Sombra leve no topo */
-    
-    /* Layout dos Itens */
-    display: flex;
-    justify-content: space-around; /* Distribui os ícones igualmente */
-    align-items: center;
-    height: 60px; /* Altura fixa */
-
-    /* Para centralizar no Desktop (como seu header):
-      Seu container tem 450px. Vamos centralizar a navbar também.
-    */
-    max-width: 450px;
-    margin: 0 auto; /* Centraliza a barra */
-}
-
-.nav-item {
-    /* Layout interno de cada item (ícone e texto) */
-    display: flex;
-    flex-direction: column; /* Coloca o texto abaixo do ícone */
-    align-items: center;
-    justify-content: center;
-    
-    /* Remove decoração de link */
-    text-decoration: none;
-    color: #999; /* Cor dos ícones inativos */
-    
-    /* Tamanho e espaçamento */
-    flex-grow: 1; /* Faz todos os itens ocuparem o mesmo espaço */
-    padding: 5px 0;
-}
-
-.nav-item span {
-    font-size: 11px;
-    margin-top: 3px;
-}
-
-/* Item Ativo (a página atual) */
-.nav-item.active {
-    color: #A020F0; /* Use a cor principal do seu app (ex: roxo) */
-}
-
-/* Estilo especial para o botão de "Criar" */
-.nav-item .fa-plus-circle {
-    font-size: 28px; /* Deixa o ícone de "mais" maior */
-    color: #A020F0; /* Cor de destaque */
+    color: #ffffff; 
 }
