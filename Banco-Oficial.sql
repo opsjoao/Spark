@@ -194,3 +194,20 @@ INSERT INTO Avaliacao_evento (idEvento, idUsuario, nota, comentario, imagem_path
 (2, 2, 4, 'Ótima iniciativa! Conheci muita gente legal. Só faltou um pouco de sombra no local escolhido.', NULL);
 
 ALTER TABLE Participantes MODIFY COLUMN dataParticipacao DATE NULL DEFAULT NULL;
+
+CREATE TABLE Categorias (
+    idCategoria INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL UNIQUE,
+    imagem_url VARCHAR(255) NOT NULL,
+    cor_fundo VARCHAR(7) NOT NULL -- Para a cor da faixa (ex: '#A020F0')
+);
+
+ALTER TABLE Evento
+ADD COLUMN idCategoria INT NULL,
+ADD FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria);
+
+INSERT INTO Categorias (nome, imagem_url, cor_fundo) VALUES
+('Esportes', 'uploads/categorias/esportes.jpg', '#FF00FF'),
+('Lazer', 'uploads/categorias/lazer.jpg', '#FFA500'),
+('Saúde', 'uploads/categorias/saude.jpg', '#008000'),
+('Cultura', 'uploads/categorias/cultura.jpg', '#A020F0');
