@@ -89,12 +89,12 @@ $resultado_historico = $stmt_historico->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
-    <header class="topbar">
-        <i class='bx bx-menu'></i>
-        <h1>Atividades</h1>
-        <i class='bx bx-search'></i>
-    </header>
-
+<header class="topbar">
+    <i class='bx bx-search' style="visibility: hidden;"></i>
+    
+    <h1>Atividades</h1>
+    <i class='bx bx-search'></i>
+</header>
     <nav class="sidebar">
         <a href="/Spark-main/tela-principal/telaprincipal.php"><i class='bx bx-home'></i><span>Início</span></a>
         <a href="/Spark-main/tela-atividades/atividades.php" class="active"><i class='bx bx-run'></i><span>Atividades</span></a>
