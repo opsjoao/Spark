@@ -3,7 +3,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    /* FONTE ALTERADA PARA INTER */
+    font-family: 'Inter', sans-serif;
 }
 
 body {
@@ -14,13 +15,14 @@ body {
 main {
     padding: 10px;
     padding-top: 70px; /* Espaço para o header fixo */
-    padding-bottom: 160px; /* Espaço para a barra de navegação e FAB */
+    /* AUMENTADO: Espaço para garantir que o FAB não seja coberto pela bottombar */
+    padding-bottom: 140px; 
 }
 
 /* HEADER */
 .topbar {
-    background: #DCF8DC;
-    color: #333;
+    background: #F6F6F6;
+    color: #7e7e7e;
     border-radius: 999px;
     position: fixed;
     top: 8px;
@@ -84,8 +86,13 @@ main {
     transform: scaleX(1); /* Torna a linha visível */
 }
 
+/* Adiciona position: relative para o FAB poder se ancorar */
 .tab-content {
     display: none; /* Esconde todas as abas por padrão */
+    position: relative; 
+    /* Adiciona um espaço extra na parte inferior para garantir que o FAB não corte */
+    padding-bottom: 70px; 
+    min-height: 50vh; 
 }
 
 .tab-content.active {
@@ -137,32 +144,34 @@ a.post-link:hover .post {
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* BOTÃO FLUTUANTE (FAB) */
+/* BOTÃO FLUTUANTE (FAB) — CORRIGIDO */
 .fab {
-    position: fixed;
+    position: absolute;
     z-index: 1000;
-    bottom: 85px;
-    right: 20px;
+
+    /* Mantém o botão no canto inferior direito */
+    bottom: -200px;
+    right: 10px;
+
     width: 56px;
     height: 56px;
-    background: linear-gradient(45deg, #7CBD64, #8BC34A);
+    background-color: #5ED925;
     border-radius: 50%;
-    color: white;
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15), 0 0 6px rgba(0, 0, 0, 0.05);
+    color: rgb(255, 255, 255);
+
     text-decoration: none;
     transition: all 0.2s ease-in-out;
+
+    /* Centraliza o ícone + perfeitamente */
     display: flex;
-    align-items: center;
-    justify-content: center;
     font-size: 26px;
+        justify-content: center; 
+    align-items: center;
+
 }
-.fab .fa-calendar-plus {
-    position: relative;
-    left: 1px;
-}
-.fab:hover {
-    transform: scale(1.08) translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+
+.fab i {
+    line-height: 0; /* Remove espaço extra ao redor do ícone */
 }
 
 /* --- ESTILOS DE NAVEGAÇÃO --- */
@@ -203,27 +212,27 @@ a.post-link:hover .post {
   font-size: 12px;
 }
 .bottombar .nav-btn.active {
-  color: #7CBD64; /* Cor do texto e do ícone quando ativo */
+  color: #ffffff;
   font-weight: bold;
   position: relative;
 }
 
 .bottombar .nav-btn.active span {
-  color: #364b36; /* Cor do texto específica, se desejar */
+  color: #364b36;
 }
 
-/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
+/* Efeito de pílula */
 .bottombar .nav-btn.active::before {
   content: '';
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80px; /* Largura da "pílula" */
-  height: 40px; /* Altura da "pílula" */
-  background-color: #dcf8dc; /* Cor do fundo verde-claro */
-  border-radius: 999px; /* Arredonda totalmente a borda */
-  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  width: 80px;
+  height: 40px;
+  background-color:#5ED925;
+  border-radius: 999px;
+  z-index: -1;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -252,15 +261,14 @@ a.post-link:hover .post {
     .bottombar {
         display: none;
     }
-    .fab {
-        bottom: 30px;
-        right: 30px;
-    }
+
+
     .sidebar {
         display: flex;
         flex-direction: column;
         position: fixed;
         left: 0;
+        
         top: 0;
         width: 240px;
         height: 100vh;
