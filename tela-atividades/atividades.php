@@ -84,6 +84,7 @@ $resultado_historico = $stmt_historico->get_result();
     
     <link rel="stylesheet" href="atividades.css">
     
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
@@ -129,7 +130,7 @@ $resultado_historico = $stmt_historico->get_result();
         }
         ?>
 
-        <div id="proximos" class="tab-content active">
+<div id="proximos" class="tab-content active">
             <?php
             if ($resultado_proximos && $resultado_proximos->num_rows > 0) {
                 while($evento = $resultado_proximos->fetch_assoc()) {
@@ -151,6 +152,9 @@ $resultado_historico = $stmt_historico->get_result();
                 echo "<p class='empty-message'>Você ainda não se inscreveu em nenhum evento futuro.</p>";
             }
             ?>
+            <a href="/Spark-main/formulario cadastro eventos/criar_evento.html" class="fab">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" ><path fill="rgb(255,255,255)" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+            </a>
         </div>
 
         <div id="historico" class="tab-content">
@@ -166,10 +170,6 @@ $resultado_historico = $stmt_historico->get_result();
         </div>
     </main>
     
-    <a href="/Spark-main/formulario cadastro eventos/criar_evento.html" class="fab">
-        <i class="fa-solid fa-calendar-plus"></i>
-    </a>
-
     <nav class="bottombar">
     <button class="nav-btn" onclick="window.location.href='../TelaPerfils/perfil.html'">
       <i class="fa-solid fa-users"></i>
