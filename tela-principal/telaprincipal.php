@@ -42,7 +42,7 @@ $sql_eventos = "
         Usuario AS u_inst ON i.idUsuario = u_inst.idUsuario
     WHERE
         TIMESTAMP(e.dia, e.horario_termino) >= NOW()
-"; // --- MUDANÇA: Ponto e vírgula removido para adicionar o filtro
+"; 
 
 // --- MUDANÇA (CORREÇÃO DO BUG + MULTI-FILTRO) ---
 // Se houver filtros ativos, adiciona a cláusula IN (...)
@@ -68,24 +68,14 @@ $result_categorias = $conexao->query($sql_categorias);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spark - Início</title>
     
-    <!-- 
-      MUDANÇA: Corrigido o caminho do seu CSS global
-      para 'style.css' (baseado no seu pedido).
-    -->
     <link rel="stylesheet" href="<?php echo $url_base; ?>style.css">
     
-    <!-- Carrega o CSS específico da tela -->
     <link rel="stylesheet" href="telaprincipal.css">
     
-    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
-    <!-- 
-      Seu HTML aqui está correto, usando as classes
-      "app-content home" do seu global.css 
-    -->
     <main class="app-content home">
     
         <!-- 1. BARRA DE BUSCA (Sticky) -->
@@ -109,35 +99,33 @@ $result_categorias = $conexao->query($sql_categorias);
                     while($categoria = $result_categorias->fetch_assoc()) {
                         
                         $current_cat_id = $categoria['idCategoria'];
-                        $img_path = !empty($categoria['imagem_url']) ? $url_base . $categoria['imagem_url'] : $url_base . 'uploads/categorias/default.png';
+                        // --- CORREÇÃO file_exists PARA CATEGORIAS ---
+                        $img_path_default = $url_base . 'uploads/categorias/default.png';
+                        $img_path_relativo = $categoria['imagem_url'];
+                        if (!empty($img_path_relativo) && file_exists($_SERVER['DOCUMENT_ROOT'] . $url_base . $img_path_relativo)) {
+                            $img_path = $url_base . $img_path_relativo;
+                        } else {
+                            $img_path = $img_path_default;
+                        }
                         
-                        // --- LÓGICA DO FILTRO ATIVO (MUDANÇA) ---
-                        // Verifica se o ID atual está no array de filtros ativos
                         $is_active = in_array($current_cat_id, $filtros_ativos);
                         $classe_ativa = $is_active ? 'active' : '';
 
-                        // --- LÓGICA DE MONTAGEM DA URL (MUDANÇA) ---
-                        $temp_filtros = $filtros_ativos; // Cria uma cópia
+                        $temp_filtros = $filtros_ativos; 
 
                         if ($is_active) {
-                            // Se JÁ ESTÁ ATIVO, remove este ID da lista
-                            // (array_search encontra a "chave" do ID no array)
                             unset($temp_filtros[array_search($current_cat_id, $temp_filtros)]);
                         } else {
-                            // Se NÃO ESTÁ ATIVO, adiciona este ID à lista
                             $temp_filtros[] = $current_cat_id;
                         }
 
-                        // Monta a URL
                         if (empty($temp_filtros)) {
-                            $link_url = "telaprincipal.php"; // Sem filtros, limpa a URL
+                            $link_url = "telaprincipal.php"; 
                         } else {
-                            // Monta a query string: ?categoria[]=1&categoria[]=3
                             $query_string = http_build_query(['categoria' => $temp_filtros]);
                             $link_url = "telaprincipal.php?" . $query_string;
                         }
                 ?>
-                        <!-- O href agora usa a $link_url dinâmica -->
                         <a href="<?php echo $link_url; ?>" class="category-item-link <?php echo $classe_ativa; ?>">
                             <div class="category-item">
                                 <img src="<?php echo htmlspecialchars($img_path); ?>" alt="<?php echo htmlspecialchars($categoria['nome']); ?>">
@@ -161,28 +149,39 @@ $result_categorias = $conexao->query($sql_categorias);
             if ($result_eventos && $result_eventos->num_rows > 0) {
                 while($evento = $result_eventos->fetch_assoc()) {
                     
-                    // --- LÓGICA DA IMAGEM DE FUNDO DO EVENTO ---
+                    // --- MUDANÇA AQUI: LÓGICA DA IMAGEM DE FUNDO DO EVENTO ---
+                    
+                    // 1. Define a URL padrão
                     $imagem_padrao_evento = $url_base . "uploads/eventos/default_event.jpg";
+                    // 2. Pega o caminho do banco
                     $caminho_relativo_evento = $evento['evento_imagem'];
 
-                    if (!empty($caminho_relativo_evento)) {
+                    // 3. Verifica se o caminho do banco NÃO está vazio E se o arquivo EXISTE
+                    if (!empty($caminho_relativo_evento) && file_exists($_SERVER['DOCUMENT_ROOT'] . $url_base . $caminho_relativo_evento)) {
+                        // Se sim, usa a imagem real
                         $imagem_fundo = $url_base . $caminho_relativo_evento;
                     } else {
+                        // Se não (vazio OU arquivo não existe), usa a imagem padrão
                         $imagem_fundo = $imagem_padrao_evento;
                     }
                     
-                    // --- LÓGICA DO AVATAR DO HOST ---
+                    // --- MUDANÇA AQUI: LÓGICA DO AVATAR DO HOST ---
+                    
+                    // 1. Define o avatar padrão
                     $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.png";
+                    // 2. Pega o caminho do banco
                     $caminho_relativo_avatar = $evento['host_avatar'];
 
-                    if (!empty($caminho_relativo_avatar)) {
+                    // 3. Verifica se o caminho do banco NÃO está vazio E se o arquivo EXISTE
+                    if (!empty($caminho_relativo_avatar) && file_exists($_SERVER['DOCUMENT_ROOT'] . $url_base . $caminho_relativo_avatar)) {
+                        // Se sim, usa o avatar real
                         $avatar_host = $url_base . $caminho_relativo_avatar;
                     } else {
+                        // Se não (vazio OU arquivo não existe), usa o avatar padrão
                         $avatar_host = $avatar_padrao_host;
                     }
             ?>
             
-            <!-- Link para o evento (usei o caminho que você forneceu) -->
             <a href="<?php echo $url_base; ?>tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="event-card-link">
                 <div class="event-card featured" style="background-image: url('<?php echo htmlspecialchars($imagem_fundo); ?>');">
                     <div class="card-content">
@@ -202,7 +201,6 @@ $result_categorias = $conexao->query($sql_categorias);
             <?php
                 } // Fim do while
             } else {
-                // MUDANÇA: Mensagem personalizada
                 if (!empty($filtros_ativos)) {
                      echo "<h3 style='padding: 0 12px;'>Nenhum evento encontrado para esta combinação de filtros.</h3>";
                 } else {
@@ -210,7 +208,6 @@ $result_categorias = $conexao->query($sql_categorias);
                 }
             }
             
-            // --- 5. FECHAR A CONEXÃO ---
             if (isset($conexao)) {
                 $conexao->close();
             }
@@ -220,10 +217,6 @@ $result_categorias = $conexao->query($sql_categorias);
 
     </main> <!-- FIM DO .app-content -->
     
-    <!-- 
-      MUDANÇA: Removidos os <span> de dentro dos links
-      da navbar, conforme seu pedido.
-    -->
     <nav class="bottombar">
         <a href="<?php echo $url_base; ?>TelaPerfils/perfil.html" class="nav-btn">
             <i class="fa-solid fa-users"></i>
@@ -241,6 +234,44 @@ $result_categorias = $conexao->query($sql_categorias);
             <i class="fa-solid fa-user"></i>
         </a>
     </nav>
+
+    <!-- 
+      MUDANÇA AQUI:
+      O script antigo foi substituído por este,
+      que usa sessionStorage para salvar e restaurar a posição.
+    -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Encontra o carrossel
+            const carousel = document.querySelector('.category-list');
+            if (!carousel) return; // Sai se o carrossel não existir
+
+            // --- ETAPA 1: AO CARREGAR A PÁGINA ---
+            // Verifica se há uma posição de scroll salva na sessão
+            const savedScrollPos = sessionStorage.getItem('carouselScrollPos');
+            
+            if (savedScrollPos) {
+                // Se sim, aplica a posição de scroll salva
+                carousel.scrollLeft = parseInt(savedScrollPos);
+                // Limpa o item da sessão para que ele não afete
+                // a próxima navegação (ex: clicar em "Home" na navbar)
+                sessionStorage.removeItem('carouselScrollPos');
+            }
+
+            // --- ETAPA 2: AO CLICAR EM UM FILTRO ---
+            // Pega todos os links de filtro dentro do carrossel
+            const filterLinks = carousel.querySelectorAll('.category-item-link');
+
+            // Adiciona um listener de clique a cada link
+            filterLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Antes de a página recarregar, salva a posição
+                    // ATUAL do scroll na sessão
+                    sessionStorage.setItem('carouselScrollPos', carousel.scrollLeft);
+                });
+            });
+        });
+    </script>
 
 </body>
 </html>
