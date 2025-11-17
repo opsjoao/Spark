@@ -19,6 +19,11 @@ html, body {
 body {
   position: relative; /* O pai para o mapa absoluto */
   padding-bottom: 60px; /* Espaço para o rodapé */
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, p, button, input {
+    font-family: 'Inter', sans-serif;
 }
 
 /* O mapa deve preencher todo o corpo do documento, sob os elementos fixos */
@@ -79,59 +84,70 @@ body {
 }
 
 
-/* ... O RESTANTE DO SEU CSS PODE SER MANTIDO ABAIXO ... */
-
+/* --- ESTILOS DE NAVEGAÇÃO --- */
+.bottombar {
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
 .bottombar .nav-btn {
- background: transparent;
- border: none;
- color: #333;
- text-decoration: none;
- display: flex;
- flex-direction: column;
- align-items: center;
- justify-content: center;
- font-size: 12px;
- cursor: pointer;
- padding: 5px;
- flex: 1;
+  background: transparent;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  flex: 1;
 }
 .bottombar .nav-btn i {
- font-size: 22px;
- margin-bottom: 2px;
- height: 24px;
- display: flex;
- align-items: center;
+  font-size: 22px;
+  margin-bottom: 2px;
+  height: 24px;
+  display: flex;
+  align-items: center;
 }
 .bottombar .nav-btn span {
- font-size: 12px;
+  font-size: 12px;
 }
 .bottombar .nav-btn.active {
- color: #7CBD64; /* Cor do texto e do ícone quando ativo */
- font-weight: bold;
- position: relative;
+  color: #ffffff; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
+  position: relative;
 }
 
 .bottombar .nav-btn.active span {
- color: #364b36; /* Cor do texto específica, se desejar */
+  color: #364b36; /* Cor do texto específica, se desejar */
 }
 
 /* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
 .bottombar .nav-btn.active::before {
- content: '';
- position: absolute;
- top: 50%;
- left: 50%;
- transform: translate(-50%, -50%);
- width: 80px; /* Largura da "pílula" */
- height: 40px; /* Altura da "pílula" */
- background-color: #dcf8dc; /* Cor do fundo verde-claro */
- border-radius: 999px; /* Arredonda totalmente a borda */
- z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
- box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #5ED925; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar {
- display: none;
+  display: none;
 }
 
 
@@ -249,8 +265,9 @@ body {
 .details-header {
  display: flex;
  align-items: center;
+ text-align: center;
  padding: 10px;
- background-color: #4CAF50; 
+ background-color: #1A9929; 
  color: white;
  position: sticky; 
  top: 0;
@@ -260,7 +277,7 @@ body {
 }
 
 .details-header .back-arrow {
- font-size: 24px;
+ font-size: 20px;
  margin-right: 15px;
  cursor: pointer;
 }
@@ -271,6 +288,15 @@ body {
  margin: 0;
  font-size: 18px;
  font-weight: 500;
+}
+
+.back-arrow {
+    /* Para que a seta de volta não seja centralizada com o texto, */
+    /* ela precisa de posicionamento absoluto: */
+    position: absolute;
+    left: 15px; /* Ajuste a distância da esquerda conforme necessário */
+    top: 15px; /* Ajuste a distância do topo conforme necessário */
+    z-index: 10; /* Garante que ela fique acima de outros elementos */
 }
 
 
@@ -297,7 +323,7 @@ body {
 }
 
 .park-info-line i {
- color: #4CAF50; /* Cor dos ícones, usando o verde principal */
+ color:#1A9929; /* Cor dos ícones, usando o verde principal */
  margin-right: 10px;
  width: 20px;
  text-align: center;
@@ -313,7 +339,7 @@ body {
 
 /* Estilo do botão "Criar avaliação" */
 .create-review-button {
- background-color: #4CAF50;
+ background-color:#1A9929;
  color: white;
  padding: 12px 20px;
  border: none;
