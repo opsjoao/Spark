@@ -342,9 +342,6 @@ function showDetailsPane(placeId, title) {
                         <i class="fa-solid fa-phone"></i> <span>Telefone: ${place.formatted_phone_number || "Não disponível"}</span>
                     </div>
 
-                    <h3 class="section-title">Sobre o parque</h3>
-                    <p class="text-sm text-gray-700">${parkDescription}</p>
-                    
                     <button class="create-review-button">Criar avaliação</button>
 
                     <h3 class="section-title">Participantes (${simulatedParticipants.length})</h3>
