@@ -14,6 +14,7 @@ if ($conexao->connect_error) {
 // --- 2. CONSULTA SQL PARA OS EVENTOS ---
 $sql_eventos = "
     SELECT
+        e.idEvento,
         e.nome AS evento_nome,
         e.imagem_path AS evento_imagem,
         p.nome AS parque_nome,
@@ -30,7 +31,7 @@ $sql_eventos = "
     LEFT JOIN
         Usuario AS u_inst ON i.idUsuario = u_inst.idUsuario
     WHERE
-        e.dia >= CURDATE()
+        TIMESTAMP(e.dia, e.horario_termino) >= NOW()
     ORDER BY
         e.dia ASC, e.horario_inicio ASC;
 ";
@@ -131,19 +132,21 @@ $url_base = '/Spark-main/';
                     }
             ?>
             
-            <div class="event-card featured" style="background-image: url('<?php echo htmlspecialchars($imagem_fundo); ?>');">
-                <div class="card-content">
-                    <div class="event-info">
-                        <h3><?php echo htmlspecialchars($evento['evento_nome']); ?></h3>
-                        <p><?php echo htmlspecialchars($evento['parque_nome']); ?></p>
-                    </div>
-                    
-                    <div class="event-host">
-                        <img src="<?php echo htmlspecialchars($avatar_host); ?>" alt="Avatar do Host">
-                        <span><?php echo htmlspecialchars($evento['host_nome']); ?></span>
+            <a href="<?php echo $url_base; ?>tela-evento/tela-evento.php?id=<?php echo $evento['idEvento']; ?>" class="event-card-link">
+                <div class="event-card featured" style="background-image: url('<?php echo htmlspecialchars($imagem_fundo); ?>');">
+                    <div class="card-content">
+                        <div class="event-info">
+                            <h3><?php echo htmlspecialchars($evento['evento_nome']); ?></h3>
+                            <p><?php echo htmlspecialchars($evento['parque_nome']); ?></p>
+                        </div>
+                        
+                        <div class="event-host">
+                            <img src="<?php echo htmlspecialchars($avatar_host); ?>" alt="Avatar do Host">
+                            <span><?php echo htmlspecialchars($evento['host_nome']); ?></span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </a>
 
             <?php
                 } // Fim do while
