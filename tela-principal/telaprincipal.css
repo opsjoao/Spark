@@ -168,3 +168,40 @@
     font-size: 14px;
     color: #ffffff; 
 }
+/* Transforma o card de categoria em um link (bloco) */
+a.category-item-link,
+a.category-item-link:hover {
+    text-decoration: none;
+    color: inherit;
+    /* Adiciona uma transição suave */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Efeito de "clique" leve */
+a.category-item-link:active {
+    transform: scale(0.95);
+}
+
+/*
+ * ESTILO DA CATEGORIA ATIVA (DESTAQUE)
+ * Adiciona uma sombra interna verde (do seu app)
+ * e aumenta levemente o card.
+ */
+a.category-item-link.active .category-item {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px var(--cor-primaria, #1A9929), 0 5px 10px rgba(0,0,0,0.1);
+    /* (var(--cor-primaria) é do seu global.css) */
+}
+
+/*
+ * Efeito "Fantasma" (Fade)
+ * Faz todos os cards que NÃO estão ativos
+ * ficarem levemente apagados.
+ */
+.categories-section:has(.category-item-link.active) a.category-item-link:not(.active) {
+    opacity: 0.6;
+}
+/* Readiciona a opacidade total ao passar o mouse */
+.categories-section:has(.category-item-link.active) a.category-item-link:not(.active):hover {
+    opacity: 1;
+}
