@@ -2,6 +2,53 @@
 // FUNÇÕES GLOBAIS (acessíveis pelo HTML via onclick)
 // ==========================================================
 
+// Função para abrir/fechar o menu de opções da avaliação
+function toggleReviewMenu(button) {
+    // 1. Fecha todos os outros menus abertos primeiro
+    const allDropdowns = document.querySelectorAll('.review-dropdown');
+    const thisDropdown = button.nextElementSibling;
+
+    allDropdowns.forEach(dropdown => {
+        if (dropdown !== thisDropdown) {
+            dropdown.classList.remove('show');
+        }
+    });
+
+    // 2. Alterna o menu atual
+    thisDropdown.classList.toggle('show');
+
+    // 3. Impede que o clique feche o menu imediatamente
+    event.stopPropagation();
+}
+
+// Fecha o menu se clicar fora dele
+window.onclick = function(event) {
+    if (!event.target.matches('.menu-dots-btn') && !event.target.matches('.menu-dots-btn i')) {
+        const dropdowns = document.querySelectorAll('.review-dropdown');
+        dropdowns.forEach(openDropdown => {
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        });
+    }
+}
+
+// Funções placeholders para as ações (você implementará a lógica depois)
+function excluirAvaliacao(id) {
+    if(confirm('Tem certeza que deseja excluir sua avaliação?')) {
+        // Redirecionar para script de exclusão ou chamada AJAX
+        window.location.href = 'excluir_avaliacao.php?id=' + id;
+    }
+}
+
+function denunciaAvaliacao(id) {
+    alert('Denúncia enviada para análise.');
+}
+
+function editarAvaliacao(id) {
+    alert('Funcionalidade de editar será implementada em breve.');
+}
+
 // Função para abrir o pop-up (modal) de avaliação
 function openEvaluationModal() {
     const modal = document.getElementById('evaluation-modal');
