@@ -12,6 +12,7 @@ $idUsuarioLogado = $_SESSION['id_usuario'];
 $servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "spark";
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conexao->connect_error) { die("Falha na conexão: " . $conexao->connect_error); }
+$url_base = '/Spark-main/';
 
 // Busca os detalhes do Evento
 $stmt_evento = $conexao->prepare("SELECT e.*, p.nome AS nome_parque FROM Evento AS e JOIN Parque AS p ON e.idParque = p.idParque WHERE e.idEvento = ?");
@@ -21,6 +22,9 @@ $resultado_evento = $stmt_evento->get_result();
 if ($resultado_evento->num_rows === 0) { die("Erro: Evento não encontrado."); }
 $evento = $resultado_evento->fetch_assoc();
 $idParqueDoEvento = $evento['idParque'];
+
+// --- NOVO: Verifica se o usuário logado é o dono do evento ---
+$souDono = ($evento['idUsuario'] == $idUsuarioLogado);
 
 // Busca os Participantes do evento
 $stmt_participantes = $conexao->prepare("
@@ -42,19 +46,21 @@ $stmt_avaliacoes->bind_param("i", $idEvento);
 $stmt_avaliacoes->execute();
 $resultado_avaliacoes = $stmt_avaliacoes->get_result();
 
-// Lógica para o botão dinâmico
+// Lógica para o botão dinâmico (Verifica status na tabela Participantes)
 $stmt_participacao = $conexao->prepare("SELECT status FROM Participantes WHERE idUsuario = ? AND idEvento = ?");
 $stmt_participacao->bind_param("ii", $idUsuarioLogado, $idEvento);
 $stmt_participacao->execute();
 $participacao = $stmt_participacao->get_result()->fetch_assoc();
 $status_participacao = $participacao['status'] ?? null;
 
+// Lógica de Tempo
 $data_inicio_ts = strtotime($evento['dia'] . ' ' . $evento['horario_inicio']);
 $data_termino_ts = strtotime($evento['dia'] . ' ' . $evento['horario_termino']);
 $agora_ts = time();
 $evento_esta_acontecendo = ($agora_ts >= $data_inicio_ts && $agora_ts < $data_termino_ts);
 $evento_ja_terminou = $agora_ts >= $data_termino_ts;
 
+// Verifica se já avaliou
 $stmt_check_avaliacao = $conexao->prepare("SELECT idAvaliacao FROM Avaliacao_evento WHERE idUsuario = ? AND idEvento = ?");
 $stmt_check_avaliacao->bind_param("ii", $idUsuarioLogado, $idEvento);
 $stmt_check_avaliacao->execute();
@@ -69,6 +75,7 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalhes: <?php echo htmlspecialchars($evento['nome']); ?></title>
     <link rel="stylesheet" href="tela-evento.css">
+    <link rel="stylesheet" href="<?php echo $url_base; ?>style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
@@ -79,9 +86,14 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
 
     <main>
         <div class="event-container">
-            <?php if (!empty($evento['imagem_path'])): ?>
-                <img src="/Spark-main/<?php echo htmlspecialchars($evento['imagem_path']); ?>" alt="Imagem do Evento" class="event-image-header">
-            <?php endif; ?>
+            <?php 
+                $img_path = !empty($evento['imagem_path']) ? '/Spark-main/'.htmlspecialchars($evento['imagem_path']) : '/Spark-main/uploads/eventos/default_event.jpg';
+            ?>
+            <img src="<?php echo $img_path; ?>" 
+                 alt="Imagem do Evento" 
+                 class="event-image-header"
+                 onerror="this.onerror=null;this.src='/Spark-main/uploads/eventos/default_event.jpg';">
+
             <div class="event-info">
                 <h1 class="event-title"><?php echo htmlspecialchars($evento['nome']); ?></h1>
                 <p class="event-park"><?php echo htmlspecialchars($evento['nome_parque']); ?></p>
@@ -95,18 +107,51 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
                 <?php endif; ?>
 
                 <div class="button-container">
-                    <?php if ($status_participacao === 'participou' || $ja_avaliou): ?>
+                    <?php 
+                    // --- LÓGICA CORRIGIDA DOS BOTÕES ---
+                    
+                    // 1. Se já participou ou avaliou:
+                    if ($status_participacao === 'participou' || $ja_avaliou): ?>
                         <button class="cta-button disabled" disabled>Evento Finalizado e Avaliado</button>
-                    <?php elseif ($status_participacao === 'ativo'): ?>
+                    
+                    <?php 
+                    // 2. Se o evento está ATIVO (sendo executado):
+                    elseif ($status_participacao === 'ativo'): ?>
                         <button class="cta-button participate" onclick="openEvaluationModal()">Finalizar Evento</button>
-                    <?php elseif ($status_participacao === 'inscrito' && $evento_ja_terminou): ?>
+                    
+                    <?php 
+                    // 3. Se o evento JÁ TERMINOU e o usuário estava inscrito:
+                    elseif ($status_participacao === 'inscrito' && $evento_ja_terminou): ?>
                         <button class="cta-button participate" onclick="openEvaluationModal()">Participei! Avaliar agora</button>
-                    <?php elseif ($status_participacao === 'inscrito' && $evento_esta_acontecendo): ?>
+                    
+                    <?php 
+                    // 4. Se o evento ESTÁ ACONTECENDO AGORA (Status inscrito OU É O DONO):
+                    // Adicionei "OR $souDono" aqui para permitir que o dono inicie mesmo sem estar na tabela
+                    elseif (($status_participacao === 'inscrito' || $souDono) && $evento_esta_acontecendo): ?>
                         <button id="btnIniciarEvento" class="cta-button participate" onclick="iniciarEvento(<?php echo $idEvento; ?>)">Iniciar Evento</button>
-                    <?php elseif ($status_participacao === 'inscrito'): ?>
+                    
+                    <?php 
+                    // 5. Se está inscrito mas ainda não começou (aguardando):
+                    elseif ($status_participacao === 'inscrito'): ?>
                         <button id="btnIniciarEvento" class="cta-button" data-starttime-ms="<?php echo htmlspecialchars($data_inicio_ts * 1000); ?>" disabled>Carregando...</button>
-                    <?php else: ?>
-                        <form action="confirmar_presenca.php" method="POST" style="margin:0;"><input type="hidden" name="idEvento" value="<?php echo $evento['idEvento']; ?>"><button type="submit" class="cta-button">Confirmar Presença</button></form>
+                    
+                    <?php 
+                    // 6. (ALTERADO) Se é o DONO: Mostra o contador usando a lógica que JÁ EXISTE no seu JS
+                    elseif ($souDono): ?>
+                         <button id="btnIniciarEvento" 
+                                 class="cta-button" 
+                                 data-starttime-ms="<?php echo htmlspecialchars($data_inicio_ts * 1000); ?>" 
+                                 >
+                             Calculando tempo...
+                         </button>
+                    
+                    <?php 
+                    // 7. Caso padrão: Visitante que ainda não se inscreveu
+                    else: ?>
+                        <form action="confirmar_presenca.php" method="POST" style="margin:0;">
+                            <input type="hidden" name="idEvento" value="<?php echo $evento['idEvento']; ?>">
+                            <button type="submit" class="cta-button">Confirmar Presença</button>
+                        </form>
                     <?php endif; ?>
                 </div>
             </div>
