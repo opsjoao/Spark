@@ -1,309 +1,268 @@
-/* RESET E CONFIGURAÇÕES GERAIS */
-:root {
-    --cor-principal: #6FBE74;
-    --fundo-pagina: #F8F9FA;
-    --fundo-card: #FFFFFF;
-    --fundo-card-claro: #F0FAF0;
-    --texto-escuro: #1A3A1A;
-    --texto-suave: #556B55;
-    --linha-divisoria: #e0e0e0;
-}
-* { 
-    margin: 0; 
-    padding: 0; 
-    box-sizing: border-box; 
-    font-family: Arial, sans-serif; 
-}
-body { 
-    background-color: var(--fundo-pagina); 
-    color: var(--texto-escuro); 
+/* =========================================
+   RESET E GERAL
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif; /* Confirme se esta fonte está linkada */
 }
 
-/* CABEÇALHO (TOPBAR) */
+body {
+    background-color: #ffffff;
+    color: #333;
+    padding-bottom: 80px; /* Espaço para a bottombar */
+}
+
+/* =========================================
+   HEADER (TOPBAR) - AGORA COM FUNDO VERDE SÓLIDO COMO NA IMAGEM 2
+   ========================================= */
 .topbar {
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    padding: 12px 16px; 
-    background-color: var(--fundo-card-claro);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    position: fixed; 
-    top: 0; 
-    width: 100%; 
-    z-index: 100;
-}
-.topbar h1 { 
-    font-size: 16px; 
-    font-weight: 600; 
-}
-.topbar .back-button { 
-    position: absolute; 
-    left: 16px; 
-    font-size: 20px; 
-    color: var(--texto-escuro); 
-    text-decoration: none; 
-}
-
-/* CONTEÚDO PRINCIPAL */
-main { 
-    padding: 80px 0 100px; /* Espaço para header e navbar */ 
-}
-
-/* IMAGEM DE CABEÇALHO DO EVENTO */
-.event-image-header { 
-    width: 100%; 
-    height: 220px; 
-    object-fit: cover; 
-    display: block; 
-}
-
-/* CARD PRINCIPAL DE INFORMAÇÕES */
-.event-container { 
-    background-color: var(--fundo-card); 
-    padding: 20px 16px; 
-    margin: -30px 12px 24px; 
-    border-radius: 16px; 
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    position: relative; 
-    z-index: 10; 
-}
-.event-title { 
-    font-size: 28px; 
-    font-weight: bold; 
-    margin-bottom: 4px; 
-}
-.event-park { 
-    font-size: 16px; 
-    color: var(--texto-suave); 
-    margin-bottom: 20px; 
-}
-.event-details { 
-    list-style: none; 
-    margin: 20px 0; 
-    padding-top: 20px; 
-    border-top: 1px solid var(--linha-divisoria); 
-}
-.event-details li { 
-    display: flex; 
-    align-items: center; 
-    margin-bottom: 15px; 
-    font-size: 15px; 
-    color: var(--texto-suave); 
-}
-.event-details i { 
-    font-size: 20px; 
-    color: var(--cor-principal); 
-    width: 35px; 
-    text-align: center; 
-    margin-right: 10px; 
-}
-.event-details span { 
-    color: var(--texto-escuro); 
-}
-.event-description { 
-    margin: 20px 0; 
-    padding-top: 20px; 
-    border-top: 1px solid var(--linha-divisoria); 
-}
-.event-description h2 { 
-    font-size: 18px; 
-    color: var(--texto-escuro); 
-    margin-bottom: 8px; 
-}
-.event-description p { 
-    font-size: 15px; 
-    color: var(--texto-suave); 
-    line-height: 1.6; 
-}
-.cta-button { 
-    width: 100%; padding: 14px; 
-    background-color: var(--cor-principal); 
-    color: white; 
-    border: none; 
-    border-radius: 12px; 
-    font-size: 16px; 
-    font-weight: bold; 
-    cursor: pointer; 
-    margin-top: 16px; 
-    transition: background-color 0.2s; 
-}
-.cta-button:hover { 
-    background-color: #5aa05f; 
-}
-
-/* SEÇÃO DE AVALIAÇÕES */
-.reviews-section { 
-    padding: 0 16px; 
-}
-.reviews-section h2 { 
-    font-size: 20px; 
-    font-weight: bold; 
-    margin-bottom: 16px; 
-}
-.review-card { 
-    display: flex; 
-    gap: 12px; 
-    padding: 12px; 
-    background-color: var(--fundo-card); 
-    border: 1px solid #eee; 
-    border-radius: 12px; 
-    margin-bottom: 12px; 
-}
-.review-card .avatar { 
-    width: 40px; 
-    height: 40px; 
-    border-radius: 50%; 
-    object-fit: cover; 
-}
-.review-header { 
-    display: flex; 
-    align-items: baseline; 
-    gap: 8px; 
-}
-.review-header h3 { 
-    font-size: 15px; 
-    margin: 0; 
-}
-.review-header span { 
-    font-size: 13px; 
-    color: var(--texto-suave); 
-}
-.review-card .stars { 
-    color: #FFC700; 
-    margin: 4px 0 8px; 
-    font-size: 14px; 
-}
-.review-card p { 
-    font-size: 14px; 
-    color: var(--texto-suave); 
-    line-height: 1.5; 
-}
-.no-reviews { 
-    color: var(--texto-suave); 
-    text-align: center; 
-    padding: 20px; 
-}
-
-/* --- BOTÕES DINÂMICOS E MODAL --- */
-.feedback { padding: 12px; border-radius: 8px; margin: 16px 0 0; text-align: center; font-weight: bold; }
-.feedback.success { background-color: #D4EDDA; color: #155724; }
-.feedback.info { background-color: #D1ECF1; color: #0C5460; }
-.feedback.error { background-color: #F8D7DA; color: #721C24; }
-.cta-button.disabled { background-color: #b0bec5; cursor: not-allowed; color: #78909c; }
-.cta-button.participate { background-color: #4285F4; }
-.cta-button.participate:hover { background-color: #3367D6; }
-
-.modal-overlay {
-    display: none; position: fixed; top: 0; left: 0; 
-    width: 100%; height: 100%; 
-    background-color: rgba(0,0,0,0.6); 
-    justify-content: center; align-items: center; z-index: 2000;
-}
-.modal-content {
-    background: white; padding: 25px; border-radius: 16px; 
-    width: 90%; max-width: 400px; position: relative;
-    animation: modal-appear 0.3s ease-out;
-}
-.close-modal { 
-    position: absolute; top: 10px; right: 15px; 
-    background: none; border: none; font-size: 28px; 
-    cursor: pointer; color: #aaa; 
-}
-.modal-content h2 { margin-bottom: 8px; color: var(--texto-escuro); }
-.modal-content p { font-size: 14px; color: var(--texto-suave); margin-bottom: 20px; }
-.modal-content form { display: flex; flex-direction: column; gap: 15px; }
-.modal-content textarea { width: 100%; min-height: 80px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; font-size: 14px; }
-.file-upload-label { font-size: 14px; font-weight: bold; cursor: pointer; color: var(--cor-principal); text-align: center; padding: 8px; border: 1px dashed var(--cor-principal); border-radius: 8px; }
-.file-upload-label:hover { background-color: #f0faf0; }
-
-.star-rating {
-    display: flex; flex-direction: row-reverse; 
-    justify-content: center; padding: 5px 0;
-}
-.star-rating input[type="radio"] { display: none; }
-.star-rating label { font-size: 36px; color: #ddd; cursor: pointer; transition: color 0.2s; }
-.star-rating label::before { content: '★'; }
-.star-rating label:hover,
-.star-rating label:hover ~ label { color: #FFC700; }
-.star-rating input[type="radio"]:checked ~ label { color: #FFC700; }
-
-#image-preview-container { margin-top: 10px; text-align: center; }
-.image-preview { max-width: 100%; max-height: 200px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 10px; object-fit: cover; }
-.remove-image-btn { background-color: #F8D7DA; color: #721C24; border: none; padding: 8px 12px; border-radius: 5px; font-size: 12px; font-weight: bold; cursor: pointer; display: block; width: 100%; transition: background-color 0.2s; }
-.remove-image-btn:hover { background-color: #f1c1c5; }
-@keyframes modal-appear { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-/* BARRA DE NAVEGAÇÃO INFERIOR */
-.bottombar { 
-    background: #E6F5E6; display: flex; justify-content: space-around;
-    align-items: center; padding: 8px 0; position: fixed;
-    bottom: 0; left: 0; width: 100%; 
-    border-top: 1px solid #ddd; z-index: 1000;
-}
-.bottombar .nav-btn {
-    background: transparent; border: none; color: #333; text-decoration: none;
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; font-size: 12px; cursor: pointer; padding: 5px; flex: 1;
-}
-.bottombar .nav-btn i { font-size: 22px; margin-bottom: 2px; height: 24px; display: flex; align-items: center; }
-.bottombar .nav-btn span { font-size: 12px; }
-.bottombar .nav-btn.active { color: #7CBD64; font-weight: bold; }
-
-/* Estilo para a imagem dentro de um card de avaliação */
-.review-card .review-image {
+    background-color: #1a9c32; /* Verde sólido como na Imagem 2 */
+    color: #ffffff;
+    position: sticky; /* Mantém o cabeçalho fixo no topo */
+    top: 0;
+    left: 0;
     width: 100%;
-    margin-top: 12px;
-    border-radius: 8px;
-    object-fit: cover;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 20px;
+    z-index: 1000; /* Garante que ele fique acima de outros elementos */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Sombra sutil para destacar */
 }
 
-/* --- SEÇÃO DE PARTICIPANTES --- */
-.participants-section {
-    padding: 0 16px;
-    margin-bottom: 24px;
+.topbar .back-button {
+    position: absolute;
+    left: 20px;
+    color: #ffffff;
+    font-size: 24px; /* Ícone maior */
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
-.participants-section h2 {
+.topbar h1 {
     font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 16px;
-    color: var(--texto-escuro);
+    font-weight: 700;
+    margin: 0;
+    text-align: center;
+}
+
+/* =========================================
+   CONTEÚDO PRINCIPAL
+   ========================================= */
+main {
+    padding: 0 20px; /* Remove padding lateral do topo para a imagem encostar nas bordas */
+    max-width: 600px; /* Mantém largura máxima */
+    margin: 0 auto;
+}
+
+/* Imagem do Evento - Sem arredondamento na parte de cima */
+.event-image-header {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 0 0 24px 24px; /* Apenas na parte de baixo como na Imagem 2 */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15); /* Sombra suave */
+    margin-bottom: 20px;
+    background-color: #fff; /* Garante fundo branco se a imagem falhar */
+}
+
+.event-info {
+    padding: 0 0; /* Remove padding extra que pode empurrar o conteúdo */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Título e Local */
+.event-title {
+    font-size: 26px;
+    font-weight: 800;
+    color: #000;
+    margin-bottom: 0;
+    line-height: 1.2;
+    padding: 0 0px; /* Garante alinhamento com a imagem */
+}
+
+.event-park {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 15px;
+    font-weight: 400;
+    padding: 0 0px; /* Garante alinhamento com a imagem */
+}
+
+/* Lista de Detalhes (Ícones Grandes e Alinhados) */
+.event-details {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Espaço entre os itens */
+    margin-bottom: 30px;
+    margin-top: 10px;
+    padding: 0 0px; /* Remove padding que empurrava */
+}
+
+.event-details li {
+    display: flex;
+    align-items: center;
+    font-size: 15px;
+    color: #000; /* Texto preto */
+    font-weight: 500;
+}
+
+/* ESTILO DOS ÍCONES IGUAL À IMAGEM 2 */
+.event-details li i {
+    color: #1a9c32; /* Cor Verde */
+    font-size: 42px; /* Ícone bem grande */
+    width: 50px; /* Largura fixa para alinhar o texto */
+    display: flex;
+    justify-content: flex-start; /* Alinha à esquerda */
+    margin-right: 15px;
+    flex-shrink: 0; /* Impede que o ícone diminua */
+}
+
+.event-details li div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Remove "Data:", "Horário de Início:", etc. */
+.event-details li strong {
+    display: none; 
+}
+
+/* =========================================
+   Linha separadora
+   ========================================= */
+.event-info ~ .event-description h2 { /* Pega o h2 depois do .event-info */
+    border-top: 1px solid #e0e0e0; /* Linha de separação */
+    padding-top: 30px;
+    margin-top: 30px;
+    padding-left: 0px; /* Garante alinhamento */
+}
+
+/* =========================================
+   DESCRIÇÃO E BOTÕES
+   ========================================= */
+.event-description h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #000;
+    padding-left: 0px; /* Alinhamento */
+}
+
+.event-description p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 20px;
+    padding-left: 0px; /* Alinhamento */
+}
+
+.button-container {
+    margin-top: 10px;
+    margin-bottom: 30px;
+    padding: 0 0px; /* Alinhamento */
+}
+
+.cta-button {
+    width: 100%;
+    background-color: #1a9c32; /* Verde igual aos ícones */
+    color: white;
+    padding: 18px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s;
+}
+
+.cta-button:hover {
+    background-color: #147a27;
+}
+
+.cta-button.disabled {
+    background-color: #556B55;
+    cursor: default;
+}
+
+/* =========================================
+   PARTICIPANTES E AVALIAÇÕES
+   ========================================= */
+.participants-section h2,
+.reviews-section h2 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    padding-left: 0px; /* Alinhamento */
 }
 
 .participants-list {
     display: flex;
-    flex-wrap: wrap; /* Permite que os avatares quebrem para a próxima linha */
-    gap: 8px;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    padding-left: 0px; /* Alinhamento */
 }
 
 .participant-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%; /* Deixa a imagem redonda */
-    object-fit: cover;   /* Evita que a imagem fique distorcida */
-    border: 2px solid #fff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
-.no-participants {
-    color: var(--texto-suave);
-    background-color: #f0f0f0;
-    padding: 16px;
-    border-radius: 8px;
-    text-align: center;
-    font-style: italic;
+.review-card {
+    background-color: #f9f9f9; 
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    padding-left: 0px; /* Alinhamento */
 }
-
-/* --- ESTILOS PARA O DESTAQUE DO COMENTÁRIO --- */
-.review-card.highlight {
-    /* Aplica a animação 'highlight-fade' que definimos abaixo */
-    animation: highlight-fade 2.5s ease-out;
-    border-color: #FFD700; /* Borda amarela temporária */
+.review-card .avatar {
+    width: 40px; height: 40px; border-radius: 8px; object-fit: cover;
 }
+.review-content { flex: 1; }
+.review-header h3 { font-size: 14px; font-weight: 700; }
+.review-header span { display: none; }
+.stars { color: #f1c40f; font-size: 12px; margin-bottom: 5px; }
+.review-content p { font-size: 13px; color: #555; }
 
-/* @keyframes define a animação passo a passo */
-@keyframes highlight-fade {
-    /* A animação começa com um fundo amarelo e termina transparente */
-    0% { background-color: #FFFACD; } /* Amarelo bem claro */
-    100% { background-color: var(--fundo-card); } /* Volta para a cor de fundo normal do card */
+/* =========================================
+   MODAL
+   ========================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    align-items: center; justify-content: center;
+}
+.modal-content {
+    background: white; padding: 25px; border-radius: 16px;
+    width: 90%; max-width: 400px; position: relative; text-align: center;
+}
+.close-modal { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; cursor: pointer; }
+.star-rating { display: flex; flex-direction: row-reverse; justify-content: center; gap: 5px; margin: 15px 0; }
+.star-rating input { display: none; }
+.star-rating label { cursor: pointer; font-size: 25px; color: #ccc; }
+.star-rating label:before { content: '\f005'; font-family: "Font Awesome 6 Free"; font-weight: 900; }
+.star-rating input:checked ~ label, .star-rating input:checked ~ label ~ label { color: #f1c40f; }
+textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; resize: none; }
+
+/* Ajustes para o alinhamento de texto dos detalhes */
+.event-details li span {
+    margin-left: -5px; /* Ajuste fino para o texto alinhar com o da imagem */
 }
