@@ -168,7 +168,7 @@ $result_categorias = $conexao->query($sql_categorias);
                     // --- MUDANÇA AQUI: LÓGICA DO AVATAR DO HOST ---
                     
                     // 1. Define o avatar padrão
-                    $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.png";
+                    $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.jpg";
                     // 2. Pega o caminho do banco
                     $caminho_relativo_avatar = $evento['host_avatar'];
 
