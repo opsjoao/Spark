@@ -198,6 +198,14 @@ main {
     background-color: #f9f9f9; border-radius: 12px; padding: 15px; margin-bottom: 15px; display: flex; gap: 15px; align-items: flex-start;
 }
 .review-card .avatar { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+/* Dentro da seção .reviews-section ou na parte global das imagens */
+.review-card img { /* Esta regra vai aplicar-se a qualquer imagem dentro de um .review-card */
+    max-width: 100%; /* Garante que a imagem não ultrapasse a largura do container pai */
+    height: auto; /* Mantém a proporção da imagem */
+    border-radius: 8px; /* Cantos arredondados, se desejar */
+    margin-top: 10px; /* Adiciona um pequeno espaço entre o texto da avaliação e a imagem */
+    display: block; /* Garante que a imagem se comporte como um bloco para o margin-top */
+}
 .review-content { flex: 1; }
 .review-header h3 { font-size: 14px; font-weight: 700; }
 .review-header span { display: none; }
@@ -215,3 +223,39 @@ main {
 .star-rating input:checked ~ label, .star-rating input:checked ~ label ~ label { color: #f1c40f; }
 textarea { width: 100%; height: 80px; padding: 10px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; resize: none; }
 section { margin-bottom: 25px; }
+
+/* --- Estilo para a imagem de pré-visualização no modal --- */
+#image-preview-container {
+    display: flex;
+    flex-direction: column; /* Coloca os itens em coluna: imagem em cima, botão embaixo */
+    align-items: center; /* Centraliza a imagem e o botão horizontalmente */
+    margin-top: 10px;
+    margin-bottom: 15px;
+    gap: 10px; /* Espaçamento entre a imagem e o botão */
+}
+
+.image-preview {
+    max-width: 150px; /* Aumenta a largura máxima da imagem para 150px */
+    max-height: 150px; /* Aumenta a altura máxima da imagem para 150px */
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* Adiciona uma sombra para destacar */
+}
+
+.remove-image-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px; /* Cantos mais arredondados para o botão */
+    padding: 10px 18px; /* Aumenta o padding do botão */
+    font-size: 14px; /* Aumenta um pouco a fonte do botão */
+    cursor: pointer;
+    margin-left: 0; /* Remove a margem lateral que havia antes */
+    transition: background-color 0.3s ease;
+    width: fit-content; /* O botão só ocupa o espaço do texto */
+}
+
+.remove-image-btn:hover {
+    background-color: #c0392b;
+}
