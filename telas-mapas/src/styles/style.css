@@ -28,12 +28,10 @@ h1, h2, h3, p, button, input {
 
 /* O mapa deve preencher todo o corpo do documento, sob os elementos fixos */
 #map {
-  position: absolute; /* Permite cobrir todo o espaço do body */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%; /* Garante que ele cubra toda a área do body */
-  z-index: 1; /* Deve estar abaixo da barra de pesquisa e do rodapé */
 }
 
 /* O container de pesquisa e filtro agora é fixo/flutuante */
@@ -66,24 +64,6 @@ h1, h2, h3, p, button, input {
  box-sizing: border-box;
 }
 
-/* --- ESTILOS DE NAVEGAÇÃO (VOLTAR PARA FIXED) --- */
-.bottombar {
- /* VOLTA PARA FIXED */
- position: fixed; 
- bottom: 0;
- width: 100%;
- z-index: 1000;
- 
- /* Estilos de Aparência */
- background: #ffffff;
- display: flex;
- justify-content: space-around;
- align-items: center;
- border-top: 1px solid #ddd;
- padding: 8px 0;
-}
-
-
 /* --- ESTILOS DE NAVEGAÇÃO --- */
 .bottombar {
   background: #ffffff;
@@ -92,7 +72,6 @@ h1, h2, h3, p, button, input {
   align-items: center;
   padding: 8px 0;
   position: fixed;
-  bottom: 0;
   width: 100%;
   border-top: 1px solid #ddd;
   z-index: 1000;
@@ -246,12 +225,14 @@ h1, h2, h3, p, button, input {
  transition: transform 0.3s ease-out, opacity 0.3s ease-out; 
  z-index: 50; /* Z-index alto para ficar acima do mapa e da barra de pesquisa */
  cursor: grab; 
- max-height: 95vh; 
+ max-height: 85vh; 
+ min-height: 85vh; 
+
  overflow-y: auto; 
 
  /* Estilos do 'Card' */
  position: fixed;
- bottom: 0;
+ bottom: 60px; /* <--- MUDANÇA ESSENCIAL: Altura da bottombar */
  width: 100%;
  background-color: white;
  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); 
