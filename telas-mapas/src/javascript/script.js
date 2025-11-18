@@ -7,6 +7,10 @@ let initialTranslateY = 0;
 let wasDragged = false; 
 const DRAG_THRESHOLD = 5; 
 let detailsContainer = document.getElementById("park-details"); 
+// ----------------------------------------------------
+// VARIÁVEL DO PLACEHOLDER
+// ----------------------------------------------------
+const PLACEHOLDER_AVATAR_URL = "src/assets/avatar.png"; 
 
 
 function initMap() {
@@ -223,7 +227,7 @@ function setupClickToClose() {
 
         const isClickInsidePane = detailsContainer.contains(event.target);
         const isClickOnMarker = event.target.tagName === 'IMG' && event.target.src.includes('pin_verde.png'); 
-        const isClickOnBackArrow = event.target.classList.contains('back-arrow'); // Exclui a seta para evitar duplo clique
+        const isClickOnBackArrow = event.target.classList.contains('back-arrow'); 
 
         if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker && !isClickOnBackArrow) {
             hideDetailsPane();
@@ -232,7 +236,7 @@ function setupClickToClose() {
 }
 
 // ----------------------------------------------------
-// Função showDetailsPane (Atualizada com dados reais e centralização)
+// Função showDetailsPane (Atualizada com dados reais e placeholder)
 // ----------------------------------------------------
 function showDetailsPane(placeId, title) {
     const request = {
@@ -249,12 +253,10 @@ function showDetailsPane(placeId, title) {
                 photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 }); 
             }
 
-            // Horário de funcionamento real (substitui simulatedHours)
             const realHours = (place.opening_hours && place.opening_hours.weekday_text) ? 
                 place.opening_hours.weekday_text.join('<br>') : 
                 "Horário não disponível";
             
-            // Descrição real do parque (substitui simulatedAbout)
             const realAbout = place.editorial_summary ? 
                 place.editorial_summary.overview : 
                 "Informações detalhadas sobre este parque não estão disponíveis. No entanto, é um ótimo lugar para desfrutar da natureza e de atividades ao ar livre!";
@@ -262,16 +264,17 @@ function showDetailsPane(placeId, title) {
             const parkDescription = realAbout;
 
             const simulatedParticipants = [
-                { photo: "src/assets/avatar1.png" }, 
-                { photo: "src/assets/avatar2.png" }  
+                { photo: "src/assets/avatar1.png" }, // Foto simulada 1
+                { photo: "src/assets/avatar2.png" }  // Foto simulada 2
             ];
             const simulatedReview = {
                 name: "Robert Renan",
+                // A foto simulada do review usava 'src/assets/avatar3.png' no código original
+                reviewPhoto: "src/assets/avatar3.png", 
                 text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
                 rating: 5
             };
             
-            // Link do site real
             const websiteLink = place.website ? 
                 `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${place.website}</a>` :
                 `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
@@ -283,6 +286,15 @@ function showDetailsPane(placeId, title) {
                 }
                 return stars;
             };
+
+            // 1. Placeholder nos Participantes
+            const participantsHtml = simulatedParticipants.map(p => `
+                <img src="${p.photo || ''}" 
+                     class="participant-photo" 
+                     onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+                     alt="Foto do Participante"
+                >
+            `).join('');
 
             const content = `
                 <div class="details-header" style="text-align: center;">
@@ -311,12 +323,16 @@ function showDetailsPane(placeId, title) {
 
                     <h3 class="section-title">Participantes (${simulatedParticipants.length})</h3>
                     <div style="display: flex; margin-bottom: 20px;">
-                        ${simulatedParticipants.map(p => `<img src="src/assets/avatar1.png" class="participant-photo">`).join('')}
+                        ${participantsHtml} 
                     </div>
 
                     <h3 class="section-title">Avaliações sobre o Evento</h3>
                     <div class="review-card">
-                        <img src="src/assets/avatar3.png" class="reviewer-photo"> <div>
+                        <img src="${simulatedReview.reviewPhoto || ''}" 
+                             class="reviewer-photo"
+                             onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';" 
+                             alt="Foto do Avaliador"> 
+                        <div>
                             <p class="font-bold text-sm">${simulatedReview.name}</p>
                             <div class="stars">${renderStars(simulatedReview.rating)}</div>
                             <p class="text-xs text-gray-600 mt-1">${simulatedReview.text}</p>
