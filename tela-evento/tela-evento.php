@@ -98,9 +98,9 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
                 <h1 class="event-title"><?php echo htmlspecialchars($evento['nome']); ?></h1>
                 <p class="event-park"><?php echo htmlspecialchars($evento['nome_parque']); ?></p>
                 <ul class="event-details">
-                    <li><i class="fa-regular fa-calendar"></i><div><strong>Data:</strong><span><?php echo date("d/m/Y", strtotime($evento['dia'])); ?></span></div></li>
-                    <li><i class="fa-regular fa-clock"></i><div><strong>Horário de Início:</strong><span><?php echo date("H:i", strtotime($evento['horario_inicio'])); ?></span></div></li>
-                    <li><i class="fa-solid fa-clock"></i><div><strong>Horário de Término:</strong><span><?php echo date("H:i", strtotime($evento['horario_termino'])); ?></span></div></li>
+                    <li><i class="fa-solid fa-calendar"></i><div><strong>Data:</strong><span><?php echo date("d/m/Y", strtotime($evento['dia'])); ?></span></div></li>
+                    <li><i class="fa-solid fa-clock"></i><div><strong>Horário de Início:</strong><span><?php echo date("H:i", strtotime($evento['horario_inicio'])); ?></span></div></li>
+                    <li><i class="fa-regular fa-clock"></i><div><strong>Horário de Término:</strong><span><?php echo date("H:i", strtotime($evento['horario_termino'])); ?></span></div></li>
                 </ul>
                 <?php if (!empty($evento['descricao'])): ?>
                     <div class="event-description"><h2>Sobre o Evento</h2><p><?php echo nl2br(htmlspecialchars($evento['descricao'])); ?></p></div>
