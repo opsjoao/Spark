@@ -36,13 +36,17 @@ $stmt_participantes->bind_param("i", $idEvento);
 $stmt_participantes->execute();
 $resultado_participantes = $stmt_participantes->get_result();
 
-// Busca as Avaliações do Evento
+// Busca as Avaliações do Evento (ALTERADO PARA PRIORIZAR O USUÁRIO LOGADO)
 $stmt_avaliacoes = $conexao->prepare("
-    SELECT av.*, u.nome, u.username, u.avatar_path FROM Avaliacao_evento AS av 
-    JOIN Usuario AS u ON av.idUsuario = u.idUsuario WHERE av.idEvento = ? 
-    ORDER BY av.data_avaliacao DESC
+    SELECT av.*, u.nome, u.username, u.avatar_path 
+    FROM Avaliacao_evento AS av 
+    JOIN Usuario AS u ON av.idUsuario = u.idUsuario 
+    WHERE av.idEvento = ? 
+    ORDER BY (av.idUsuario = ?) DESC, av.data_avaliacao DESC
 ");
-$stmt_avaliacoes->bind_param("i", $idEvento);
+
+// Note que agora passamos "ii": o ID do evento E o ID do usuário logado para a ordenação
+$stmt_avaliacoes->bind_param("ii", $idEvento, $idUsuarioLogado);
 $stmt_avaliacoes->execute();
 $resultado_avaliacoes = $stmt_avaliacoes->get_result();
 
@@ -179,15 +183,47 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
             <?php if ($resultado_avaliacoes && $resultado_avaliacoes->num_rows > 0): ?>
                 <?php while($avaliacao = $resultado_avaliacoes->fetch_assoc()): 
                     $avatar_avaliacao = !empty($avaliacao['avatar_path']) ? $avaliacao['avatar_path'] : 'assets/images/avatar_padrao.png';
+                    $isMinhaAvaliacao = ($avaliacao['idUsuario'] == $idUsuarioLogado);
                 ?>
                 <div class="review-card">
                     <img src="/Spark-main/<?php echo htmlspecialchars($avatar_avaliacao); ?>" alt="avatar" class="avatar">
+                    
                     <div class="review-content">
-                        <div class="review-header"><h3><?php echo htmlspecialchars($avaliacao['nome']); ?></h3><span>@<?php echo htmlspecialchars($avaliacao['username']); ?></span></div>
-                        <div class="stars"><?php for ($i = 1; $i <= 5; $i++) { echo ($i <= $avaliacao['nota']) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>'; } ?></div>
+                        <div class="review-header">
+                            <h3>
+                                <?php echo htmlspecialchars($avaliacao['nome']); ?>
+                                <?php if($isMinhaAvaliacao) echo " <small>(Você)</small>"; ?>
+                            </h3>
+                            
+                            <div class="review-menu-container">
+                                <button class="menu-dots-btn" onclick="toggleReviewMenu(this)">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <div class="review-dropdown">
+                                    <?php if ($isMinhaAvaliacao): ?>
+                                        <a href="#" onclick="editarAvaliacao(<?php echo $avaliacao['idAvaliacao']; ?>); return false;">
+                                            <i class="fa-solid fa-pen"></i> Editar
+                                        </a>
+                                        <a href="#" class="text-danger" onclick="excluirAvaliacao(<?php echo $avaliacao['idAvaliacao']; ?>); return false;">
+                                            <i class="fa-solid fa-trash"></i> Excluir
+                                        </a>
+                                    <?php else: ?>
+                                        <a href="#" class="text-warning" onclick="denunciarAvaliacao(<?php echo $avaliacao['idAvaliacao']; ?>); return false;">
+                                            <i class="fa-solid fa-flag"></i> Denunciar
+                                        </a>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stars">
+                            <?php for ($i = 1; $i <= 5; $i++) { echo ($i <= $avaliacao['nota']) ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>'; } ?>
+                        </div>
+                        
                         <p><?php echo htmlspecialchars($avaliacao['comentario']); ?></p>
+                        
                         <?php if (!empty($avaliacao['imagem_path'])): ?>
-                            <img src="/Spark-main/<?php echo htmlspecialchars($avaliacao['imagem_path']); ?>" alt="Imagem da avaliação" class="review-image">
+                            <img src="/Spark-main/<?php echo htmlspecialchars($avaliacao['imagem_path']); ?>" alt="Imagem da avaliação">
                         <?php endif; ?>
                     </div>
                 </div>
