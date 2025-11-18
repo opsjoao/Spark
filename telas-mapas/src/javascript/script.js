@@ -216,7 +216,7 @@ function endDrag(event) {
 }
 
 // ----------------------------------------------------
-// Função para fechar no clique fora
+// Função para fechar no clique fora (MODIFICADA)
 // ----------------------------------------------------
 function setupClickToClose() {
     document.addEventListener('click', (event) => {
@@ -226,17 +226,60 @@ function setupClickToClose() {
         }
 
         const isClickInsidePane = detailsContainer.contains(event.target);
-        const isClickOnMarker = event.target.tagName === 'IMG' && event.target.src.includes('pin_verde.png'); 
+        // Ajuste no check do marker para ser mais robusto, verificando se o display está ativo
+        const isClickOnMarker = event.target.tagName === 'IMG' && event.target.src.includes('pin_verde.png') && detailsContainer.style.display === 'none';
         const isClickOnBackArrow = event.target.classList.contains('back-arrow'); 
 
-        if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker && !isClickOnBackArrow) {
+        // NOVO CHECK: Se o clique foi no botão de expansão do horário, não feche o painel.
+        const isClickOnExpandButton = event.target.classList.contains('expand-hours-button') || event.target.closest('.expand-hours-button');
+
+
+        if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker && !isClickOnBackArrow && !isClickOnExpandButton) {
             hideDetailsPane();
         }
     });
 }
 
 // ----------------------------------------------------
-// Função showDetailsPane (Atualizada com dados reais e placeholder)
+// NOVA FUNÇÃO: Obtém o horário de hoje e o HTML completo
+// ----------------------------------------------------
+function getTodayAndAllHours(weekdayText) {
+    if (!weekdayText || weekdayText.length === 0) {
+        return { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
+    }
+
+    // Mapeamento dos dias para encontrar a correspondência exata. 
+    // O getDay() retorna 0 (Dom) a 6 (Sáb). A API do Google retorna os dias em Português.
+    const todayIndex = new Date().getDay(); 
+    const weekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    const todayName = weekDays[todayIndex];
+    
+    let todayHours = "Não disponível";
+    let foundToday = false;
+
+    // 1. Encontrar o horário de hoje
+    const allHoursHtml = weekdayText.map(line => {
+        // Usa `startsWith` para encontrar o dia correto
+        if (line.startsWith(todayName)) {
+            // Remove o nome do dia e os dois pontos/espaço para deixar só o horário
+            todayHours = line.replace(`${todayName}: `, '').trim();
+            foundToday = true;
+            return `<p class="current-day">${line}</p>`; // Adiciona classe para destaque no CSS
+        }
+        return `<p>${line}</p>`;
+    }).join('');
+
+    // 2. Se não encontrou o dia de hoje (pode ser problema de fuso/formato), usa o primeiro como fallback
+    if (!foundToday && weekdayText.length > 0) {
+        todayHours = weekdayText[0].split(': ').pop() || weekdayText[0]; // Tenta isolar o horário do primeiro item
+    }
+
+    return { todayHours, allHoursHtml };
+}
+
+
+// ----------------------------------------------------
+// Função showDetailsPane (MODIFICADA)
 // ----------------------------------------------------
 function showDetailsPane(placeId, title) {
     const request = {
@@ -253,10 +296,15 @@ function showDetailsPane(placeId, title) {
                 photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 }); 
             }
 
-            const realHours = (place.opening_hours && place.opening_hours.weekday_text) ? 
-                place.opening_hours.weekday_text.join('<br>') : 
-                "Horário não disponível";
-            
+            // --- Lógica do Horário Atualizada ---
+            const hoursData = (place.opening_hours && place.opening_hours.weekday_text) 
+                ? getTodayAndAllHours(place.opening_hours.weekday_text)
+                : { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
+
+            const realTodayHours = hoursData.todayHours;
+            const realAllHoursHtml = hoursData.allHoursHtml;
+            // ------------------------------------
+
             const realAbout = place.editorial_summary ? 
                 place.editorial_summary.overview : 
                 "Informações detalhadas sobre este parque não estão disponíveis. No entanto, é um ótimo lugar para desfrutar da natureza e de atividades ao ar livre!";
@@ -269,14 +317,13 @@ function showDetailsPane(placeId, title) {
             ];
             const simulatedReview = {
                 name: "Robert Renan",
-                // A foto simulada do review usava 'src/assets/avatar3.png' no código original
                 reviewPhoto: "src/assets/avatar3.png", 
                 text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
                 rating: 5
             };
             
             const websiteLink = place.website ? 
-                `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${place.website}</a>` :
+                `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
                 `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
 
             const renderStars = (rating) => {
@@ -290,9 +337,9 @@ function showDetailsPane(placeId, title) {
             // 1. Placeholder nos Participantes
             const participantsHtml = simulatedParticipants.map(p => `
                 <img src="${p.photo || ''}" 
-                     class="participant-photo" 
-                     onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
-                     alt="Foto do Participante"
+                    class="participant-photo" 
+                    onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+                    alt="Foto do Participante"
                 >
             `).join('');
 
@@ -309,8 +356,17 @@ function showDetailsPane(placeId, title) {
                     <p class="text-sm text-gray-500 mb-4">${place.formatted_address || "Endereço não disponível"}</p>
                     
                     <div class="park-info-line">
-                        <i class="fa-solid fa-clock"></i> <span>Horário de Funcionamento:</span>
-                        <div class="opening-hours-details">${realHours}</div>
+                        <i class="fa-solid fa-clock"></i> 
+                        <span>Horário de Hoje:</span>
+                        <span class="today-hours-display">${realTodayHours}</span>
+                        
+                        <button class="expand-hours-button" onclick="document.getElementById('full-hours').classList.toggle('hidden'); this.querySelector('i').classList.toggle('rotate-180');" aria-expanded="false">
+                            Ver todos os dias <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                    </div>
+
+                    <div id="full-hours" class="full-hours-dropdown hidden">
+                        ${realAllHoursHtml}
                     </div>
                     <div class="park-info-line">
                         ${websiteLink}
@@ -329,9 +385,9 @@ function showDetailsPane(placeId, title) {
                     <h3 class="section-title">Avaliações sobre o Evento</h3>
                     <div class="review-card">
                         <img src="${simulatedReview.reviewPhoto || ''}" 
-                             class="reviewer-photo"
-                             onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';" 
-                             alt="Foto do Avaliador"> 
+                            class="reviewer-photo"
+                            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';" 
+                            alt="Foto do Avaliador"> 
                         <div>
                             <p class="font-bold text-sm">${simulatedReview.name}</p>
                             <div class="stars">${renderStars(simulatedReview.rating)}</div>
@@ -353,7 +409,8 @@ function showDetailsPane(placeId, title) {
                     <h2>Detalhes do parque</h2>
                 </div>
                 <div class="park-content">
-                    <b>${title}</b><br>Não foi possível carregar detalhes.
+                    <h1 class="text-xl font-bold text-gray-800 mb-2">${title}</h1>
+                    <p>Não foi possível carregar detalhes.</p>
                 </div>
             `;
             detailsContainer.style.transition = 'transform 0.3s ease-out'; 
@@ -393,6 +450,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.addEventListener("click", (event) => {
+        // NOVO CHECK: Se o clique foi no botão de expandir/colapsar do horário, não feche o menu de filtro.
+        const isClickOnExpandButton = event.target.classList.contains('expand-hours-button') || event.target.closest('.expand-hours-button');
+        if (isClickOnExpandButton) return;
+
         if (!filterMenu.contains(event.target) && !filterButton.contains(event.target)) {
             if (filterMenu.classList.contains("filter-menu-visible")) {
                 filterMenu.classList.remove("filter-menu-visible");
