@@ -283,12 +283,15 @@ h1, h2, h3, p, button, input {
 
 /* Estilo para a imagem de capa */
 .park-image-cover {
-  width: 100%;
+  width: calc(100% - 30px); /* Ajusta para ter um pouco de margem nas laterais */
   height: 200px;
   object-fit: cover;
   display: block;
+  margin-left: auto; /* Centraliza horizontalmente */
+  margin-right: auto; /* Centraliza horizontalmente */
+  border-radius: 12px; /* Arredonda as bordas */
+  margin-top: 15px; /* Adiciona um pequeno espaçamento do topo */
 }
-
 /* Estilo para o conteúdo (abaixo da imagem) */
 .park-content {
   padding: 15px;
@@ -416,4 +419,28 @@ h1, h2, h3, p, button, input {
 .full-hours-dropdown .current-day {
     font-weight: bold;
     color: #1A9929; 
+}
+
+.create-event-button {
+    position: fixed; /* Mude para fixed para que ele flutue em relação à viewport */
+    bottom: 80px; /* Distância da parte inferior, acima da bottombar (60px) + um pouco mais */
+    right: 20px; /* Distância da direita */
+    width: 57px;
+    height: 57px;
+    background-color: #5ED925; /* Cor verde para destaque */
+    border-radius: 50%; /* Torna o botão circular */
+    color: rgb(255, 255, 255);
+    border: none;
+    display: flex; /* Para centralizar o conteúdo (o ícone) */
+    justify-content: center;
+    align-items: center;
+    font-size: 24px; /* Tamanho do ícone */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
+    cursor: pointer;
+    z-index: 100; /* Garante que ele fique acima de quase tudo, incluindo o painel de detalhes */
+    transition: background-color 0.2s ease; /* Transição suave para o hover */
+}
+
+.create-event-button:hover {
+    background-color: #4CAF50; /* Uma cor um pouco mais escura no hover */
 }
