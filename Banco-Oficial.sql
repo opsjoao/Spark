@@ -207,11 +207,11 @@ ADD COLUMN idCategoria INT NULL,
 ADD FOREIGN KEY (idCategoria) REFERENCES Categorias(idCategoria);
 
 INSERT INTO Categorias (nome, imagem_url, cor_fundo) VALUES
-('Esportes', 'uploads/categorias/esportes.jpg', '#F91880'),
-('Saúde', 'uploads/categorias/saude.jpg', '#00BA7C'),
-('Música', 'uploads/categorias/musica.jpg', '#FFAD1F'),
-('Cultura', 'uploads/categorias/cultura.jpg', '#8B5CF6'),
-('Gastronomia', 'uploads/categorias/gastronomia.jpg', '#E0245E'),
-('Lazer', 'uploads/categorias/lazer.jpg', '#1D9BF0'),
-('Família', 'uploads/categorias/familia.jpg', '#7856FF'),
-('Outros', 'uploads/categorias/outros.jpg', '#66cc33');
+('Esportes', 'uploads/categorias/esportes.png', '#F91880'),
+('Saúde', 'uploads/categorias/saude.png', '#00BA7C'),
+('Música', 'uploads/categorias/musica.png', '#FFAD1F'),
+('Cultura', 'uploads/categorias/cultura.png', '#8B5CF6'),
+('Gastronomia', 'uploads/categorias/gastronomia.png', '#E0245E'),
+('Lazer', 'uploads/categorias/lazer.png', '#1D9BF0'),
+('Família', 'uploads/categorias/familia.png', '#7856FF'),
+('Outros', 'uploads/categorias/outros.png', '#66cc33');
