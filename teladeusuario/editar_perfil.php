@@ -59,14 +59,14 @@ $processar_edicao_url = $url_base . 'teladeusuario/processar_edicao_perfil.php';
                     <i class="fa-solid fa-camera"></i>
                 </label>
             </div>
-            <input type="file" id="avatarUpload" name="avatar" accept="image/*" style="display: none;">
 </div>
     </header>
 
     <main class="app-content">
         <form id="editProfileForm" action="<?php echo $processar_edicao_url; ?>" method="POST" enctype="multipart/form-data">
 
-
+            <input type="file" id="avatarUpload" name="avatar" accept="image/*" style="display: none;">
+            
             <div class="form-field-group">
                 <label for="nome">Nome</label>
                 <input type="text" id="nome" name="nome" value="<?php echo $nomeAtual; ?>" required>
