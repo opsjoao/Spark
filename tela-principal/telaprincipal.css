@@ -56,17 +56,30 @@
 
 /* 3. SEÇÃO DE CATEGORIAS */
 .categories-section {
-    padding-left: 12px; 
+    /* MUDANÇA: Removemos o padding daqui para colocar direto na lista.
+       Isso evita que a rolagem fique "presa" com uma margem esquerda fixa. */
+    padding-left: 0; 
 }
+
 .categories-section h2 {
     font-size: 20px;
-    margin-bottom: 10px;
-    padding-right: 12px; /* Padding para o título "Categorias" */
+    margin-bottom: 5px; /* Ajuste fino para aproximar o título */
+    padding-left: 12px; /* Mantém o título alinhado com a margem */
+    padding-right: 12px;
 }
+
 .category-list {
     display: flex;
     overflow-x: auto; /* Permite rolar horizontalmente */
-    padding-bottom: 8px;
+    
+    /* --- A CORREÇÃO ESTÁ AQUI --- */
+    /* Top (10px): Espaço para o card crescer pra cima (scale) sem cortar.
+       Right (12px): Margem direita.
+       Bottom (20px): Espaço para a sombra inferior e evitar corte.
+       Left (12px): Margem esquerda inicial da rolagem.
+    */
+    padding: 10px 12px 10px 12px; 
+    
     scrollbar-width: none; /* Firefox */
 }
 .category-list::-webkit-scrollbar { display: none; } /* Chrome, Safari */
@@ -100,7 +113,7 @@
 
 /* 4. FEED DE EVENTOS */
 .events-feed {
-    margin-top: 20px;
+    margin-top: 10px;
     padding-left: 12px;
     padding-right: 12px; 
 }
