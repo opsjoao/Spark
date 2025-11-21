@@ -4,13 +4,13 @@ let map, markers = [], autocomplete, placesService, infoWindow;
 let isDragging = false;
 let startY = 0;
 let initialTranslateY = 0;
-let wasDragged = false; 
-const DRAG_THRESHOLD = 5; 
-let detailsContainer = document.getElementById("park-details"); 
+let wasDragged = false;
+const DRAG_THRESHOLD = 5;
+let detailsContainer = document.getElementById("park-details");
 // ----------------------------------------------------
 // VARIÁVEL DO PLACEHOLDER
 // ----------------------------------------------------
-const PLACEHOLDER_AVATAR_URL = "src/assets/avatar.png"; 
+const PLACEHOLDER_AVATAR_URL = "src/assets/avatar.png";
 
 
 function initMap() {
@@ -23,7 +23,7 @@ function initMap() {
 
     detailsContainer = document.getElementById("park-details");
     setupDragEvents();
-    setupClickToClose(); 
+    setupClickToClose();
 
     placesService = new google.maps.places.PlacesService(map);
     infoWindow = new google.maps.InfoWindow();
@@ -42,7 +42,7 @@ function initMap() {
         }
 
         clearMarkers();
-        hideDetailsPane(); 
+        hideDetailsPane();
 
         if (place.types && place.types.includes("park")) {
             addMarker(place.geometry.location, place.name, place.place_id);
@@ -120,12 +120,12 @@ function addMarker(position, title, placeId) {
 
 function hideDetailsPane() {
     const detailsContainer = document.getElementById("park-details");
-    
+
     // Esconde o painel e reseta o transform para a próxima vez
     if (detailsContainer && detailsContainer.style.display !== 'none') {
         // Usa transform para animar para fora da tela (desliza para baixo)
         detailsContainer.style.transition = 'transform 0.3s ease-in';
-        detailsContainer.style.transform = 'translateY(100%)'; 
+        detailsContainer.style.transform = 'translateY(100%)';
 
         // Oculta completamente após a animação
         setTimeout(() => {
@@ -138,10 +138,10 @@ function hideDetailsPane() {
 
 function setupDragEvents() {
     if (!detailsContainer) return;
-    
+
     detailsContainer.addEventListener('mousedown', startDrag);
     detailsContainer.addEventListener('touchstart', startDrag);
-    
+
     document.addEventListener('mousemove', drag);
     document.addEventListener('touchmove', drag);
     document.addEventListener('mouseup', endDrag);
@@ -152,16 +152,16 @@ function startDrag(event) {
     const initialY = event.type.startsWith('touch') ? event.touches[0].clientY : event.clientY;
 
     if (detailsContainer.scrollHeight > detailsContainer.clientHeight && detailsContainer.scrollTop > 0) {
-        return; 
+        return;
     }
-    
+
     isDragging = true;
-    wasDragged = false; 
+    wasDragged = false;
     startY = initialY;
-    
-    detailsContainer.style.transition = 'none'; 
+
+    detailsContainer.style.transition = 'none';
     detailsContainer.style.cursor = 'grabbing';
-    
+
     const style = window.getComputedStyle(detailsContainer);
     const transform = style.getPropertyValue('transform');
     const match = transform.match(/matrix\(1, 0, 0, 1, 0, (.*)\)/);
@@ -170,19 +170,19 @@ function startDrag(event) {
 
 function drag(event) {
     if (!isDragging) {
-        return; 
+        return;
     }
 
     const currentY = event.type.startsWith('touch') ? event.touches[0].clientY : event.clientY;
     let diffY = currentY - startY;
-    
+
     if (detailsContainer.scrollTop > 0 && diffY < 0) {
-        isDragging = false; 
-        return; 
+        isDragging = false;
+        return;
     }
 
     event.preventDefault();
-    
+
     if (Math.abs(currentY - startY) > DRAG_THRESHOLD) {
         wasDragged = true;
     }
@@ -196,7 +196,7 @@ function drag(event) {
 
 function endDrag(event) {
     if (!isDragging) return;
-    
+
     isDragging = false;
     detailsContainer.style.transition = 'transform 0.3s ease-out';
     detailsContainer.style.cursor = 'grab';
@@ -205,8 +205,8 @@ function endDrag(event) {
     const transform = style.getPropertyValue('transform');
     const match = transform.match(/matrix\(1, 0, 0, 1, 0, (.*)\)/);
     const finalTranslateY = match ? parseFloat(match[1]) : 0;
-    
-    const threshold = detailsContainer.offsetHeight * 0.25; 
+
+    const threshold = detailsContainer.offsetHeight * 0.25;
 
     if (finalTranslateY > threshold) {
         hideDetailsPane();
@@ -247,12 +247,12 @@ function getTodayAndAllHours(weekdayText) {
         return { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
     }
 
-    // Mapeamento dos dias para encontrar a correspondência exata. 
+    // Mapeamento dos dias para encontrar a correspondência exata.
     // O getDay() retorna 0 (Dom) a 6 (Sáb). A API do Google retorna os dias em Português.
-    const todayIndex = new Date().getDay(); 
+    const todayIndex = new Date().getDay();
     const weekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
     const todayName = weekDays[todayIndex];
-    
+
     let todayHours = "Não disponível";
     let foundToday = false;
 
@@ -278,7 +278,7 @@ function getTodayAndAllHours(weekdayText) {
 
 
 // ----------------------------------------------------
-// Função showDetailsPane (MODIFICADA)
+// Função showDetailsPane (CORRIGIDA)
 // ----------------------------------------------------
 function showDetailsPane(placeId, title) {
     const request = {
@@ -287,43 +287,49 @@ function showDetailsPane(placeId, title) {
     };
 
     placesService.getDetails(request, (place, status) => {
-        detailsContainer = document.getElementById("park-details"); 
-        
+        detailsContainer = document.getElementById("park-details");
+
         if (status === google.maps.places.PlacesServiceStatus.OK) {
             let photoUrl = "";
             if (place.photos && place.photos.length > 0) {
-                photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 }); 
+                photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 });
             }
 
             // --- Lógica do Horário Atualizada ---
-            const hoursData = (place.opening_hours && place.opening_hours.weekday_text) 
-                ? getTodayAndAllHours(place.opening_hours.weekday_text)
-                : { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
+            const hoursData = (place.opening_hours && place.opening_hours.weekday_text)
+            ? getTodayAndAllHours(place.opening_hours.weekday_text)
+            : { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
 
             const realTodayHours = hoursData.todayHours;
             const realAllHoursHtml = hoursData.allHoursHtml;
             // ------------------------------------
 
-            const realAbout = place.editorial_summary ? 
-                place.editorial_summary.overview : 
-                "Informações detalhadas sobre este parque não estão disponíveis. No entanto, é um ótimo lugar para desfrutar da natureza e de atividades ao ar livre!";
-            
+            const realAbout = place.editorial_summary ?
+            place.editorial_summary.overview :
+            "Informações detalhadas sobre este parque não estão disponíveis. No entanto, é um ótimo lugar para desfrutar da natureza e de atividades ao ar livre!";
+
             const parkDescription = realAbout;
 
             const simulatedParticipants = [
                 { photo: "src/assets/avatar1.png" }, // Foto simulada 1
-                { photo: "src/assets/avatar2.png" }  // Foto simulada 2
+                { photo: "src/assets/avatar2.png" }  // Foto simulada 2
             ];
-            const simulatedReview = {
-                name: "Robert Renan",
-                reviewPhoto: "src/assets/avatar3.png", 
-                text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
-                rating: 5
-            };
-            
-            const websiteLink = place.website ? 
-                `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
-                `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
+            const simulatedReview = [
+                {
+                    name: "Robert Renan",
+                    reviewPhoto: "src/assets/avatar3.png",
+                    text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
+                    rating: 5
+                }
+            ];
+
+            // 💡 CORREÇÃO APLICADA AQUI: Extrai o primeiro objeto do array para a variável 'review'
+            const review = simulatedReview.length > 0 ? simulatedReview[0] : {};
+
+
+            const websiteLink = place.website ?
+            `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
+            `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
 
             const renderStars = (rating) => {
                 let stars = '';
@@ -335,98 +341,91 @@ function showDetailsPane(placeId, title) {
 
             // 1. Placeholder nos Participantes
             const participantsHtml = simulatedParticipants.map(p => `
-                <img src="${p.photo || ''}" 
-                    class="participant-photo" 
-                    onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
-                    alt="Foto do Participante"
-                >
+            <img src="${p.photo || ''}"
+            class="participant-photo"
+            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+            alt="Foto do Participante"
+            >
             `).join('');
 
             const content = `
-                <div class="details-header" style="text-align: center;">
-                    <h2>Detalhes do parque</h2>
-                </div>
+            <div class="details-header" style="text-align: center;">
+            <h2>Detalhes do parque</h2>
+            </div>
 
-                <div class="park-image-container">
-                    ${photoUrl ? `<img src="${photoUrl}" alt="${place.name}" class="park-image-cover">` : ''}       
+            <div class="park-image-container">
+            ${photoUrl ? `<img src="${photoUrl}" alt="${place.name}" class="park-image-cover">` : ''}
 
-                    <button class="create-event-button" onclick="alert('Funcionalidade de Criar Evento em desenvolvimento!');">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" ><path fill="rgba(255, 255, 255, 1)" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
-                   </button>
-                </div>
-                <div class="park-content">
-                    <h1 class="text-xl font-bold text-gray-800 mb-2">${place.name || title}</h1>
-                    <p class="text-sm text-gray-500 mb-4">${place.formatted_address || "Endereço não disponível"}</p>
-                    
-                    <div class="park-info-line">
-                        <i class="fa-solid fa-clock"></i> 
-                        <span>Horário de Hoje:</span>
-                        <span class="today-hours-display">${realTodayHours}</span>
-                        
-                        <button class="expand-hours-button" onclick="document.getElementById('full-hours').classList.toggle('hidden'); this.querySelector('i').classList.toggle('rotate-180');" aria-expanded="false">
-                            Ver todos os dias <i class="fa-solid fa-chevron-down"></i>
-                        </button>
-                    </div>
+            <button class="create-event-button" onclick="alert('Funcionalidade de Criar Evento em desenvolvimento!');">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" ><path fill="rgba(255, 255, 255, 1)" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+            </button>
+            </div>
+            <div class="park-content">
+            <h1 class="text-xl font-bold text-gray-800 mb-2">${place.name || title}</h1>
+            <p class="text-sm text-gray-500 mb-4">${place.formatted_address || "Endereço não disponível"}</p>
 
-                    <div id="full-hours" class="full-hours-dropdown hidden">
-                        ${realAllHoursHtml}
-                    </div>
-                    <div class="park-info-line">
-                        ${websiteLink}
-                    </div>
-                    <div class="park-info-line">
-                        <i class="fa-solid fa-phone"></i> <span>Telefone: ${place.formatted_phone_number || "Não disponível"}</span>
-                    </div>
-                    
-                    <button class="create-review-button">Criar avaliação</button>
+            <div class="park-info-line">
+            <i class="fa-solid fa-clock"></i>
+            <span>Horário de Hoje:</span>
+            <span class="today-hours-display">${realTodayHours}</span>
 
-                    <h3 class="section-title">Participantes (${simulatedParticipants.length})</h3>
-                    <div style="display: flex; margin-bottom: 20px;">
-                        ${participantsHtml} 
-                    </div>
+            <button class="expand-hours-button" onclick="document.getElementById('full-hours').classList.toggle('hidden'); this.querySelector('i').classList.toggle('rotate-180');" aria-expanded="false">
+            Ver todos os dias <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            </div>
 
-                    <h3 class="section-title">Avaliações sobre o Evento</h3>
-                    <div class="review-card">
-                        <img src="${simulatedReview.reviewPhoto || ''}" 
-                            class="reviewer-photo"
-                            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';" 
-                            alt="Foto do Avaliador"> 
-                        <div>
-                            <p class="font-bold text-sm">${simulatedReview.name}</p>
-                            <div class="stars">${renderStars(simulatedReview.rating)}</div>
-                            <p class="text-xs text-gray-600 mt-1">${simulatedReview.text}</p>
-                        </div>
-                    </div>
-                </div>
+            <div id="full-hours" class="full-hours-dropdown hidden">
+            ${realAllHoursHtml}
+            </div>
+            <div class="park-info-line">
+            ${websiteLink}
+            </div>
+            <div class="park-info-line">
+            <i class="fa-solid fa-phone"></i> <span>Telefone: ${place.formatted_phone_number || "Não disponível"}</span>
+            </div>
+
+            <h3 class="section-title">${simulatedReview.length} Avaliações</h3>
+            <div class="review-card">
+            <img src="${review.reviewPhoto || ''}"
+            class="reviewer-photo"
+            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+            alt="Foto do Avaliador">
+            <div>
+            <p class="font-bold text-sm">${review.name}</p>
+            <div class="stars">${renderStars(review.rating)}</div>
+            <p class="text-xs text-gray-600 mt-1">${review.text}</p>
+            </div>
+            </div>
+            </div>
             `;
-            
+
             detailsContainer.innerHTML = content;
             detailsContainer.style.transition = 'transform 0.3s ease-out';
             detailsContainer.style.display = 'block';
             detailsContainer.style.transform = 'translateY(0)';
-            
+
         } else {
             detailsContainer.innerHTML = `
-                <div class="details-header" style="text-align: center;">
-                    <h2>Detalhes do parque</h2>
-                </div>
-                <div class="park-content">
-                    <h1 class="text-xl font-bold text-gray-800 mb-2">${title}</h1>
-                    <p>Não foi possível carregar detalhes.</p>
-                </div>
+            <div class="details-header" style="text-align: center;">
+            <h2>Detalhes do parque</h2>
+            </div>
+            <div class="park-content">
+            <h1 class="text-xl font-bold text-gray-800 mb-2">${title}</h1>
+            <p>Não foi possível carregar detalhes.</p>
+            </div>
             `;
-            detailsContainer.style.transition = 'transform 0.3s ease-out'; 
+            detailsContainer.style.transition = 'transform 0.3s ease-out';
             detailsContainer.style.display = 'block';
-            detailsContainer.style.transform = 'translateY(0)'; 
+            detailsContainer.style.transform = 'translateY(0)';
         }
     });
 }
 
 
 function addMarkerUser(position, title) {
-    const m = new google.maps.Marker({ 
-        map, 
-        position, 
+    const m = new google.maps.Marker({
+        map,
+        position,
         title
     });
     markers.push(m);
@@ -466,8 +465,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const applyButton = document.getElementById("apply-filter-button");
     applyButton.addEventListener("click", () => {
-        hideDetailsPane(); 
-        
+        hideDetailsPane();
+
         const currentCenter = map.getCenter();
         buscarParquesProximos(currentCenter);
 
