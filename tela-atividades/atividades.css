@@ -146,11 +146,11 @@ a.post-link:hover .post {
 
 /* BOTÃO FLUTUANTE (FAB) — CORRIGIDO */
 .fab {
-    position: absolute;
+    position: fixed;
     z-index: 1000;
 
     /* Mantém o botão no canto inferior direito */
-    bottom: -200px;
+    bottom: 85px;
     right: 10px;
 
     width: 56px;
@@ -300,3 +300,4 @@ a.post-link:hover .post {
         background-color: #eef1ec;
     }
 }
+
