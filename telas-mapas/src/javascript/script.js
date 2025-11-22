@@ -1,4 +1,11 @@
+// ====================================================
+// VARIÁVEIS GLOBAIS E FUNÇÕES GLOBAIS DE EVENTO (TOPO DO ARQUIVO)
+// ====================================================
 let map, markers = [], autocomplete, placesService, infoWindow;
+
+// VARIÁVEIS GLOBAIS NOVAS PARA O EVENTO
+let currentParkLocation = "";
+let currentParkName = "";
 
 // Variáveis de controle de arrasto
 let isDragging = false;
@@ -7,11 +14,121 @@ let initialTranslateY = 0;
 let wasDragged = false;
 const DRAG_THRESHOLD = 5;
 let detailsContainer = document.getElementById("park-details");
-// ----------------------------------------------------
-// VARIÁVEL DO PLACEHOLDER
-// ----------------------------------------------------
 const PLACEHOLDER_AVATAR_URL = "src/assets/avatar.png";
 
+// ====================================================
+// FUNÇÕES GLOBAIS DE EVENTO (CORREÇÃO DE ESCOPO: ANEXADAS AO WINDOW)
+// ====================================================
+
+// Define a função closeCreateEventScreen e a anexa à janela (window)
+window.closeCreateEventScreen = function() {
+    const modal = document.getElementById('create-event-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Define a função closeModalAndStopPropagation diretamente na janela (window)
+window.closeModalAndStopPropagation = function(event) {
+    if (event) {
+        // ESSA LINHA IMPEDE QUE O CLIQUE ATIVE O LISTENER DE FECHAR O PAINEL DE DETALHES
+        event.stopPropagation();
+    }
+    window.closeCreateEventScreen();
+}
+
+// Define a função handleSaveEvent diretamente na janela (window)
+window.handleSaveEvent = function() {
+    // 1. Captura os dados do formulário
+    const eventTitle = document.getElementById('event-title').value;
+    const eventLocation = document.getElementById('event-location').value;
+    const eventDate = document.getElementById('event-date').value;
+
+    // 2. Validação simples
+    if (!eventTitle || !eventDate) {
+        alert("Por favor, preencha o nome e a data/hora do evento.");
+        return;
+    }
+
+    // 3. Lógica de Salvamento (Placeholder)
+    console.log("Tentando salvar evento:", eventTitle, eventLocation, eventDate);
+    alert(`Evento "${eventTitle}" agendado com sucesso em ${currentParkName}!`);
+
+    window.closeCreateEventScreen();
+}
+
+
+// Função para abrir a tela de criação de evento (CORRIGIDA COM LISTENER NO FUNDO)
+function openCreateEventScreen() {
+    // Verifica se temos informações válidas
+    if (!currentParkName || !currentParkLocation) {
+        alert("Erro: Não foi possível obter o local do parque para criar o evento.");
+        return;
+    }
+
+    // 1. Criar o elemento modal
+    const modal = document.createElement('div');
+    modal.id = 'create-event-modal';
+
+    // 2. Adicionar o listener ao modal principal (o fundo escuro) para controlar o clique
+    // Esta é a principal correção para evitar que o painel de detalhes feche.
+    modal.addEventListener('click', function(event) {
+        // Se o clique foi exatamente no fundo escuro (o modal em si, e não o quadrado branco)
+        if (event.target.id === 'create-event-modal') {
+            window.closeCreateEventScreen();
+        }
+        // Garante que o clique no fundo escuro não vaze para o listener do documento
+        event.stopPropagation();
+    });
+
+    // 3. Conteúdo do formulário com o endereço do parque
+    modal.innerHTML = `
+    <div onclick="event.stopPropagation()" style="background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);">
+    <h2 style="font-size: 1.2em; margin-bottom: 15px;">Criar Novo Evento em ${currentParkName}</h2>
+    <div style="margin-bottom: 10px;">
+    <label for="event-title" style="display: block; font-weight: bold; margin-bottom: 5px;">Nome do Evento:</label>
+    <input type="text" id="event-title" placeholder="Piquenique de Primavera" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+    <div style="margin-bottom: 10px;">
+    <label for="event-location" style="display: block; font-weight: bold; margin-bottom: 5px;">Localização:</label>
+    <input type="text" id="event-location" value="${currentParkLocation}" readonly style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #eee;">
+    </div>
+    <div style="margin-bottom: 20px;">
+    <label for="event-date" style="display: block; font-weight: bold; margin-bottom: 5px;">Data e Hora:</label>
+    <input type="datetime-local" id="event-date" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+    <button id="save-event-button" style="width: 100%; padding: 10px; background-color: #5ED925; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-bottom: 10px;">Salvar Evento</button>
+
+    <button class="close-modal-button" onclick="closeModalAndStopPropagation(event)" style="width: 100%; padding: 10px; background-color: #ccc; color: #333; border: none; border-radius: 4px; cursor: pointer;">Fechar</button>
+    </div>
+    `;
+
+    // 4. Adicionar o modal ao body e mostrar (Estilo in-line para simplicidade)
+    document.body.appendChild(modal);
+    modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    `;
+
+    // 5. Adicionar Event Listener ao botão de Salvar
+    const saveButton = document.getElementById('save-event-button');
+    if (saveButton) {
+        // Usando a versão global do handleSaveEvent
+        saveButton.addEventListener('click', window.handleSaveEvent);
+    }
+}
+
+// ====================================================
+// FIM DAS FUNÇÕES GLOBAIS DE EVENTO
+// ====================================================
 
 function initMap() {
     const fallbackLocal = { lat: -23.5505, lng: -46.6333 }; // SP
@@ -248,7 +365,6 @@ function getTodayAndAllHours(weekdayText) {
     }
 
     // Mapeamento dos dias para encontrar a correspondência exata.
-    // O getDay() retorna 0 (Dom) a 6 (Sáb). A API do Google retorna os dias em Português.
     const todayIndex = new Date().getDay();
     const weekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
     const todayName = weekDays[todayIndex];
@@ -276,9 +392,8 @@ function getTodayAndAllHours(weekdayText) {
     return { todayHours, allHoursHtml };
 }
 
-
 // ----------------------------------------------------
-// Função showDetailsPane (CORRIGIDA)
+// Função showDetailsPane (CORRIGIDA COM EVENT LISTENER)
 // ----------------------------------------------------
 function showDetailsPane(placeId, title) {
     const request = {
@@ -294,6 +409,11 @@ function showDetailsPane(placeId, title) {
             if (place.photos && place.photos.length > 0) {
                 photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 });
             }
+
+            // 💡 Ação chave: Salvar a localização do parque nas variáveis globais
+            currentParkLocation = place.formatted_address || "Endereço não disponível";
+            currentParkName = place.name || title;
+
 
             // --- Lógica do Horário Atualizada ---
             const hoursData = (place.opening_hours && place.opening_hours.weekday_text)
@@ -323,7 +443,6 @@ function showDetailsPane(placeId, title) {
                 }
             ];
 
-            // 💡 CORREÇÃO APLICADA AQUI: Extrai o primeiro objeto do array para a variável 'review'
             const review = simulatedReview.length > 0 ? simulatedReview[0] : {};
 
 
@@ -353,16 +472,16 @@ function showDetailsPane(placeId, title) {
             <h2>Detalhes do parque</h2>
             </div>
 
-            <div class="park-image-container">
+            <div class="park-image-wrapper">
             ${photoUrl ? `<img src="${photoUrl}" alt="${place.name}" class="park-image-cover">` : ''}
 
-            <button class="create-event-button" onclick="alert('Funcionalidade de Criar Evento em desenvolvimento!');">
+            <button id="create-event-button-${placeId}" class="create-event-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" ><path fill="rgba(255, 255, 255, 1)" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
             </button>
             </div>
             <div class="park-content">
             <h1 class="text-xl font-bold text-gray-800 mb-2">${place.name || title}</h1>
-            <p class="text-sm text-gray-500 mb-4">${place.formatted_address || "Endereço não disponível"}</p>
+            <p class="text-sm text-gray-500 mb-4">${currentParkLocation}</p>
 
             <div class="park-info-line">
             <i class="fa-solid fa-clock"></i>
@@ -403,6 +522,13 @@ function showDetailsPane(placeId, title) {
             detailsContainer.style.transition = 'transform 0.3s ease-out';
             detailsContainer.style.display = 'block';
             detailsContainer.style.transform = 'translateY(0)';
+
+            // MUDANÇA 2: Adiciona o Event Listener via JavaScript
+            const eventButton = document.getElementById(`create-event-button-${placeId}`);
+            if (eventButton) {
+                // Atribui o evento de clique à função global
+                eventButton.addEventListener('click', openCreateEventScreen);
+            }
 
         } else {
             detailsContainer.innerHTML = `
@@ -451,7 +577,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.addEventListener("click", (event) => {
-        // NOVO CHECK: Se o clique foi no botão de expandir/colapsar do horário, não feche o menu de filtro.
         const isClickOnExpandButton = event.target.classList.contains('expand-hours-button') || event.target.closest('.expand-hours-button');
         if (isClickOnExpandButton) return;
 
