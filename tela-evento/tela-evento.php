@@ -9,7 +9,7 @@ $idEvento = $_GET['id'];
 $idUsuarioLogado = $_SESSION['id_usuario'];
 
 // Conexão com o Banco de Dados
-$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "spark";
+$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "Spark";
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conexao->connect_error) { die("Falha na conexão: " . $conexao->connect_error); }
 $url_base = '/Spark-main/';
@@ -276,3 +276,4 @@ $stmt_participacao->close();
 $stmt_check_avaliacao->close();
 $conexao->close();
 ?>
+
