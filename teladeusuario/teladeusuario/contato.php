@@ -31,7 +31,11 @@ if (session_status() == PHP_SESSION_NONE) {
     <div class="app-container">
        
        <header class="header">
+
        <div class="appbar">
+       <button class="icon-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'" aria-label="Voltar">
+       <i class="fa-solid fa-arrow-left"></i>
+       </button>
        <h1>Posso te ajudar?</h1>
        </div>
 
