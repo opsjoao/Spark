@@ -1,6 +1,6 @@
 <?php
 // Inclui o nosso guardião para verificar se o usuário está logado.
-require_once('../formulario-cadastro-login/verificacao.php');
+require_once('../../formulario-cadastro-login/verificacao.php');
 
 // Define a URL base do projeto para links corretetos.
 $url_base = '/Spark-main/';
@@ -66,4 +66,5 @@ if (session_status() == PHP_SESSION_NONE) {
         <p>&copy; 2022-2025 Debate de Cria. Todos os direitos reservados.</p>
     </footer>
 </body>
+
 </html>
