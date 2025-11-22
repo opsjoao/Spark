@@ -22,7 +22,7 @@ if (session_status() == PHP_SESSION_NONE) {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../../style.css">
     <link rel="stylesheet" href="contato.css">
 </head>
 <body>
@@ -30,35 +30,33 @@ if (session_status() == PHP_SESSION_NONE) {
 
     <div class="app-container">
        
- <header class="header">
-    <header class="appbar">
-        <button class="icon-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'" aria-label="Voltar">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-        <h1>Posso Ajudar?</h1>
-        <div style="width: 24px;"></div> </header>
-    <main class="app-content">
-      <div class="card profile-card">
-        <img class="avatar" id="avatarMain" src="imagem-perfil-matheus.jpg" alt="Foto do perfil" />
-        <div class="profile-meta">
-        </div>
-      </div>
+       <header class="header">
+       <div class="appbar">
+       <h1>Posso te ajudar?</h1>
+       </div>
 
+       <div class="profile-card">
+       <div class="avatar-icon-circle">
+       <i class="fa-solid fa-headset"></i>
+       </div>
+       </div>
+       </header>
 
-            <section class="contact-info">
-                <h2>Informações de Contato</h2>
-                
-                <div class="contact-item">
-                    <p class="label">Email</p>
-                    <p class="value"><i class="fas fa-envelope icon"></i> debatedecria@gmail.com</p>
-                </div>
+       <main class="app-content">
+       <section class="contact-info">
+       <h2>Informações de Contato</h2>
 
-                <div class="contact-item">
-                    <p class="label">Telefone</p>
-                    <p class="value"><i class="fas fa-phone icon"></i> +55 (11) 96353-4658</p>
-                </div>
-            </section>
-    </main>
+       <div class="contact-item">
+       <p class="label">Email</p>
+       <p class="value"><i class="fas fa-envelope icon"></i> debatedecria@gmail.com</p>
+       </div>
+
+       <div class="contact-item">
+       <p class="label">Telefone</p>
+       <p class="value"><i class="fas fa-phone icon"></i> +55 (11) 96353-4658</p>
+       </div>
+       </section>
+       </main>
     
             <footer class="footer">
             <p>&copy; 2022-2025 Debate de Cria. Todos os direitos reservados.</p>
@@ -66,5 +64,4 @@ if (session_status() == PHP_SESSION_NONE) {
     </div>
 
 </body>
-
 </html>
