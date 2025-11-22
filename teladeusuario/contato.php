@@ -1,138 +1,71 @@
 <?php
-// Inclui o nosso guardião, que já faz o session_start() e a verificação.
-require_once('../formulario-cadastro-login/verificacao.php');
+// Inclui o nosso guardião para verificar se o usuário está logado.
+require_once('../../formulario-cadastro-login/verificacao.php');
 
-// Pega o ID do usuário da sessão
-$idUsuarioLogado = $_SESSION['id_usuario'];
-
-// --- BUSCANDO DADOS DO USUÁRIO NO BANCO ---
-$servidor = "localhost";
-$usuario_db = "root";
-$senha_db = "";
-$banco = "Spark";
-
-$conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
-if ($conexao->connect_error) {
-    die("Falha na conexão: " . $conexao->connect_error);
-}
-
-$stmt = $conexao->prepare("SELECT nome, avatar_path FROM Usuario WHERE idUsuario = ?");
-$stmt->bind_param("i", $idUsuarioLogado);
-$stmt->execute();
-$resultado = $stmt->get_result();
-$usuario = $resultado->fetch_assoc();
-
-$stmt->close();
-$conexao->close();
-
+// Define a URL base do projeto para links corretetos.
 $url_base = '/Spark-main/';
 
-// Define as variáveis para usar no HTML
-$avatar = !empty($usuario['avatar_path']) ? $url_base . $usuario['avatar_path'] : $url_base . 'assets/images/avatar_padrao.png';
-$nome = !empty($usuario['nome']) ? $usuario['nome'] : 'Usuário';
-$logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php';
+//importar fonte
+include('../header.php');
+
+// Inicia a sessão se ainda não foi iniciada para buscar mensagens de erro/sucesso.
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Spark — Conta</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<link rel="stylesheet" href="<?php echo $url_base; ?>style.css" />
-
-<link rel="stylesheet" href="<?php echo $url_base; ?>teladeusuario/teladeusuario.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spark — Contato</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="contato.css">
 </head>
 <body>
-<header class="user-header">
-<h1>Conta</h1>
-<div class="user-info">
-<img class="avatar" src="<?php echo htmlspecialchars($avatar); ?>" alt="Foto do perfil" />
-<div class="user-meta">
-<span>Bem vindo,</span>
-<h2><?php echo htmlspecialchars($nome); ?></h2>
-</div>
-<a href="<?php echo $url_base; ?>teladeusuario/editar_perfil.php" class="edit-link" aria-label="Editar Perfil">
-<div class="item-content">
-<i class="fa-solid fa-pen-to-square icon-circle"></i>
-</div>
-</a>
-</div>
-</header>
 
-<main class="app-content">
-<div class="settings-list">
-<a href="<?php echo $url_base; ?>tela-atividades/atividades.php?aba=meus-eventos">
-<div class="settings-item">
-<div class="item-content">
-<i class="fa-solid fa-person-walking icon-circle"></i>
-<span>Meus Eventos</span>
-</div>
-<i class="angle fa-solid fa-angle-right"></i>
-</div>
-</a>
-<a href="#">
-<div class="settings-item">
-<div class="item-content">
-<i class="fa-solid fa-star icon-circle"></i>
-<span>Minhas Avaliações</span>
-</div>
-<i class="angle fa-solid fa-angle-right"></i>
-</div>
-</a>
 
-<div class="settings-divisor" ></div>
+    <div class="app-container">
+       
+       <header class="header">
 
-<a href="<?php echo $url_base; ?>teladeusuario/alterar_senha.php">
-<div class="settings-item">
-<div class="item-content">
-<i class="fa-solid fa-key icon-circle"></i>
-<span>Alterar Senha</span>
-</div>
-<i class="angle fa-solid fa-angle-right"></i>
-</div>
-</a>
-<a href="<?php echo $url_base; ?>teladeusuario/teladeusuario/contato.php">
+       <div class="appbar">
+       <button class="icon-btn" onclick="window.location.href='<?php echo $url_base; ?>teladeusuario/teladeusuario.php'" aria-label="Voltar">
+       <i class="fa-solid fa-arrow-left"></i>
+       </button>
+       <h1>Posso te ajudar?</h1>
+       </div>
 
-<div class="settings-item">
-<div class="item-content">
-<i class="fa-solid fa-circle-info icon-circle"></i>
-<span>Suporte</span>
-</div>
-<i class="angle fa-solid fa-angle-right"></i>
-</div>
-</a>
-<a href="<?php echo $logout_url; ?>">
-<div class="settings-item danger">
-<div class="item-content">
-<i class="fa-solid fa-arrow-right-from-bracket icon-circle"></i>
-<span>Sair da Conta</span>
-</div>
-</div>
-</a>
-</div>
-</main>
+       <div class="profile-card">
+       <div class="avatar-icon-circle">
+       <i class="fa-solid fa-headset"></i>
+       </div>
+       </div>
+       </header>
 
-<nav class="bottombar">
-<button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>TelaPerfils/perfil.html'">
-<i class="fa-solid fa-users"></i>
-</button>
-<button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-atividades/atividades.php'">
-<i class="fa-solid fa-person-walking"></i>
-</button>
-<button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-principal/telaprincipal.php'">
-<i class="fa-solid fa-house"></i>
-</button>
-<button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>telaFavoritos/index.html'">
-<i class="fa-solid fa-star"></i>
-</button>
-<button class="nav-btn active">
-<i class="fa-solid fa-user"></i>
-</button>
-</nav>
+       <main class="app-content">
+       <section class="contact-info">
+       <h2>Informações de Contato</h2>
+
+       <div class="contact-item">
+       <p class="label">Email</p>
+       <p class="value"><i class="fas fa-envelope icon"></i> debatedecria@gmail.com</p>
+       </div>
+
+       <div class="contact-item">
+       <p class="label">Telefone</p>
+       <p class="value"><i class="fas fa-phone icon"></i> +55 (11) 96353-4658</p>
+       </div>
+       </section>
+       </main>
+    
+            <footer class="footer">
+            <p>&copy; 2022-2025 Debate de Cria. Todos os direitos reservados.</p>
+        </footer>
+    </div>
+
 </body>
 </html>
-
-
-
