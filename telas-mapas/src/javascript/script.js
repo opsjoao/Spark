@@ -1,6 +1,26 @@
 // ====================================================
 // VARIÁVEIS GLOBAIS E FUNÇÕES GLOBAIS DE EVENTO (TOPO DO ARQUIVO)
 // ====================================================
+
+// NOVOS DADOS PARA OS ELEMENTOS DO PARQUE
+const PARK_AMENITIES = [
+    { icon: "src/assets/icon_bebedouro.svg", label: "Bebedouro", type: 'amenity', color: '#20B2AA' },
+{ icon: "src/assets/icon_banheiro.svg", label: "Banheiro", type: 'amenity', color: '#3F51B5' },
+{ icon: "src/assets/icon_pista_skate.svg", label: "Pista de Skate", type: 'amenity', color: '#E141AC' },
+{ icon: "src/assets/icon_quadra_volei.svg", label: "Quadra de Vôlei", type: 'amenity', color: '#8BC34A' },
+{ icon: "src/assets/icon_quadra_futebol.svg", label: "Quadra de Futebol", type: 'amenity', color: '#212121' },
+{ icon: "src/assets/icon_quadra_basquete.svg", label: "Quadra de Basquete", type: 'amenity', color: '#FF7043' },
+{ icon: "src/assets/icon_bicicleta.svg", label: "Bicicleta", type: 'amenity', color: '#FFC107' },
+{ icon: "src/assets/icon_pedalinho.svg", label: "Pedalinho", type: 'amenity', color: '#673AB7' },
+{ icon: "src/assets/icon_museu.svg", label: "Museu", type: 'amenity', color: '#E1418E' },
+{ icon: "src/assets/icon_quiosque.svg", label: "Quiosque", type: 'amenity', color: '#FFEB3B' },
+{ icon: "src/assets/icon_lago.svg", label: "Lago", type: 'amenity', color: '#00BCD4' },
+{ icon: "src/assets/icon_churrasqueira.svg", label: "Churrasqueira", type: 'amenity', color: '#D32F2F' },
+// NOVO ITEM PARA ADICIONAR
+{ icon: "src/assets/icon_adicionar.svg", label: "Adicionar sugestão", type: 'action', color: '#5ED925' }
+];
+
+
 let map, markers = [], autocomplete, placesService, infoWindow;
 
 // VARIÁVEIS GLOBAIS NOVAS PARA O EVENTO
@@ -129,13 +149,84 @@ function openCreateEventScreen() {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 2000;
+    z-index: 8000; /* AJUSTADO PARA GARANTIR SOBREPOSIÇÃO */
     `;
 
     const saveButton = document.getElementById('save-event-button');
     if (saveButton) {
         saveButton.addEventListener('click', window.handleSaveEvent);
     }
+}
+
+// ====================================================
+// NOVA FUNÇÃO PARA ABRIR TELA DE SELEÇÃO COMPLETA
+// ====================================================
+
+/**
+ * Abre o modal/tela completa para selecionar as amenidades.
+ */
+window.openAllAmenitiesSelectionScreen = function() { // <--- CORREÇÃO APLICADA AQUI
+    if (!currentParkName) {
+        alert("Erro: Parque não carregado.");
+        return;
+    }
+
+    // Filtra apenas as amenidades (excluindo o botão de 'Adicionar sugestão')
+    const amenitiesList = PARK_AMENITIES.filter(a => a.type === 'amenity');
+
+    // Geração do HTML para a tela completa
+    const allAmenitiesHtml = amenitiesList.map(item => `
+    <div class="full-amenity-item" style="cursor: pointer;">
+    <div class="full-amenity-icon-wrapper" style="background-color: white; border: 4px solid ${item.color};">
+    <img src="${item.icon}" alt="${item.label}" class="full-amenity-icon" />
+    </div>
+    <p class="full-amenity-label">${item.label}</p>
+    </div>
+    `).join('');
+
+    const modal = document.createElement('div');
+    modal.id = 'full-amenities-modal';
+
+    modal.addEventListener('click', function(event) {
+        // Fecha o modal se o clique for no fundo (a própria div modal)
+        if (event.target.id === 'full-amenities-modal') {
+            modal.remove();
+        }
+        // Previne que o evento se propague para elementos de fundo (como o mapa)
+        event.stopPropagation();
+    }); // Fim do addEventListener corrigido.
+
+    modal.innerHTML = `
+    <div onclick="event.stopPropagation()" class="full-amenities-content-wrapper">
+    <h2 class="full-amenities-header">Nesse parque tem</h2>
+
+    <div class="full-amenities-grid">
+    ${allAmenitiesHtml}
+    </div>
+
+    <button onclick="alert('Funcionalidade de Seleção salva (simulada)!'); document.getElementById('full-amenities-modal').remove();" class="full-amenities-save-button">
+    Salvar Seleção
+    </button>
+    <button onclick="document.getElementById('full-amenities-modal').remove();" class="full-amenities-close-button">
+    Fechar
+    </button>
+    </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9); /* Fundo escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Z-INDEX MÁXIMO PARA COBRIR TUDO */
+    overflow-y: auto;
+    `;
 }
 
 // ====================================================
@@ -346,8 +437,10 @@ function setupClickToClose() {
         const isClickInsidePane = detailsContainer.contains(event.target);
         const isClickOnMarker = event.target.tagName === 'IMG' && event.target.src.includes('pin_verde.png') && detailsContainer.style.display === 'none';
         const isClickOnExpandButton = event.target.classList.contains('expand-hours-button') || event.target.closest('.expand-hours-button');
+        // Novo: Verifica se o clique foi em algum dos modais, que devem ser ignorados
+        const isClickOnModal = document.getElementById('full-amenities-modal') || document.getElementById('create-event-modal');
 
-        if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker && !isClickOnExpandButton) {
+        if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker && !isClickOnExpandButton && !isClickOnModal) {
             hideDetailsPane();
         }
     });
@@ -380,6 +473,12 @@ function getTodayAndAllHours(weekdayText) {
 
     return { todayHours, allHoursHtml };
 }
+
+// Função para simular quais amenidades o parque TEM
+function getParkAmenities() {
+    return PARK_AMENITIES;
+}
+
 
 function showDetailsPane(placeId, title) {
     const request = {
@@ -455,6 +554,37 @@ function showDetailsPane(placeId, title) {
             >
             `).join('');
 
+            // --- CÓDIGO DO CARROSSEL DE AMENIDADES MODIFICADO (Borda de 4px) ---
+            const amenities = getParkAmenities();
+            const amenitiesCarouselHtml = amenities.map(item => {
+
+                let onclickEvent = '';
+                let cursorStyle = '';
+
+                // Usamos a nova propriedade 'color' ou um fallback
+                const amenityColor = item.color || '#ddd';
+
+                if (item.type === 'action') {
+                    onclickEvent = `onclick="openAllAmenitiesSelectionScreen()"`;
+                    cursorStyle = 'cursor: pointer;';
+                } else {
+                    cursorStyle = '';
+                }
+
+                // Aplica background branco e borda de 4px com a cor do item (AGORA 4PX)
+                const wrapperStyle = `background-color: white; border: 4px solid ${amenityColor};`;
+
+                return `
+                <div class="amenity-item" ${onclickEvent} style="${cursorStyle}">
+                <div class="amenity-icon-wrapper" style="${wrapperStyle}">
+                <img src="${item.icon}" alt="${item.label}" class="amenity-icon" />
+                </div>
+                <p class="amenity-label">${item.label}</p>
+                </div>
+                `;
+            }).join('');
+            // --- FIM CÓDIGO DO CARROSSEL DE AMENIDADES MODIFICADO ---
+
             const content = `
             <div class="details-header" style="text-align: center;">
             <h2>Detalhes do parque</h2>
@@ -491,6 +621,13 @@ function showDetailsPane(placeId, title) {
             <i class="fa-solid fa-phone"></i> <span>Telefone: ${place.formatted_phone_number || "Não disponível"}</span>
             </div>
 
+            <h3 class="section-title">Nesse parque tem</h3>
+            <div class="amenities-carousel-container">
+            <div class="amenities-carousel-track">
+            ${amenitiesCarouselHtml}
+            </div>
+            </div>
+            <hr class="section-divider">
             <h3 class="section-title">${simulatedReview.length} Avaliações</h3>
             <div class="review-card">
             <img src="${review.reviewPhoto || ''}"
