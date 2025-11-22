@@ -15,7 +15,7 @@ if (!isset($_POST['idEvento']) || !is_numeric($_POST['idEvento'])) {
 $idUsuario = $_SESSION['id_usuario'];
 $idEvento = $_POST['idEvento'];
 
-$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "spark";
+$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "Spark";
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conexao->connect_error) { die("Falha na conexão: " . $conexao->connect_error); }
 
@@ -52,4 +52,5 @@ if ($stmt_insert->execute()) {
 
 $stmt_insert->close();
 $conexao->close();
+
 ?>
