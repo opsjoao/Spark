@@ -10,45 +10,45 @@
 /* --- CORREÇÕES ESSENCIAIS NO CSS --- */
 
 html, body {
-   height: 100%;
-   margin: 0;
-   padding: 0;
-   overflow: hidden; /* Evita rolagem desnecessária */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Evita rolagem desnecessária */
 }
 
 body {
-   position: relative; /* O pai para o mapa absoluto */
-   padding-bottom: 60px; /* Espaço para o rodapé */
-   font-family: 'Inter', sans-serif;
+  position: relative; /* O pai para o mapa absoluto */
+  padding-bottom: 60px; /* Espaço para o rodapé */
+  font-family: 'Inter', sans-serif;
 }
 
 h1, h2, h3, p, button, input {
-      font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* O mapa deve preencher todo o corpo do documento, sob os elementos fixos */
 #map {
-   top: 0;
-   left: 0;
-   width: 100%;
-   height: 100%; /* Garante que ele cubra toda a área do body */
+top: 0;
+left: 0;
+width: 100%;
+height: 100%; /* Garante que ele cubra toda a área do body */
 }
 
 /* O container de pesquisa e filtro agora é fixo/flutuante */
 .search-and-filter-container {
   /* Tornando-o fixo, ele flutua sobre o mapa e não interfere no layout */
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 20; /* Garante que fique acima do mapa e do painel de detalhes */
-  
+
   /* Estilos de Aparência */
   background: transparent; /* Fundo transparente */
   padding: 10px; /* Adiciona um padding para a barra não tocar a borda */
 
   /* Garante que o conteúdo interno da barra de pesquisa se alinhe corretamente */
-  display: flex; 
+  display: flex;
   align-items: flex-start;
   flex-wrap: wrap; /* Permite a quebra de linha em telas menores */
   gap: 15px; /* Mantém o espaçamento entre a pesquisa e o botão de filtro */
@@ -66,73 +66,73 @@ h1, h2, h3, p, button, input {
 
 /* --- ESTILOS DE NAVEGAÇÃO --- */
 .bottombar {
-   background: #ffffff;
-   display: flex;
-   justify-content: space-around;
-   align-items: center;
-   padding: 8px 0;
-   position: fixed;
-   width: 100%;
-   border-top: 1px solid #ddd;
-   z-index: 1000;
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
 }
 .bottombar .nav-btn {
-   background: transparent;
-   border: none;
-   color: #333;
-   text-decoration: none;
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   justify-content: center;
-   font-size: 12px;
-   cursor: pointer;
-   padding: 5px;
-   flex: 1;
+  background: transparent;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  flex: 1;
 }
 .bottombar .nav-btn i {
-   font-size: 22px;
-   margin-bottom: 2px;
-   height: 24px;
-   display: flex;
-   align-items: center;
+  font-size: 22px;
+  margin-bottom: 2px;
+  height: 24px;
+  display: flex;
+  align-items: center;
 }
 .bottombar .nav-btn span {
-   font-size: 12px;
+  font-size: 12px;
 }
 .bottombar .nav-btn.active {
-   color: #ffffff; /* Cor do texto e do ícone quando ativo */
-   font-weight: bold;
-   position: relative;
+  color: #ffffff; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
+  position: relative;
 }
 
 .bottombar .nav-btn.active span {
-   color: #364b36; /* Cor do texto específica, se desejar */
+  color: #364b36; /* Cor do texto específica, se desejar */
 }
 
 /* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
 .bottombar .nav-btn.active::before {
-   content: '';
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-   width: 80px; /* Largura da "pílula" */
-   height: 40px; /* Altura da "pílula" */
-   background-color: #5ED925; /* Cor do fundo verde-claro */
-   border-radius: 999px; /* Arredonda totalmente a borda */
-   z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
-   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #5ED925; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .sidebar {
-   display: none;
+  display: none;
 }
 
 
 @media (min-width: 768px) {
   .barra-tarefas {
-   display: none; 
+    display: none;
   }
 }
 
@@ -147,7 +147,7 @@ h1, h2, h3, p, button, input {
   top: 100%; /* Posiciona o menu abaixo do botão */
   right: 0; /* Alinha o menu à direita do contêiner pai */
   z-index: 25; /* Acima da barra de pesquisa */
-  
+
   /* Estilos de aparência para o menu */
   background-color: white;
   border: 1px solid #ccc;
@@ -178,17 +178,17 @@ h1, h2, h3, p, button, input {
 
 /* Estilo para o loader */
 #loader-wrapper {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  z-index: 1000; /* Garante que ele fique na frente de tudo */
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: #fff;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+z-index: 1000; /* Garante que ele fique na frente de tudo */
 }
 
 /* Exemplo de um spinner simples */
@@ -219,27 +219,27 @@ h1, h2, h3, p, button, input {
 
 /* Estilo geral do container de detalhes */
 #park-details {
-  /* Manter estilos de arrasto */
-  touch-action: none; 
-  transform: translateY(0);
-  transition: transform 0.3s ease-out, opacity 0.3s ease-out; 
-  z-index: 50; /* Z-index alto para ficar acima do mapa e da barra de pesquisa */
-  cursor: grab; 
-  max-height: 85vh; 
-  min-height: 85vh; 
+/* Manter estilos de arrasto */
+touch-action: none;
+transform: translateY(0);
+transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+z-index: 50; /* Z-index alto para ficar acima do mapa e da barra de pesquisa */
+cursor: grab;
+max-height: 85vh;
+min-height: 85vh;
 
-  overflow-y: auto; 
+overflow-y: auto;
 
-  /* Estilos do 'Card' */
-  position: fixed;
-  bottom: 60px; /* Altura da bottombar */
-  width: 100%;
-  background-color: white;
-  box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2); 
-  border-top-left-radius: 20px; 
-  border-top-right-radius: 20px;
-  padding: 0; 
-  box-sizing: border-box;
+/* Estilos do 'Card' */
+position: fixed;
+bottom: 60px; /* Altura da bottombar */
+width: 100%;
+background-color: white;
+box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+border-top-left-radius: 20px;
+border-top-right-radius: 20px;
+padding: 0;
+box-sizing: border-box;
 }
 
 /* Estilo para a barra de topo (header) */
@@ -248,11 +248,11 @@ h1, h2, h3, p, button, input {
   align-items: center;
   text-align: center;
   padding: 10px;
-  background-color: #1A9929; 
+  background-color: #1A9929;
   color: white;
-  position: sticky; 
+  position: sticky;
   top: 0;
-  z-index: 1; 
+  z-index: 1;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
@@ -272,25 +272,29 @@ h1, h2, h3, p, button, input {
 }
 
 .back-arrow {
-      /* Para que a seta de volta não seja centralizada com o texto, */
-      /* ela precisa de posicionamento absoluto: */
-      position: absolute;
-      left: 15px; /* Ajuste a distância da esquerda conforme necessário */
-      top: 15px; /* Ajuste a distância do topo conforme necessário */
-      z-index: 10; /* Garante que ela fique acima de outros elementos */
+  /* Para que a seta de volta não seja centralizada com o texto, */
+  /* ela precisa de posicionamento absoluto: */
+  position: absolute;
+  left: 15px; /* Ajuste a distância da esquerda conforme necessário */
+  top: 15px; /* Ajuste a distância do topo conforme necessário */
+  z-index: 10; /* Garante que ela fique acima de outros elementos */
 }
 
 
+/* NOVO: Estilo para envolver a imagem e o botão, tornando-o o contexto relativo. */
+.park-image-wrapper {
+  position: relative; /* CRUCIAL: Define o contexto para o botão absoluto */
+  padding: 15px 15px 0 15px; /* Adiciona o padding da imagem aqui */
+}
+
 /* Estilo para a imagem de capa */
 .park-image-cover {
-  width: calc(100% - 30px); /* Ajusta para ter um pouco de margem nas laterais */
+  width: 100%; /* Ajustado para preencher o wrapper */
   height: 200px;
   object-fit: cover;
   display: block;
-  margin-left: auto; /* Centraliza horizontalmente */
-  margin-right: auto; /* Centraliza horizontalmente */
+  /* REMOVIDO: margens e centralização, pois está dentro do wrapper */
   border-radius: 12px; /* Arredonda as bordas */
-  margin-top: 15px; /* Adiciona um pequeno espaçamento do topo */
 }
 /* Estilo para o conteúdo (abaixo da imagem) */
 .park-content {
@@ -317,7 +321,7 @@ h1, h2, h3, p, button, input {
 .section-title {
   font-size: 16px;
   font-weight: bold;
-  color: #023047;
+  color: #000000;
   margin-top: 20px;
   margin-bottom: 10px;
 }
@@ -371,76 +375,72 @@ h1, h2, h3, p, button, input {
 /* --- NOVOS ESTILOS PARA HORÁRIO EXPANSÍVEL --- */
 
 .today-hours-display {
-    margin-left: 5px;
-    flex-grow: 1; /* Permite que o texto de horário ocupe o espaço */
-    font-weight: 500;
+  margin-left: 5px;
+  flex-grow: 1; /* Permite que o texto de horário ocupe o espaço */
+  font-weight: 500;
 }
 
 .expand-hours-button {
-    background: none;
-    border: none;
-    color: #7CBD64;
-    cursor: pointer;
-    text-decoration: none; /* Removido underline para melhor visual */
-    font-size: 0.85em;
-    padding: 0;
-    margin-left: 10px;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+  background: none;
+  border: none;
+  color: #7CBD64;
+  cursor: pointer;
+  text-decoration: none; /* Removido underline para melhor visual */
+  font-size: 0.85em;
+  padding: 0;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .expand-hours-button i {
-    transition: transform 0.3s ease;
-    color: #7CBD64;
-    width: auto; /* Sobrescreve a largura do ícone padrão */
+  transition: transform 0.3s ease;
+  color: #7CBD64;
+  width: auto; /* Sobrescreve a largura do ícone padrão */
 }
 
 .expand-hours-button .rotate-180 {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .full-hours-dropdown {
-    margin: 5px 0 15px 30px; /* Alinhamento com os outros itens da linha, com recuo */
-    padding: 10px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    background-color: #fcfcfc;
-    width: calc(100% - 30px); /* Ajusta a largura pelo recuo */
-    box-sizing: border-box;
+  margin: 5px 0 15px 30px; /* Alinhamento com os outros itens da linha, com recuo */
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+  width: calc(100% - 30px); /* Ajusta a largura pelo recuo */
+  box-sizing: border-box;
 }
 
 .full-hours-dropdown p {
-    margin: 3px 0;
-    font-size: 0.9em;
-    line-height: 1.4;
+  margin: 3px 0;
+  font-size: 0.9em;
+  line-height: 1.4;
 }
 
 .full-hours-dropdown .current-day {
-    font-weight: bold;
-    color: #1A9929; 
+  font-weight: bold;
+  color: #1A9929;
 }
 
+/* BOTÃO DE CRIAR EVENTO: ALTERADO PARA POSICIONAMENTO ABSOLUTO */
 .create-event-button {
-    position: fixed; /* Mude para fixed para que ele flutue em relação à viewport */
-    bottom: 80px; /* Distância da parte inferior, acima da bottombar (60px) + um pouco mais */
-    right: 20px; /* Distância da direita */
-    width: 57px;
-    height: 57px;
-    background-color: #5ED925; /* Cor verde para destaque */
-    border-radius: 50%; /* Torna o botão circular */
-    color: rgb(255, 255, 255);
-    border: none;
-    display: flex; /* Para centralizar o conteúdo (o ícone) */
-    justify-content: center;
-    align-items: center;
-    font-size: 24px; /* Tamanho do ícone */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
-    cursor: pointer;
-    z-index: 100; /* Garante que ele fique acima de quase tudo, incluindo o painel de detalhes */
-    transition: background-color 0.2s ease; /* Transição suave para o hover */
-}
-
-.create-event-button:hover {
-    background-color: #4CAF50; /* Uma cor um pouco mais escura no hover */
+  position: absolute; /* MUDADO: De 'fixed' para 'absolute' */
+  top: 180px; /* Alinhamento com o topo do wrapper/imagem */
+  right: 9px; /* Distância da direita para centralizar o botão na borda direita da imagem */
+  width: 57px;
+  height: 57px;
+  background-color: #5ED925; /* Cor verde para destaque */
+  border-radius: 50%; /* Torna o botão circular */
+  color: rgb(255, 255, 255);
+  border: none;
+  display: flex; /* Para centralizar o conteúdo (o ícone) */
+  justify-content: center;
+  align-items: center;
+  font-size: 24px; /* Tamanho do ícone */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
+  cursor: pointer;
+  z-index: 100;
 }
