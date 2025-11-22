@@ -63,7 +63,7 @@ $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php
 
     <main class="app-content">
         <div class="settings-list">
-            <a href="<?php echo $url_base; ?>tela-atividades/atividades.php">
+            <a href="<?php echo $url_base; ?>../tela-atividades/atividades.php?aba=meus-eventos">
                 <div class="settings-item">
                     <div class="item-content">
                         <i class="fa-solid fa-person-walking icon-circle"></i>
@@ -133,6 +133,7 @@ $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php
     </nav>
 </body>
 </html>
+
 
 
 
