@@ -24,7 +24,7 @@ if (isset($_FILES['imagemAvaliacao']) && $_FILES['imagemAvaliacao']['error'] ===
 }
 
 // Conexão e Transação no Banco
-$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "spark";
+$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "Spark";
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conexao->connect_error) { die("Falha na conexão."); }
 
@@ -52,4 +52,5 @@ try {
 
 $conexao->close();
 exit();
+
 ?>
