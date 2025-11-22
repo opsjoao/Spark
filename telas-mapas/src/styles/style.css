@@ -72,6 +72,7 @@ height: 100%; /* Garante que ele cubra toda a área do body */
   align-items: center;
   padding: 8px 0;
   position: fixed;
+  bottom: 0; /* CORREÇÃO: Fixa a bottombar no fundo da tela */
   width: 100%;
   border-top: 1px solid #ddd;
   z-index: 1000;
@@ -247,7 +248,7 @@ box-sizing: border-box;
   display: flex;
   align-items: center;
   text-align: center;
-  padding: 10px;
+  padding: 15px 10px; /* Aumenta o padding vertical para dar espaço ao "puxador" */
   background-color: #1A9929;
   color: white;
   position: sticky;
@@ -319,11 +320,12 @@ box-sizing: border-box;
 }
 
 .section-title {
-  font-size: 16px;
+  font-size: 1.1em; /* Ajustado para consistência com o JS */
   font-weight: bold;
-  color: #000000;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  color: #333; /* Ajustado para consistência com o JS */
+  margin-top: 15px; /* Ajustado para consistência com o JS */
+  margin-bottom: 10px; /* Ajustado para consistência com o JS */
+  padding-left: 5px; /* Ajustado para consistência com o JS */
 }
 
 /* Estilo do botão "Criar avaliação" */
@@ -443,4 +445,211 @@ box-sizing: border-box;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
   cursor: pointer;
   z-index: 100;
+}
+
+/* ====================================
+ *  ESTILOS NOVOS PARA O CARROSSEL (AMENIDADES) - CORRIGIDOS PARA ARRASTO
+ *  ==================================== */
+
+.amenities-carousel-container {
+  /* Permite a rolagem horizontal */
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* CRUCIAL PARA ARRASTO TOUCH/MOUSE */
+  touch-action: pan-x;
+
+  /* Esconde a barra de rolagem se desejar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  margin: 15px 0;
+  padding-bottom: 5px;
+}
+
+/* Esconde a barra de rolagem no Chrome/Safari/Opera */
+.amenities-carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+.amenities-carousel-track {
+  /* MUDANÇA CHAVE: Usar display: flex, mas garantir que não quebre a linha */
+  display: flex;
+  white-space: nowrap;
+  gap: 15px;
+  padding: 0 5px;
+
+  /* Adiciona um cursor visualmente indicativo de que é arrastável */
+  cursor: grab;
+}
+
+.amenities-carousel-track:active {
+  /* Altera o cursor enquanto o usuário está clicando e arrastando */
+  cursor: grabbing;
+}
+
+.amenity-item {
+  /* MUDANÇA CHAVE: flex-shrink: 0 garante que o item não encolha, mantendo sua largura. */
+  flex-shrink: 0;
+  width: 80px; /* Largura para cada item/coluna */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* REMOVIDO: cursor: pointer para desabilitar a ideia de clique individual */
+}
+
+/* Sobrescreve o cursor apenas para o item de ação, que é o único clicável */
+.amenity-item[onclick] {
+  cursor: pointer;
+}
+
+.amenity-icon-wrapper {
+  /* Estilo do círculo colorido */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  background-color: #ddd;
+  transition: transform 0.2s;
+}
+/* Efeito de clique */
+.amenity-item:active .amenity-icon-wrapper {
+  transform: scale(0.95);
+}
+
+.amenity-icon {
+  /* Estilo do ícone dentro do círculo */
+  width: 35px;
+  height: 35px;
+}
+
+.amenity-label {
+  /* Estilo do texto */
+  font-size: 0.75rem;
+  color: #333;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* Títulos de seção e divisores para melhor organização */
+.section-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+.section-divider {
+  border: none;
+  height: 1px;
+  background-color: #eee;
+  margin: 15px 0;
+}
+
+/* ====================================
+ *  ESTILOS NOVOS PARA O MODAL DE SELEÇÃO COMPLETA
+ *  ==================================== */
+
+#full-amenities-modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.9);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 3000;
+overflow-y: auto;
+}
+
+.full-amenities-content-wrapper {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 95%;
+  max-width: 600px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.full-amenities-header {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.full-amenities-grid {
+  display: grid;
+  /* 3 colunas, como nas suas imagens */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.full-amenity-item {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  /* Opcional: Efeito hover para indicar que é selecionável */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.full-amenity-item:hover {
+  background-color: #f0f0f0;
+}
+
+.full-amenity-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 5px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7; /* Cor de fundo clara para a tela de seleção */
+  border: 2px solid #ddd;
+}
+
+.full-amenity-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.full-amenity-label {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: #333;
+}
+
+.full-amenities-save-button {
+  padding: 12px;
+  background-color: #5ED925;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.full-amenities-close-button {
+  padding: 10px;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
