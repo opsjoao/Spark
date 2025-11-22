@@ -10,7 +10,7 @@ $idUsuarioLogado = $_SESSION['id_usuario'];
 $servidor = "localhost";
 $usuario_db = "root";
 $senha_db = "";
-$banco = "spark";
+$banco = "Spark";
 
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conexao->connect_error) {
@@ -281,4 +281,5 @@ $stmt_historico->close();
 $stmt_meus_eventos->close();
 $conexao->close();
 ?>
+
 
