@@ -162,7 +162,7 @@ $result_categorias = $conexao->query($sql_categorias);
                     } else {
                         $imagem_fundo = $imagem_padrao_evento;
                     }
-                    $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.png";
+                    $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.jpg";
                     $caminho_relativo_avatar = $evento['host_avatar'];
                     if (!empty($caminho_relativo_avatar) && file_exists($_SERVER['DOCUMENT_ROOT'] . $url_base . $caminho_relativo_avatar)) {
                         $avatar_host = $url_base . $caminho_relativo_avatar;
