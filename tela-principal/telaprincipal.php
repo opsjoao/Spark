@@ -269,8 +269,29 @@ $result_categorias = $conexao->query($sql_categorias);
         <a href="<?php echo $url_base; ?>tela-principal/telaprincipal.php" class="nav-btn active">
             <i class="fa-solid fa-house"></i>
         </a>
-        <a href="<?php echo $url_base; ?>telaFavoritos/index.html" class="nav-btn">
-            <i class="fa-solid fa-star"></i>
+        <a href="../telas-mapas/index.html" class="nav-btn">
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+        width="28px" height="28px" viewBox="0 0 512.000000 512.000000"
+        preserveAspectRatio="xMidYMid meet">
+
+        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+        fill="#333" stroke="none">
+        <path d="M3880 5114 c-253 -46 -368 -91 -527 -203 -320 -226 -515 -647 -464
+        -1002 50 -348 378 -896 903 -1510 135 -159 185 -185 274 -143 54 26 304 324
+        523 624 372 510 549 910 528 1190 -40 510 -395 920 -892 1025 -77 17 -294 28
+        -345 19z m221 -648 c94 -20 164 -59 236 -132 188 -187 187 -481 -1 -670 -189
+        -189 -483 -189 -672 0 -188 189 -189 483 -1 670 121 122 271 167 438 132z"/>
+        <path d="M836 3535 c-543 -218 -767 -312 -788 -332 -15 -15 -33 -44 -38 -64
+        -7 -24 -9 -566 -8 -1535 l3 -1499 24 -34 c26 -36 90 -70 133 -71 15 0 345 127
+        733 282 l705 282 0 1638 c0 901 -1 1638 -2 1638 -2 -1 -345 -138 -762 -305z"/>
+        <path d="M1920 2202 l0 -1638 640 -256 640 -256 0 1285 0 1284 -69 98 c-185
+        261 -346 534 -431 731 l-41 95 -337 134 c-185 74 -352 141 -369 148 l-33 13 0
+        -1638z"/>
+        <path d="M5076 3029 c-192 -313 -602 -845 -766 -993 -95 -86 -248 -129 -382
+        -108 -122 18 -201 65 -312 185 l-96 102 0 -1107 0 -1108 48 19 c26 10 370 148
+        764 306 791 316 770 305 783 397 3 24 4 567 3 1207 l-3 1164 -39 -64z"/>
+        </g>
+        </svg>
         </a>
         <a href="<?php echo $url_base; ?>teladeusuario/teladeusuario.php" class="nav-btn">
             <i class="fa-solid fa-user"></i>
