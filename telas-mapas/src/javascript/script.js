@@ -16,11 +16,12 @@ const DRAG_THRESHOLD = 5;
 let detailsContainer = document.getElementById("park-details");
 const PLACEHOLDER_AVATAR_URL = "src/assets/avatar.png";
 
+const SAVE_EVENT_URL = '/Spark-main/telas-mapas/src/javascript/salvar_evento_mapa.php';
+
 // ====================================================
-// FUNÇÕES GLOBAIS DE EVENTO (CORREÇÃO DE ESCOPO: ANEXADAS AO WINDOW)
+// FUNÇÕES GLOBAIS DE EVENTO
 // ====================================================
 
-// Define a função closeCreateEventScreen e a anexa à janela (window)
 window.closeCreateEventScreen = function() {
     const modal = document.getElementById('create-event-modal');
     if (modal) {
@@ -28,66 +29,80 @@ window.closeCreateEventScreen = function() {
     }
 }
 
-// Define a função closeModalAndStopPropagation diretamente na janela (window)
 window.closeModalAndStopPropagation = function(event) {
     if (event) {
-        // ESSA LINHA IMPEDE QUE O CLIQUE ATIVE O LISTENER DE FECHAR O PAINEL DE DETALHES
         event.stopPropagation();
     }
     window.closeCreateEventScreen();
 }
 
-// Define a função handleSaveEvent diretamente na janela (window)
 window.handleSaveEvent = function() {
-    // 1. Captura os dados do formulário
     const eventTitle = document.getElementById('event-title').value;
+    const eventDescription = document.getElementById('event-description').value;
     const eventLocation = document.getElementById('event-location').value;
     const eventDate = document.getElementById('event-date').value;
+    const parkName = currentParkName;
 
-    // 2. Validação simples
-    if (!eventTitle || !eventDate) {
-        alert("Por favor, preencha o nome e a data/hora do evento.");
+    if (!eventTitle || !eventDate || !parkName || !eventDescription) {
+        alert("Por favor, preencha o nome, a descrição, a data/hora do evento e certifique-se de que o parque foi carregado corretamente.");
         return;
     }
 
-    // 3. Lógica de Salvamento (Placeholder)
-    console.log("Tentando salvar evento:", eventTitle, eventLocation, eventDate);
-    alert(`Evento "${eventTitle}" agendado com sucesso em ${currentParkName}!`);
+    const formData = new FormData();
+    formData.append('event_title', eventTitle);
+    formData.append('event_description', eventDescription);
+    formData.append('event_date', eventDate);
+    formData.append('event_location', eventLocation);
+    formData.append('park_name', parkName);
+    formData.append('park_cep', window.currentParkPostalCode || "");
 
-    window.closeCreateEventScreen();
+    fetch(SAVE_EVENT_URL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log("Evento salvo com sucesso!");
+            window.closeCreateEventScreen();
+            window.location.href = '/Spark-main/tela-atividades/atividades.php?aba=meus-eventos';
+        } else {
+            alert("Erro ao salvar o evento: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Erro de rede ou servidor:', error);
+        alert("Erro ao salvar o evento. Verifique sua conexão.");
+        window.closeCreateEventScreen();
+    });
 }
 
-
-// Função para abrir a tela de criação de evento (CORRIGIDA COM LISTENER NO FUNDO)
 function openCreateEventScreen() {
-    // Verifica se temos informações válidas
     if (!currentParkName || !currentParkLocation) {
         alert("Erro: Não foi possível obter o local do parque para criar o evento.");
         return;
     }
 
-    // 1. Criar o elemento modal
     const modal = document.createElement('div');
     modal.id = 'create-event-modal';
 
-    // 2. Adicionar o listener ao modal principal (o fundo escuro) para controlar o clique
-    // Esta é a principal correção para evitar que o painel de detalhes feche.
     modal.addEventListener('click', function(event) {
-        // Se o clique foi exatamente no fundo escuro (o modal em si, e não o quadrado branco)
         if (event.target.id === 'create-event-modal') {
             window.closeCreateEventScreen();
         }
-        // Garante que o clique no fundo escuro não vaze para o listener do documento
         event.stopPropagation();
     });
 
-    // 3. Conteúdo do formulário com o endereço do parque
     modal.innerHTML = `
     <div onclick="event.stopPropagation()" style="background: white; padding: 20px; border-radius: 10px; width: 90%; max-width: 400px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);">
     <h2 style="font-size: 1.2em; margin-bottom: 15px;">Criar Novo Evento em ${currentParkName}</h2>
     <div style="margin-bottom: 10px;">
     <label for="event-title" style="display: block; font-weight: bold; margin-bottom: 5px;">Nome do Evento:</label>
     <input type="text" id="event-title" placeholder="Piquenique de Primavera" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+    </div>
+    <div style="margin-bottom: 10px;">
+    <label for="event-description" style="display: block; font-weight: bold; margin-bottom: 5px;">Descrição:</label>
+    <textarea id="event-description" placeholder="O que vocês vão fazer neste evento?" rows="3" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; resize: none;"></textarea>
     </div>
     <div style="margin-bottom: 10px;">
     <label for="event-location" style="display: block; font-weight: bold; margin-bottom: 5px;">Localização:</label>
@@ -103,7 +118,6 @@ function openCreateEventScreen() {
     </div>
     `;
 
-    // 4. Adicionar o modal ao body e mostrar (Estilo in-line para simplicidade)
     document.body.appendChild(modal);
     modal.style.cssText = `
     position: fixed;
@@ -118,10 +132,8 @@ function openCreateEventScreen() {
     z-index: 2000;
     `;
 
-    // 5. Adicionar Event Listener ao botão de Salvar
     const saveButton = document.getElementById('save-event-button');
     if (saveButton) {
-        // Usando a versão global do handleSaveEvent
         saveButton.addEventListener('click', window.handleSaveEvent);
     }
 }
@@ -131,7 +143,7 @@ function openCreateEventScreen() {
 // ====================================================
 
 function initMap() {
-    const fallbackLocal = { lat: -23.5505, lng: -46.6333 }; // SP
+    const fallbackLocal = { lat: -23.5505, lng: -46.6333 };
 
     map = new google.maps.Map(document.getElementById("map"), {
         center: fallbackLocal,
@@ -170,7 +182,6 @@ function initMap() {
         }
     });
 
-    // pega o GPS
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (pos) => {
@@ -190,7 +201,7 @@ function initMap() {
 }
 
 function buscarParquesProximos(localizacao) {
-    const raio = document.getElementById("radiusInput").value * 1000; // km para metros
+    const raio = document.getElementById("radiusInput").value * 1000;
     const request = {
         location: localizacao,
         radius: raio,
@@ -231,24 +242,17 @@ function addMarker(position, title, placeId) {
     markers.push(m);
 }
 
-// ----------------------------------------------------
-// Lógica de Arrastar e Esconder (Drag-to-Dismiss)
-// ----------------------------------------------------
-
 function hideDetailsPane() {
     const detailsContainer = document.getElementById("park-details");
 
-    // Esconde o painel e reseta o transform para a próxima vez
     if (detailsContainer && detailsContainer.style.display !== 'none') {
-        // Usa transform para animar para fora da tela (desliza para baixo)
         detailsContainer.style.transition = 'transform 0.3s ease-in';
         detailsContainer.style.transform = 'translateY(100%)';
 
-        // Oculta completamente após a animação
         setTimeout(() => {
             detailsContainer.style.display = 'none';
-            detailsContainer.style.transform = 'translateY(0)'; // Volta à posição inicial invisível
-            detailsContainer.style.transition = 'none'; // Desliga a transição ao esconder
+            detailsContainer.style.transform = 'translateY(0)';
+            detailsContainer.style.transition = 'none';
         }, 300);
     }
 }
@@ -332,9 +336,6 @@ function endDrag(event) {
     }
 }
 
-// ----------------------------------------------------
-// Função para fechar no clique fora (MODIFICADA)
-// ----------------------------------------------------
 function setupClickToClose() {
     document.addEventListener('click', (event) => {
         if (wasDragged) {
@@ -343,12 +344,8 @@ function setupClickToClose() {
         }
 
         const isClickInsidePane = detailsContainer.contains(event.target);
-        // Ajuste no check do marker para ser mais robusto, verificando se o display está ativo
         const isClickOnMarker = event.target.tagName === 'IMG' && event.target.src.includes('pin_verde.png') && detailsContainer.style.display === 'none';
-
-        // NOVO CHECK: Se o clique foi no botão de expansão do horário, não feche o painel.
         const isClickOnExpandButton = event.target.classList.contains('expand-hours-button') || event.target.closest('.expand-hours-button');
-
 
         if (detailsContainer.style.display === 'block' && !isClickInsidePane && !isClickOnMarker && !isClickOnExpandButton) {
             hideDetailsPane();
@@ -356,15 +353,11 @@ function setupClickToClose() {
     });
 }
 
-// ----------------------------------------------------
-// NOVA FUNÇÃO: Obtém o horário de hoje e o HTML completo
-// ----------------------------------------------------
 function getTodayAndAllHours(weekdayText) {
     if (!weekdayText || weekdayText.length === 0) {
         return { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
     }
 
-    // Mapeamento dos dias para encontrar a correspondência exata.
     const todayIndex = new Date().getDay();
     const weekDays = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
     const todayName = weekDays[todayIndex];
@@ -372,29 +365,22 @@ function getTodayAndAllHours(weekdayText) {
     let todayHours = "Não disponível";
     let foundToday = false;
 
-    // 1. Encontrar o horário de hoje
     const allHoursHtml = weekdayText.map(line => {
-        // Usa `startsWith` para encontrar o dia correto
         if (line.startsWith(todayName)) {
-            // Remove o nome do dia e os dois pontos/espaço para deixar só o horário
             todayHours = line.replace(`${todayName}: `, '').trim();
             foundToday = true;
-            return `<p class="current-day">${line}</p>`; // Adiciona classe para destaque no CSS
+            return `<p class="current-day">${line}</p>`;
         }
         return `<p>${line}</p>`;
     }).join('');
 
-    // 2. Se não encontrou o dia de hoje (pode ser problema de fuso/formato), usa o primeiro como fallback
     if (!foundToday && weekdayText.length > 0) {
-        todayHours = weekdayText[0].split(': ').pop() || weekdayText[0]; // Tenta isolar o horário do primeiro item
+        todayHours = weekdayText[0].split(': ').pop() || weekdayText[0];
     }
 
     return { todayHours, allHoursHtml };
 }
 
-// ----------------------------------------------------
-// Função showDetailsPane (CORRIGIDA COM EVENT LISTENER)
-// ----------------------------------------------------
 function showDetailsPane(placeId, title) {
     const request = {
         placeId: placeId,
@@ -410,19 +396,23 @@ function showDetailsPane(placeId, title) {
                 photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 });
             }
 
-            // 💡 Ação chave: Salvar a localização do parque nas variáveis globais
             currentParkLocation = place.formatted_address || "Endereço não disponível";
             currentParkName = place.name || title;
 
+            // Extrair CEP
+            let parkPostalCode = "";
+            if (place.address_components) {
+                parkPostalCode = getPostalCode(place.address_components);
+            }
+            window.currentParkPostalCode = parkPostalCode; // salvar CEP globalmente
 
-            // --- Lógica do Horário Atualizada ---
+
             const hoursData = (place.opening_hours && place.opening_hours.weekday_text)
             ? getTodayAndAllHours(place.opening_hours.weekday_text)
             : { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
 
             const realTodayHours = hoursData.todayHours;
             const realAllHoursHtml = hoursData.allHoursHtml;
-            // ------------------------------------
 
             const realAbout = place.editorial_summary ?
             place.editorial_summary.overview :
@@ -431,8 +421,8 @@ function showDetailsPane(placeId, title) {
             const parkDescription = realAbout;
 
             const simulatedParticipants = [
-                { photo: "src/assets/avatar1.png" }, // Foto simulada 1
-                { photo: "src/assets/avatar2.png" }  // Foto simulada 2
+                { photo: "src/assets/avatar1.png" },
+                { photo: "src/assets/avatar2.png" }
             ];
             const simulatedReview = [
                 {
@@ -444,7 +434,6 @@ function showDetailsPane(placeId, title) {
             ];
 
             const review = simulatedReview.length > 0 ? simulatedReview[0] : {};
-
 
             const websiteLink = place.website ?
             `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
@@ -458,7 +447,6 @@ function showDetailsPane(placeId, title) {
                 return stars;
             };
 
-            // 1. Placeholder nos Participantes
             const participantsHtml = simulatedParticipants.map(p => `
             <img src="${p.photo || ''}"
             class="participant-photo"
@@ -523,10 +511,8 @@ function showDetailsPane(placeId, title) {
             detailsContainer.style.display = 'block';
             detailsContainer.style.transform = 'translateY(0)';
 
-            // MUDANÇA 2: Adiciona o Event Listener via JavaScript
             const eventButton = document.getElementById(`create-event-button-${placeId}`);
             if (eventButton) {
-                // Atribui o evento de clique à função global
                 eventButton.addEventListener('click', openCreateEventScreen);
             }
 
@@ -547,7 +533,6 @@ function showDetailsPane(placeId, title) {
     });
 }
 
-
 function addMarkerUser(position, title) {
     const m = new google.maps.Marker({
         map,
@@ -564,9 +549,16 @@ function clearMarkers() {
 
 window.initMap = initMap;
 
-// ----------------------------------------------------
-// Código Existente para o Menu de Filtro (Mantido)
-// ----------------------------------------------------
+function getPostalCode(components) {
+    for (const comp of components) {
+        if (comp.types.includes("postal_code")) {
+            return comp.long_name;
+        }
+    }
+    return "";
+}
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const filterButton = document.getElementById("filter-menu-button");
     const filterMenu = document.getElementById("filter-menu");
