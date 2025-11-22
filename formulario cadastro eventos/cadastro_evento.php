@@ -14,7 +14,7 @@ $idUsuario = $_SESSION['id_usuario'];
 $servidor = "localhost";
 $usuario_db = "root";
 $senha_db = "";
-$banco = "spark";
+$banco = "Spark";
 
 // 2. Criar a Conexão
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
@@ -120,3 +120,4 @@ if ($idParque) {
 // 7. Fechar a conexão
 $conexao->close();
 ?>
+
