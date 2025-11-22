@@ -14,7 +14,7 @@ if (!isset($_POST['idEvento'])) {
 $idUsuario = $_SESSION['id_usuario'];
 $idEvento = $_POST['idEvento'];
 
-$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "spark";
+$servidor = "localhost"; $usuario_db = "root"; $senha_db = ""; $banco = "Spark";
 $conexao = new mysqli($servidor, $usuario_db, $senha_db, $banco);
 if ($conexao->connect_error) {
     echo json_encode(['success' => false, 'message' => 'Falha na conexão com o banco.']);
@@ -33,4 +33,5 @@ if ($stmt->execute() && $stmt->affected_rows > 0) {
 
 $stmt->close();
 $conexao->close();
+
 ?>
