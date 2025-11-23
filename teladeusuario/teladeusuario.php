@@ -115,7 +115,7 @@ $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php
 </main>
 
 <nav class="bottombar">
-<button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>TelaPerfils/perfil.html'">
+<button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>TelaPerfils/perfil.php'">
 <i class="fa-solid fa-users"></i>
 </button>
 <button class="nav-btn" onclick="window.location.href='<?php echo $url_base; ?>tela-atividades/atividades.php'">
