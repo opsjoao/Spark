@@ -6,8 +6,6 @@ require_once('../../formulario-cadastro-login/verificacao.php');
 $url_base = '/Spark-main/';
 
 //importar fonte
-include('../header.php');
-
 // Inicia a sessão se ainda não foi iniciada para buscar mensagens de erro/sucesso.
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
