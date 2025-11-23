@@ -215,3 +215,22 @@ INSERT INTO Categorias (nome, imagem_url, cor_fundo) VALUES
 ('Lazer', 'uploads/categorias/lazer.png', '#FF3300'),
 ('Família', 'uploads/categorias/familia.png', ''),
 ('Outros', 'uploads/categorias/outros.png', '#00BBFF');
+
+USE Spark;
+
+-- Cria a tabela de seguidores (Unidirecional)
+CREATE TABLE IF NOT EXISTS Seguidores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    idSeguidor INT NOT NULL, -- Quem clicou em seguir (Você)
+    idSeguido INT NOT NULL,  -- Quem está sendo seguido (O outro usuário)
+    data_seguindo TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    -- Garante que não dê para seguir a mesma pessoa duas vezes
+    UNIQUE KEY unique_follow (idSeguidor, idSeguido),
+    
+    FOREIGN KEY (idSeguidor) REFERENCES Usuario(idUsuario) ON DELETE CASCADE,
+    FOREIGN KEY (idSeguido) REFERENCES Usuario(idUsuario) ON DELETE CASCADE
+);
+
+-- Inserir dados de teste (Usuário 1 segue o 2)
+INSERT INTO Seguidores (idSeguidor, idSeguido) VALUES (1, 2);
