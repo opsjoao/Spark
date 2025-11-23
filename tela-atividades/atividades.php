@@ -189,7 +189,7 @@ function renderEventCard($evento, $showYear = false, $isOwner = false) {
     </main>
     
     <nav class="bottombar">
-        <a href="<?php echo $url_base; ?>TelaPerfils/perfil.html" class="nav-btn">
+        <a href="<?php echo $url_base; ?>TelaPerfils/perfil.php" class="nav-btn">
             <i class="fa-solid fa-users"></i>
         </a>
         <a href="<?php echo $url_base; ?>tela-atividades/atividades.php" class="nav-btn active">
