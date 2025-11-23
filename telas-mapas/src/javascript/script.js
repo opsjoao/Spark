@@ -3,23 +3,24 @@
 // ====================================================
 
 // NOVOS DADOS PARA OS ELEMENTOS DO PARQUE
-const PARK_AMENITIES = [
-    { icon: "src/assets/icon_bebedouro.svg", label: "Bebedouro", type: 'amenity', color: '#41E189' },       
-{ icon: "src/assets/icon_banheiro.svg", label: "Banheiro", type: 'amenity', color: '#4169E1' },
-{ icon: "src/assets/icon_pista_skate.svg", label: "Pista de Skate", type: 'amenity', color: '#E141AC' },
-{ icon: "src/assets/icon_quadra_volei.svg", label: "Quadra de Vôlei", type: 'amenity', color: '#8CE141' },
-{ icon: "src/assets/icon_quadra_futebol.svg", label: "Quadra de Futebol", type: 'amenity', color: '#212121' },
-{ icon: "src/assets/icon_quadra_basquete.svg", label: "Quadra de Basquete", type: 'amenity', color: '#FF7043' },
-{ icon: "src/assets/icon_bicicleta.svg", label: "Bicicleta", type: 'amenity', color: '#FFC107' },
-{ icon: "src/assets/icon_pedalinho.svg", label: "Pedalinho", type: 'amenity', color: '#673AB7' },
-{ icon: "src/assets/icon_museu.svg", label: "Museu", type: 'amenity', color: '#E1418E' },
-{ icon: "src/assets/icon_quiosque.svg", label: "Quiosque", type: 'amenity', color: '#FFEB3B' },
-{ icon: "src/assets/icon_lago.svg", label: "Lago", type: 'amenity', color: '#41E1D9' },
-{ icon: "src/assets/icon_churrasqueira.svg", label: "Churrasqueira", type: 'amenity', color: '#D32F2F' },
-// NOVO ITEM PARA ADICIONAR
-{ icon: "src/assets/icon_adicionar.svg", label: "Adicionar sugestão", type: 'action', color: '#5ED925' }
+const PARK_AMENITIES_DATA = [
+    { icon: "src/assets/icon_bebedouro.svg", label: "Bebedouro", type: 'amenity', color: '#41E189', isSelected: false },
+    { icon: "src/assets/icon_banheiro.svg", label: "Banheiro", type: 'amenity', color: '#4169E1', isSelected: false },
+    { icon: "src/assets/icon_pista_skate.svg", label: "Pista de Skate", type: 'amenity', color: '#E141AC', isSelected: false },
+    { icon: "src/assets/icon_quadra_volei.svg", label: "Quadra de Vôlei", type: 'amenity', color: '#8CE141', isSelected: false },
+    { icon: "src/assets/icon_quadra_futebol.svg", label: "Quadra de Futebol", type: 'amenity', color: '#212121', isSelected: false },
+    { icon: "src/assets/icon_quadra_basquete.svg", label: "Quadra de Basquete", type: 'amenity', color: '#FF7043', isSelected: false },
+    { icon: "src/assets/icon_bicicleta.svg", label: "Bicicleta", type: 'amenity', color: '#FFC107', isSelected: false },
+    { icon: "src/assets/icon_pedalinho.svg", label: "Pedalinho", type: 'amenity', color: '#673AB7', isSelected: false },
+    { icon: "src/assets/icon_museu.svg", label: "Museu", type: 'amenity', color: '#E1418E', isSelected: false },
+    { icon: "src/assets/icon_quiosque.svg", label: "Quiosque", type: 'amenity', color: '#FFEB3B', isSelected: false },
+    { icon: "src/assets/icon_lago.svg", label: "Lago", type: 'amenity', color: '#41E1D9', isSelected: false },
+    { icon: "src/assets/icon_churrasqueira.svg", label: "Churrasqueira", type: 'amenity', color: '#D32F2F', isSelected: false },
+    // NOVO ITEM PARA ADICIONAR
+    { icon: "src/assets/icon_adicionar.svg", label: "Adicionar sugestão", type: 'action', color: '#5ED925' }
 ];
 
+let parkAmenitiesState = JSON.parse(JSON.stringify(PARK_AMENITIES_DATA));
 
 let map, markers = [], autocomplete, placesService, infoWindow;
 
@@ -158,44 +159,101 @@ function openCreateEventScreen() {
     }
 }
 
+/**
+ * Alterna o estado de seleção de uma amenidade e redesenha a tela.
+ * @param {string} label O rótulo da amenidade a ser alternada.
+ */
+window.toggleAmenitySelection = function(label) {
+    const index = parkAmenitiesState.findIndex(a => a.label === label);
+    if (index !== -1) {
+        // Alterna o estado de seleção
+        parkAmenitiesState[index].isSelected = !parkAmenitiesState[index].isSelected;
+        // Redesenha a tela para refletir a mudança
+        const modalElement = document.getElementById('full-amenities-modal');
+        if (modalElement) {
+            window.openAllAmenitiesSelectionScreen(true); // Redesenha
+        }
+    }
+}
+
+
 // ====================================================
 // NOVA FUNÇÃO PARA ABRIR TELA DE SELEÇÃO COMPLETA
 // ====================================================
 
 /**
  * Abre o modal/tela completa para selecionar as amenidades.
+ * @param {boolean} isRedrawing Indica se a função está sendo chamada para redesenhar o modal existente.
  */
-window.openAllAmenitiesSelectionScreen = function() { // <--- CORREÇÃO APLICADA AQUI
+window.openAllAmenitiesSelectionScreen = function(isRedrawing = false) {
     if (!currentParkName) {
         alert("Erro: Parque não carregado.");
         return;
     }
 
+    const modalId = 'full-amenities-modal';
+    let modal = document.getElementById(modalId);
+
+    // Se estiver redesenhando, garante que o modal exista, caso contrário, aborta
+    if (isRedrawing && !modal) {
+        return;
+    }
+
     // Filtra apenas as amenidades (excluindo o botão de 'Adicionar sugestão')
-    const amenitiesList = PARK_AMENITIES.filter(a => a.type === 'amenity');
+    const amenitiesList = parkAmenitiesState.filter(a => a.type === 'amenity');
 
     // Geração do HTML para a tela completa
-    const allAmenitiesHtml = amenitiesList.map(item => `
-    <div class="full-amenity-item" style="cursor: pointer;">
-    <div class="full-amenity-icon-wrapper" style="background-color: white; border: 4px solid ${item.color};">
-    <img src="${item.icon}" alt="${item.label}" class="full-amenity-icon" />
-    </div>
-    <p class="full-amenity-label">${item.label}</p>
-    </div>
-    `).join('');
+    const allAmenitiesHtml = amenitiesList.map(item => {
+        // ESTILO DE ATIVO/INATIVO (NOVO REQUISITO)
+        const isSelected = item.isSelected;
+        const backgroundColor = isSelected ? item.color : 'white';
+        const borderColor = item.color; // Borda sempre com a cor do item
+        // Ícone BRANCO quando ATIVO
+        const iconColorStyle = isSelected ? 'filter: brightness(0) invert(1);' : '';
 
-    const modal = document.createElement('div');
-    modal.id = 'full-amenities-modal';
+        // Adiciona a função de toggle ao clique
+        const onclickAction = `window.toggleAmenitySelection('${item.label}')`;
 
-    modal.addEventListener('click', function(event) {
-        // Fecha o modal se o clique for no fundo (a própria div modal)
-        if (event.target.id === 'full-amenities-modal') {
-            modal.remove();
-        }
-        // Previne que o evento se propague para elementos de fundo (como o mapa)
-        event.stopPropagation();
-    }); // Fim do addEventListener corrigido.
+        return `
+        <div class="full-amenity-item" onclick="${onclickAction}" style="cursor: pointer;">
+        <div class="full-amenity-icon-wrapper" style="background-color: ${backgroundColor}; border: 4px solid ${borderColor};">
+        <img src="${item.icon}" alt="${item.label}" class="full-amenity-icon" style="${iconColorStyle}" />
+        </div>
+        <p class="full-amenity-label">${item.label}</p>
+        </div>
+        `;
+    }).join('');
 
+    // Se não estiver redesenhando, cria o modal do zero
+    if (!isRedrawing) {
+        modal = document.createElement('div');
+        modal.id = modalId;
+
+        modal.addEventListener('click', function(event) {
+            // Fecha o modal se o clique for no fundo (a própria div modal)
+            if (event.target.id === modalId) {
+                modal.remove();
+            }
+            event.stopPropagation();
+        });
+        document.body.appendChild(modal);
+
+        modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        overflow-y: auto;
+        `;
+    }
+
+    // Injeta o novo HTML na modal (ou a nova modal, ou redesenha a existente)
     modal.innerHTML = `
     <div onclick="event.stopPropagation()" class="full-amenities-content-wrapper">
     <h2 class="full-amenities-header">Nesse parque tem</h2>
@@ -211,21 +269,6 @@ window.openAllAmenitiesSelectionScreen = function() { // <--- CORREÇÃO APLICAD
     Fechar
     </button>
     </div>
-    `;
-
-    document.body.appendChild(modal);
-    modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9); /* Fundo escuro */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Z-INDEX MÁXIMO PARA COBRIR TUDO */
-    overflow-y: auto;
     `;
 }
 
@@ -476,7 +519,7 @@ function getTodayAndAllHours(weekdayText) {
 
 // Função para simular quais amenidades o parque TEM
 function getParkAmenities() {
-    return PARK_AMENITIES;
+    return parkAmenitiesState;
 }
 
 
