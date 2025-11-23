@@ -28,7 +28,23 @@ $conexao->close();
 $url_base = '/Spark-main/';
 
 // Define as variáveis para usar no HTML
-$avatar = !empty($usuario['avatar_path']) ? $url_base . $usuario['avatar_path'] : $url_base . 'assets/images/avatar_padrao.png';
+// --- CORREÇÃO AQUI: Lógica do Avatar com Verificação Física ---
+
+// 1. Define o caminho padrão
+$avatar_padrao = $url_base . 'uploads/avatars/default_avatar.jpg';
+
+// 2. Pega o caminho que está no banco
+$caminho_banco = $usuario['avatar_path'];
+
+// 3. Verifica se não está vazio E se o arquivo realmente existe no servidor
+if (!empty($caminho_banco) && file_exists($_SERVER['DOCUMENT_ROOT'] . $url_base . $caminho_banco)) {
+    // Se existe, usa o do banco
+    $avatar = $url_base . $caminho_banco;
+} else {
+    // Se não existe (ou está vazio), usa o padrão
+    $avatar = $avatar_padrao;
+}
+
 $nome = !empty($usuario['nome']) ? $usuario['nome'] : 'Usuário';
 $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php';
 ?>
