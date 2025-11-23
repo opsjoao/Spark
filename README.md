@@ -1,5 +1,5 @@
 # Spark <p align="center">
-  <img src="Spark.png" alt="Logo Spark" width="200">
+  <img src="spark.png" alt="Logo Spark" width="200">
 </p>
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
