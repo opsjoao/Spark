@@ -1,6 +1,4 @@
-# Spark <p align="center">
-  <img src="spark.png" alt="Logo Spark" width="200">
-</p>
+# Spark
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
