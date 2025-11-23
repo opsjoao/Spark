@@ -95,7 +95,7 @@ if ($result && $result->num_rows > 0) {
         }
 
         // Avatar do Host
-        $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.png";
+        $avatar_padrao_host = $url_base . "uploads/avatars/default_avatar.jpg";
         $caminho_relativo_avatar = $evento['host_avatar'];
         $avatar_host = $avatar_padrao_host;
 
