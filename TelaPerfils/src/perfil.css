@@ -1,74 +1,426 @@
-/* Importando estilos de base (adapte o caminho se necessário) */
-@import url('../teladeusuario/teladeusuario.css');
-
-/* Estilos das Abas */
-.tabs-container {
-    display: flex;
-    border-bottom: 2px solid var(--line);
+/* --- RESET E BASE --- */
+/* --- ESTILOS DOS CARTÕES DE EVENTO (NOVO DESIGN TIPO FEED) --- */
+.feed-event-card {
+    background-color: #1ea936; /* Verde Spark */
+    color: white;
+    border-radius: 16px;
+    padding: 16px;
     margin-bottom: 20px;
-}
-.tab-button {
-    flex: 1; padding: 12px; border: none; background: none;
-    font-size: 16px; font-weight: 600; color: var(--muted);
-    cursor: pointer; position: relative;
-}
-.tab-button.active { color: var(--text); }
-.tab-button.active::after {
-    content: ''; position: absolute; bottom: -2px; left: 0;
-    width: 100%; height: 2px; background: var(--primary-500);
-}
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-.empty-message { text-align: center; color: var(--muted); padding: 30px; }
-
-/* Card de Amigo (baseado no seu design de 'lista') */
-.friend-card {
-    display: flex; align-items: center; gap: 14px;
-    padding: 14px; background: var(--surface);
-    border-radius: 14px; margin-bottom: 10px;
-    box-shadow: var(--shadow);
-}
-.friend-card .avatar { width: 48px; height: 48px; }
-.friend-card .user-info { flex-grow: 1; }
-.friend-card .user-info h3 { margin: 0; font-size: 16px; }
-.friend-card .user-info p { margin: 0; font-size: 13px; color: var(--muted); }
-
-/* Ações de Solicitação */
-.request-actions { display: flex; gap: 10px; }
-.btn-accept, .btn-decline {
-    border: none; width: 40px; height: 40px; border-radius: 50%;
-    cursor: pointer; font-size: 16px; color: #fff;
-}
-.btn-accept { background: var(--primary-500); }
-.btn-decline { background: var(--danger); }
-
-/* Botão de Adicionar Amigo (página principal) */
-.add-friend-btn {
-    width: 100%; border: 2px dashed var(--primary-300);
-    background: var(--primary-50); color: var(--primary-600);
-    padding: 14px; border-radius: 14px; margin-top: 20px;
-    font-size: 16px; font-weight: 600; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
 }
 
-/* Página de Adicionar Amigo (Busca) */
-.search-box { display: flex; margin-bottom: 20px; }
-#search-input {
-    flex-grow: 1; border: 1px solid var(--line);
-    padding: 12px; font-size: 16px;
-    border-radius: 8px 0 0 8px;
-    outline: none;
+.feed-event-card:active {
+    transform: scale(0.98);
 }
-#search-button {
-    border: none; background: var(--primary-500); color: #fff;
-    font-size: 16px; padding: 0 15px;
-    border-radius: 0 8px 8px 0; cursor: pointer;
+
+/* Cabeçalho do Card (Usuário) */
+.feed-card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
 }
-.btn-add {
-    background: none; border: 2px solid var(--primary-500);
-    color: var(--primary-500); width: 40px; height: 40px;
-    border-radius: 50%; font-size: 16px; cursor: pointer;
+
+.feed-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid white;
+    object-fit: cover;
+    margin-right: 10px;
 }
-.btn-add:disabled {
-    background: var(--primary-500); color: #fff;
+
+.feed-user-info {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.feed-user-name {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.2;
+}
+
+.feed-username {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+.feed-menu-icon {
+    font-size: 18px;
+    color: white;
+    opacity: 0.8;
+}
+
+/* Imagem do Evento */
+.feed-image-container {
+    width: 100%;
+    height: 180px;
+    background-color: rgba(0,0,0,0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.feed-event-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Informações do Evento */
+.feed-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.feed-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 2px;
+}
+
+.feed-event-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+    flex: 1;
+    padding-right: 10px;
+}
+
+.feed-event-date {
+    font-size: 13px;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: rgba(255,255,255,0.2);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.feed-event-location {
+    font-size: 13px;
+    opacity: 0.9;
+    margin: 0;
+    font-weight: 500;
+}
+
+.feed-event-desc {
+    font-size: 13px;
+    line-height: 1.4;
+    margin-top: 8px;
+    opacity: 0.95;
+    /* Limita a 2 linhas */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  padding-bottom: 80px;
+}
+
+/* --- HEADER (Topo Verde) --- */
+.app-header {
+  background-color: #1ea936;
+  color: white;
+  height: 60px; 
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: none; 
+}
+
+.app-header h1 {
+  position: absolute; 
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+}
+
+/* --- ABAS (Tabs) --- */
+.tabs-container {
+  display: flex;
+  background-color: #1ea936; 
+  position: sticky;
+  top: 60px; 
+  z-index: 99;
+  padding-bottom: 0;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+}
+
+.tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 15px 0;
+  font-size: 14px; /* Leve ajuste para caber 3 abas */
+  font-weight: 600;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+  text-align: center;
+}
+
+.tab-btn.active {
+  color: white;
+}
+
+/* Linha branca indicadora da aba ativa */
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%); 
+  width: 60%; 
+  height: 4px;
+  background-color: white;
+  border-radius: 4px 4px 0 0;
+}
+
+/* --- BARRA DE PESQUISA --- */
+.search-section {
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.search-container {
+  background-color: #f5f5f5;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.search-input {
+  border: none;
+  background: transparent;
+  flex-grow: 1;
+  font-size: 16px;
+  color: #333;
+  outline: none;
+  padding-right: 10px;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
+.search-icon {
+  color: #000;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* --- LISTA DE AMIGOS --- */
+.friend-list-container {
+  padding: 0 20px;
+}
+
+.friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.friend-content-left {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.friend-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+  border: 1px solid #eee;
+}
+
+.friend-name {
+  font-size: 16px;
+  color: #000;
+  font-weight: 400;
+  display: block;
+}
+
+.username-small {
+  font-size: 13px;
+  color: #888;
+  margin-top: 2px;
+  display: block;
+}
+
+/* Botões de Seguir */
+.btn-follow {
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+    min-width: 110px;
+}
+
+.btn-follow.nao-seguindo {
+    background-color: #1ea936;
+    color: white;
+}
+
+.btn-follow.seguindo {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+/* --- ESTILOS DOS CARTÕES DE EVENTO (NOVO) --- */
+.event-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    display: flex; 
+    align-items: center; 
+    gap: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* Sombra leve */
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    margin-bottom: 15px; /* Espaço entre cartões */
+    border-left: 4px solid #1ea936; /* Detalhe verde */
+}
+
+.event-card:active { transform: scale(0.98); }
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.card-date {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    width: 55px; 
+    height: 55px;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700; 
+    color: #333; 
+    font-size: 15px;
+    text-align: center;
+}
+
+.card-info {
+    flex-grow: 1;
+}
+
+.card-info h4 {
+    margin: 0 0 5px 0; 
+    font-size: 16px; 
+    color: #333;
+    font-weight: 600;
+}
+
+.card-info .organizer {
+    display: block;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.card-info .time {
+    font-size: 12px; 
+    color: #888; 
+    display: flex; 
+    align-items: center; 
+    gap: 5px;
+}
+
+/* --- NAVBAR --- */
+.bottombar {
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #e0e0e0;
+  z-index: 1000;
+  height: 70px;
+}
+
+.nav-btn {
+  background: transparent;
+  border: none;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+.nav-btn i {
+  font-size: 24px;
+  z-index: 2;
+}
+
+.nav-btn.active i {
+  color: #ffffff;
+}
+
+.nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px; 
+  height: 40px;
+  background-color: #4ceb68;
+  border-radius: 20px;
+  z-index: 1;
 }
