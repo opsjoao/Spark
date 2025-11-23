@@ -4,17 +4,17 @@
 
 // NOVOS DADOS PARA OS ELEMENTOS DO PARQUE
 const PARK_AMENITIES = [
-    { icon: "src/assets/icon_bebedouro.svg", label: "Bebedouro", type: 'amenity', color: '#20B2AA' },
-{ icon: "src/assets/icon_banheiro.svg", label: "Banheiro", type: 'amenity', color: '#3F51B5' },
+    { icon: "src/assets/icon_bebedouro.svg", label: "Bebedouro", type: 'amenity', color: '#41E189' },       
+{ icon: "src/assets/icon_banheiro.svg", label: "Banheiro", type: 'amenity', color: '#4169E1' },
 { icon: "src/assets/icon_pista_skate.svg", label: "Pista de Skate", type: 'amenity', color: '#E141AC' },
-{ icon: "src/assets/icon_quadra_volei.svg", label: "Quadra de Vôlei", type: 'amenity', color: '#8BC34A' },
+{ icon: "src/assets/icon_quadra_volei.svg", label: "Quadra de Vôlei", type: 'amenity', color: '#8CE141' },
 { icon: "src/assets/icon_quadra_futebol.svg", label: "Quadra de Futebol", type: 'amenity', color: '#212121' },
 { icon: "src/assets/icon_quadra_basquete.svg", label: "Quadra de Basquete", type: 'amenity', color: '#FF7043' },
 { icon: "src/assets/icon_bicicleta.svg", label: "Bicicleta", type: 'amenity', color: '#FFC107' },
 { icon: "src/assets/icon_pedalinho.svg", label: "Pedalinho", type: 'amenity', color: '#673AB7' },
 { icon: "src/assets/icon_museu.svg", label: "Museu", type: 'amenity', color: '#E1418E' },
 { icon: "src/assets/icon_quiosque.svg", label: "Quiosque", type: 'amenity', color: '#FFEB3B' },
-{ icon: "src/assets/icon_lago.svg", label: "Lago", type: 'amenity', color: '#00BCD4' },
+{ icon: "src/assets/icon_lago.svg", label: "Lago", type: 'amenity', color: '#41E1D9' },
 { icon: "src/assets/icon_churrasqueira.svg", label: "Churrasqueira", type: 'amenity', color: '#D32F2F' },
 // NOVO ITEM PARA ADICIONAR
 { icon: "src/assets/icon_adicionar.svg", label: "Adicionar sugestão", type: 'action', color: '#5ED925' }
