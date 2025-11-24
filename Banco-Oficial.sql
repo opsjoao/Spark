@@ -262,3 +262,6 @@ INSERT INTO `amenities` (`amenity_name`) VALUES
 ('Quiosque'),
 ('Lago'),
 ('Churrasqueira');
+
+ALTER TABLE Avaliacao_parque
+ADD COLUMN created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;
