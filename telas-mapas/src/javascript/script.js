@@ -42,9 +42,186 @@ let detailsContainer = document.getElementById("park-details");
 const PLACEHOLDER_AVATAR_URL = "src/assets/avatar.png";
 
 const SAVE_EVENT_URL = '/Spark-main/telas-mapas/src/javascript/salvar_evento_mapa.php';
+const PARK_REVIEWS_URL = '/Spark-main/telas-mapas/src/javascript/park_reviews.php'; // NOVO ENDPOINT
 
 // ====================================================
-// FUNÇÕES GLOBAIS DE EVENTO
+// FUNÇÕES GLOBAIS DE EVENTO E AVALIAÇÕES
+// ====================================================
+
+/**
+ * Abre o modal para adicionar uma avaliação do parque
+ */
+window.openAddReviewModal = function() {
+    if (!window.currentParkPlaceId || !currentParkName) {
+        alert("Erro: Parque não carregado.");
+        return;
+    }
+
+    const modal = document.createElement('div');
+    modal.id = 'add-review-modal';
+
+    modal.addEventListener('click', function(event) {
+        if (event.target.id === 'add-review-modal') {
+            modal.remove();
+        }
+        event.stopPropagation();
+    });
+
+    modal.innerHTML = `
+    <div onclick="event.stopPropagation()" style="background: white; padding: 25px; border-radius: 12px; width: 90%; max-width: 450px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
+        <h2 style="font-size: 1.3em; margin-bottom: 20px; text-align: center; color: #333;">Avaliar ${currentParkName}</h2>
+        
+        <div style="text-align: center; margin-bottom: 20px;">
+            <p style="margin-bottom: 10px; font-weight: bold; color: #555;">Sua avaliação:</p>
+            <div id="review-stars" style="font-size: 2em; cursor: pointer;">
+                ${[1, 2, 3, 4, 5].map(n => `<i class="fa-star" data-rating="${n}" style="color: #ddd; margin: 0 3px;"></i>`).join('')}
+            </div>
+            <input type="hidden" id="review-rating" value="0">
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label for="review-text" style="display: block; font-weight: bold; margin-bottom: 8px; color: #555;">Conte sua experiência:</label>
+            <textarea id="review-text" placeholder="O que você achou do parque?" rows="4" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; resize: vertical; font-family: inherit;"></textarea>
+        </div>
+
+        <button id="submit-review-button" style="width: 100%; padding: 12px; background-color: #5ED925; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin-bottom: 10px; font-size: 1em;">
+            Enviar Avaliação
+        </button>
+
+        <button onclick="document.getElementById('add-review-modal').remove();" style="width: 100%; padding: 12px; background-color: #ccc; color: #333; border: none; border-radius: 6px; cursor: pointer; font-size: 1em;">
+            Cancelar
+        </button>
+    </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 8500;
+    `;
+
+    // Sistema de estrelas interativo
+    const starsContainer = document.getElementById('review-stars');
+    const stars = starsContainer.querySelectorAll('.fa-star');
+    const ratingInput = document.getElementById('review-rating');
+
+    stars.forEach(star => {
+        star.classList.add('fa-regular'); // Estrela vazia por padrão
+
+        // Hover
+        star.addEventListener('mouseenter', () => {
+            const rating = parseInt(star.dataset.rating);
+            stars.forEach((s, idx) => {
+                if (idx < rating) {
+                    s.classList.remove('fa-regular');
+                    s.classList.add('fa-solid');
+                    s.style.color = 'gold';
+                } else {
+                    s.classList.remove('fa-solid');
+                    s.classList.add('fa-regular');
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+
+        // Click
+        star.addEventListener('click', () => {
+            const rating = parseInt(star.dataset.rating);
+            ratingInput.value = rating;
+            
+            // Fixa as estrelas
+            stars.forEach((s, idx) => {
+                if (idx < rating) {
+                    s.classList.remove('fa-regular');
+                    s.classList.add('fa-solid');
+                    s.style.color = 'gold';
+                } else {
+                    s.classList.remove('fa-solid');
+                    s.classList.add('fa-regular');
+                    s.style.color = '#ddd';
+                }
+            });
+        });
+    });
+
+    // Reset ao sair do mouse
+    starsContainer.addEventListener('mouseleave', () => {
+        const currentRating = parseInt(ratingInput.value);
+        stars.forEach((s, idx) => {
+            if (idx < currentRating) {
+                s.classList.remove('fa-regular');
+                s.classList.add('fa-solid');
+                s.style.color = 'gold';
+            } else {
+                s.classList.remove('fa-solid');
+                s.classList.add('fa-regular');
+                s.style.color = '#ddd';
+            }
+        });
+    });
+
+    // Enviar avaliação
+    document.getElementById('submit-review-button').addEventListener('click', window.handleSubmitReview);
+}
+
+/**
+ * Envia a avaliação para o backend
+ */
+window.handleSubmitReview = function() {
+    const rating = parseInt(document.getElementById('review-rating').value);
+    const reviewText = document.getElementById('review-text').value.trim();
+    const placeId = window.currentParkPlaceId;
+
+    if (rating === 0) {
+        alert("Por favor, selecione uma classificação de estrelas.");
+        return;
+    }
+
+    if (reviewText.length < 10) {
+        alert("Por favor, escreva uma avaliação com pelo menos 10 caracteres.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('place_id', placeId);
+    formData.append('rating', rating);
+    formData.append('review_text', reviewText);
+    formData.append('park_name', currentParkName);
+    formData.append('park_address', currentParkLocation);
+    formData.append('park_cep', window.currentParkPostalCode || '');
+
+    fetch(PARK_REVIEWS_URL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("Avaliação enviada com sucesso!");
+            document.getElementById('add-review-modal').remove();
+            
+            // Recarrega o painel para mostrar a nova avaliação
+            showDetailsPane(placeId, currentParkName);
+        } else {
+            alert("Erro ao enviar avaliação: " + (data.message || "Erro desconhecido."));
+        }
+    })
+    .catch(error => {
+        console.error('Erro ao enviar avaliação:', error);
+        alert("Erro ao enviar avaliação. Verifique sua conexão.");
+    });
+}
+
+// ====================================================
+// FIM DAS FUNÇÕES GLOBAIS DE EVENTO E AVALIAÇÕES
 // ====================================================
 
 window.closeCreateEventScreen = function() {
@@ -572,7 +749,10 @@ function showDetailsPane(placeId, title) {
             
             // --- INICIA A BUSCA ASSÍNCRONA DE AMENIDADES ---
             // A renderização do painel de detalhes agora só ocorre DEPOIS que a contagem é carregada
-            fetchAmenityCounts(placeId).then((counts) => {
+            Promise.all([
+                fetchAmenityCounts(placeId),
+                fetchParkReviews(placeId)
+            ]).then(([counts, reviews]) => {
 
                 const realAbout = place.editorial_summary ?
                     place.editorial_summary.overview :
@@ -580,33 +760,46 @@ function showDetailsPane(placeId, title) {
 
                 const parkDescription = realAbout;
 
-                // Dados simulados (mantidos)
+                // --- AVALIAÇÕES REAIS DO BANCO DE DADOS ---
+                const reviewsCount = reviews.length;
+                const reviewsHtml = reviews.length > 0 ? reviews.map(review => {
+                    const renderStars = (rating) => {
+                        let stars = '';
+                        for (let i = 1; i <= 5; i++) {
+                            stars += `<i class="fa-solid fa-star" style="color: ${i <= rating ? 'gold' : '#ccc'};"></i>`;
+                        }
+                        return stars;
+                    };
+
+                    return `
+                    <div class="review-card">
+                        <img src="${review.user_photo || PLACEHOLDER_AVATAR_URL}"
+                            class="reviewer-photo"
+                            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+                            alt="Foto do Avaliador">
+                        <div>
+                            <p class="font-bold text-sm">${review.user_name || 'Usuário'}</p>
+                            <div class="stars">${renderStars(review.rating)}</div>
+                            <p class="text-xs text-gray-600 mt-1">${review.review_text}</p>
+                            <p class="text-xs text-gray-400 mt-1">${review.created_at || ''}</p>
+                        </div>
+                    </div>
+                    `;
+                }).join('') : `
+                <p class="text-sm text-gray-500" style="text-align: center; padding: 20px;">
+                    Nenhuma avaliação ainda. Seja o primeiro a avaliar este parque!
+                </p>
+                `;
+
+                // Dados simulados (REMOVIDOS - agora usamos dados reais)
                 const simulatedParticipants = [
                     { photo: "src/assets/avatar1.png" },
                     { photo: "src/assets/avatar2.png" }
                 ];
-                const simulatedReview = [
-                    {
-                        name: "Robert Renan",
-                        reviewPhoto: "src/assets/avatar3.png",
-                        text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
-                        rating: 5
-                    }
-                ];
-
-                const review = simulatedReview.length > 0 ? simulatedReview[0] : {};
 
                 const websiteLink = place.website ?
                     `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
                     `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
-
-                const renderStars = (rating) => {
-                    let stars = '';
-                    for (let i = 1; i <= 5; i++) {
-                        stars += `<i class="fa-solid fa-star" style="color: ${i <= rating ? 'gold' : '#ccc'};"></i>`;
-                    }
-                    return stars;
-                };
 
                 const participantsHtml = simulatedParticipants.map(p => `
                     <img src="${p.photo || ''}"
@@ -709,18 +902,13 @@ function showDetailsPane(placeId, title) {
                 </div>
                 </div>
                 <hr class="section-divider">
-                <h3 class="section-title">${simulatedReview.length} Avaliações</h3>
-                <div class="review-card">
-                <img src="${review.reviewPhoto || ''}"
-                class="reviewer-photo"
-                onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
-                alt="Foto do Avaliador">
-                <div>
-                <p class="font-bold text-sm">${review.name}</p>
-                <div class="stars">${renderStars(review.rating)}</div>
-                <p class="text-xs text-gray-600 mt-1">${review.text}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 class="section-title" style="margin: 0;">${reviewsCount} Avaliações</h3>
+                    <button onclick="window.openAddReviewModal()" style="padding: 8px 15px; background-color: #5ED925; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9em; font-weight: bold;">
+                        <i class="fa-solid fa-plus"></i> Avaliar
+                    </button>
                 </div>
-                </div>
+                ${reviewsHtml}
                 </div>
                 `;
                 // --- FIM DA INJEÇÃO DO CONTEÚDO HTML ---
@@ -814,6 +1002,34 @@ function fetchAmenityCounts(placeId) {
             console.error('Erro de rede ou na API de amenidades:', error);
             // Isso garante que o showDetailsPane não pare, mas apenas exiba o carrossel vazio
             return {}; 
+        });
+}
+
+
+/**
+ * Busca as avaliações de um parque específico.
+ * @param {string} placeId O ID do local (Place ID) do parque.
+ * @returns {Promise<Array>} Array com as avaliações do parque
+ */
+function fetchParkReviews(placeId) {
+    return fetch(`${PARK_REVIEWS_URL}?place_id=${placeId}`, { method: 'GET' })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                return data.reviews || [];
+            } else {
+                console.error("Erro ao buscar avaliações:", data.message);
+                return [];
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar avaliações:', error);
+            return [];
         });
 }
 
