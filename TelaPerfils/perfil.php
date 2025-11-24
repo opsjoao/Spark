@@ -52,7 +52,7 @@ while ($row = $res->fetch_assoc()) {
     $listaSeguidores[] = $row;
 }
 
-// --- 4. BUSCAR EVENTOS DE AMIGOS (PARA CARD FEED) ---
+// --- 4. BUSCAR EVENTOS DE AMIGOS (FEED) ---
 $listaEventosAmigos = [];
 $sqlEventos = "
     SELECT 
@@ -73,13 +73,16 @@ $stmt->bind_param("i", $meuId);
 $stmt->execute();
 $res = $stmt->get_result();
 while ($row = $res->fetch_assoc()) {
+    // Avatar do Criador
     $row['avatar_criador_url'] = !empty($row['avatar_criador']) 
         ? $url_base . $row['avatar_criador'] 
         : $url_base . 'assets/images/avatar_padrao.png';
         
+    // Imagem do Evento (Tenta usar a do banco, se não tiver, usa a padrão)
+    // Se a imagem do banco estiver quebrada, o JS vai corrigir via onerror
     $row['imagem_evento_url'] = !empty($row['imagem_path']) 
         ? $url_base . $row['imagem_path'] 
-        : $url_base . 'assets/images/evento_padrao.jpg';
+        : $url_base . 'uploads/eventos/default_event.jpg';
         
     $listaEventosAmigos[] = $row;
 }
@@ -97,8 +100,8 @@ $jsonEventos = json_encode($listaEventosAmigos);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Spark - Rede</title>
-  <link rel="stylesheet" href="src/perfil.css" />
-  <link rel="stylesheet" href="<?php echo $url_base; ?>style.css">
+  <link rel="stylesheet" href="<?php echo $url_base; ?>style.css" />
+  <link rel="stylesheet" href="<?php echo $url_base; ?>TelaPerfils/src/perfil.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" referrerpolicy="no-referrer"/>
 </head>
 <body>
@@ -133,41 +136,37 @@ $jsonEventos = json_encode($listaEventosAmigos);
   </main>
 
   <nav class="bottombar">
-    <button class="nav-btn active" onclick="navegar('/Spark-main/TelaPerfils/perfil.php')"><i class="fa-solid fa-users"></i></button>
-    <button class="nav-btn" onclick="navegar('/Spark-main/tela-atividades/atividades.php')"><i class="fa-solid fa-person-walking"></i></button>
-    <button class="nav-btn" onclick="navegar('/Spark-main/tela-principal/telaprincipal.php')"><i class="fa-solid fa-house"></i></button>
-    <button class="nav-btn" onclick="window.location.href='../telas-mapas/index.html'">
-  <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-  width="28px" height="28px" viewBox="0 0 512.000000 512.000000"
-  preserveAspectRatio="xMidYMid meet">
-
-  <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
-  fill="#333" stroke="none">
-  <path d="M3880 5114 c-253 -46 -368 -91 -527 -203 -320 -226 -515 -647 -464
-  -1002 50 -348 378 -896 903 -1510 135 -159 185 -185 274 -143 54 26 304 324
-  523 624 372 510 549 910 528 1190 -40 510 -395 920 -892 1025 -77 17 -294 28
-  -345 19z m221 -648 c94 -20 164 -59 236 -132 188 -187 187 -481 -1 -670 -189
-  -189 -483 -189 -672 0 -188 189 -189 483 -1 670 121 122 271 167 438 132z"/>
-  <path d="M836 3535 c-543 -218 -767 -312 -788 -332 -15 -15 -33 -44 -38 -64
-  -7 -24 -9 -566 -8 -1535 l3 -1499 24 -34 c26 -36 90 -70 133 -71 15 0 345 127
-  733 282 l705 282 0 1638 c0 901 -1 1638 -2 1638 -2 -1 -345 -138 -762 -305z"/>
-  <path d="M1920 2202 l0 -1638 640 -256 640 -256 0 1285 0 1284 -69 98 c-185
-  261 -346 534 -431 731 l-41 95 -337 134 c-185 74 -352 141 -369 148 l-33 13 0
-  -1638z"/>
-  <path d="M5076 3029 c-192 -313 -602 -845 -766 -993 -95 -86 -248 -129 -382
-  -108 -122 18 -201 65 -312 185 l-96 102 0 -1107 0 -1108 48 19 c26 10 370 148
-  764 306 791 316 770 305 783 397 3 24 4 567 3 1207 l-3 1164 -39 -64z"/>
-  </g>
-  </svg>
-  </button>
-    <button class="nav-btn" onclick="navegar('../teladeusuario/teladeusuario.php')"><i class="fa-solid fa-user"></i></button>
-  </nav>
+        <a href="<?php echo $url_base; ?>TelaPerfils/perfil.php" class="nav-btn active">
+            <i class="fa-solid fa-users"></i>
+        </a>
+        <a href="<?php echo $url_base; ?>tela-atividades/atividades.php" class="nav-btn">
+            <i class="fa-solid fa-person-walking"></i>
+        </a>
+        <a href="<?php echo $url_base; ?>tela-principal/telaprincipal.php" class="nav-btn">
+            <i class="fa-solid fa-house"></i>
+        </a>
+        <a href="../telas-mapas/index.html" class="nav-btn">
+        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#333" stroke="none">
+                <path d="M3880 5114 c-253 -46 -368 -91 -527 -203 -320 -226 -515 -647 -464 -1002 50 -348 378 -896 903 -1510 135 -159 185 -185 274 -143 54 26 304 324 523 624 372 510 549 910 528 1190 -40 510 -395 920 -892 1025 -77 17 -294 28 -345 19z m221 -648 c94 -20 164 -59 236 -132 188 -187 187 -481 -1 -670 -189 -189 -483 -189 -672 0 -188 189 -189 483 -1 670 121 122 271 167 438 132z"/>
+                <path d="M836 3535 c-543 -218 -767 -312 -788 -332 -15 -15 -33 -44 -38 -64 -7 -24 -9 -566 -8 -1535 l3 -1499 24 -34 c26 -36 90 -70 133 -71 15 0 345 127 733 282 l705 282 0 1638 c0 901 -1 1638 -2 1638 -2 -1 -345 -138 -762 -305z"/>
+                <path d="M1920 2202 l0 -1638 640 -256 640 -256 0 1285 0 1284 -69 98 c-185 261 -346 534 -431 731 l-41 95 -337 134 c-185 74 -352 141 -369 148 l-33 13 0 -1638z"/>
+                <path d="M5076 3029 c-192 -313 -602 -845 -766 -993 -95 -86 -248 -129 -382 -108 -122 18 -201 65 -312 185 l-96 102 0 -1107 0 -1108 48 19 c26 10 370 148 764 306 791 316 770 305 783 397 3 24 4 567 3 1207 l-3 1164 -39 -64z"/>
+            </g>
+        </svg>
+        </a>
+        <a href="<?php echo $url_base; ?>teladeusuario/teladeusuario.php" class="nav-btn">
+            <i class="fa-solid fa-user"></i>
+        </a>
+    </nav>
 
   <script>
     const dadosSeguindo = <?php echo $jsonSeguindo; ?>;
     const dadosSeguidores = <?php echo $jsonSeguidores; ?>;
     const dadosEventos = <?php echo $jsonEventos; ?>;
     const meuIdSessao = <?php echo $meuId; ?>;
+    // Passando URL base para o JS usar no fallback da imagem
+    const urlBase = '<?php echo $url_base; ?>';
 
     let tabAtual = 'seguindo';
     let typingTimer;
@@ -222,25 +221,30 @@ $jsonEventos = json_encode($listaEventosAmigos);
 
              const item = document.createElement('div');
              item.className = 'feed-event-card';
-             // REDIRECIONAMENTO DE EVENTO
              item.onclick = () => verEvento(evt.idEvento);
              
+             // Caminho da imagem padrão para fallback
+             const defaultImg = urlBase + 'uploads/eventos/default_event.jpg';
+
              item.innerHTML = `
                  <div class="feed-card-header">
-                    <img src="${evt.avatar_criador_url}" class="feed-avatar" alt="Avatar">
+                    <img src="${evt.avatar_criador_url}" class="feed-avatar" alt="Avatar" onerror="this.src='${urlBase}assets/images/avatar_padrao.png'">
                     <div class="feed-user-info">
                         <span class="feed-user-name">${evt.nome_criador}</span>
                         <span class="feed-username">@${evt.username_criador || 'usuario'}</span>
                     </div>
                  </div>
                  <div class="feed-image-container">
-                    <img src="${evt.imagem_evento_url}" class="feed-event-img" alt="${evt.nome}">
+                    <img src="${evt.imagem_evento_url}" 
+                         class="feed-event-img" 
+                         alt="${evt.nome}"
+                         onerror="this.onerror=null; this.src='${defaultImg}';">
                  </div>
                  <div class="feed-card-body">
                     <div class="feed-title-row">
                         <h3 class="feed-event-title">${evt.nome}</h3>
                         <span class="feed-event-date">
-                            <i class="fa-regular fa-calendar"></i> ${dataFormatada}, ${horaFormatada}
+                            <i class="far fa-calendar-alt"></i> ${dataFormatada}, ${horaFormatada}
                         </span>
                     </div>
                     <p class="feed-event-location">${evt.nome_parque || 'Local a definir'}</p>
@@ -252,7 +256,7 @@ $jsonEventos = json_encode($listaEventosAmigos);
         return;
       }
 
-      // --- CARD DE PESSOA ---
+      // --- CARD DE PESSOA (padrão) ---
       const listaFiltrada = lista.filter(u => (u.idUsuario || u.id) != meuIdSessao);
 
       if(listaFiltrada.length === 0) {
@@ -270,7 +274,7 @@ $jsonEventos = json_encode($listaEventosAmigos);
         item.className = 'friend-item';
         item.innerHTML = `
           <div class="friend-content-left" onclick="verPerfil(${idUsuario})">
-            <img class="friend-avatar" src="${u.avatar}" alt="${u.nome}">
+            <img class="friend-avatar" src="${u.avatar}" alt="${u.nome}" onerror="this.src='${urlBase}assets/images/avatar_padrao.png'">
             <div>
                 <span class="friend-name">${u.nome}</span>
                 <span class="username-small">@${u.username || 'usuario'}</span>
@@ -316,13 +320,8 @@ $jsonEventos = json_encode($listaEventosAmigos);
     }
 
     function goBack() { window.location.href = '/Spark-main/tela-principal/telaprincipal.php'; }
-    
-    // REDIRECIONAMENTO CORRIGIDO PARA USUÁRIO
     function verPerfil(id) { window.location.href = `../teladeusuario/usuario.php?id=${id}`; }
-    
     function navegar(url) { window.location.href = url; }
-    
-    // REDIRECIONAMENTO CORRIGIDO PARA EVENTO
     function verEvento(id) { window.location.href = `../tela-evento/tela-evento.php?id=${id}`; }
 
     switchTab('seguindo');
