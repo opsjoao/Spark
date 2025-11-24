@@ -1,5 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+/* =========================================================================
+    Estilos para Sistema de Avaliações de Parques
+    ========================================================================= */
+
 :root {
   --verde-claro: #DCF8DC;
   --verde-selecao: #7CBD64;
@@ -448,8 +452,8 @@ box-sizing: border-box;
 }
 
 /* ====================================
- *  ESTILOS NOVOS PARA O CARROSSEL (AMENIDADES) - CORRIGIDOS PARA ARRASTO
- *  ==================================== */
+ * ESTILOS NOVOS PARA O CARROSSEL (AMENIDADES) - CORRIGIDOS PARA ARRASTO
+ * ==================================== */
 
 .amenities-carousel-container {
   /* Permite a rolagem horizontal */
@@ -551,8 +555,8 @@ box-sizing: border-box;
 }
 
 /* ====================================
- *  ESTILOS NOVOS PARA O MODAL DE SELEÇÃO COMPLETA
- *  ==================================== */
+ * ESTILOS NOVOS PARA O MODAL DE SELEÇÃO COMPLETA
+ * ==================================== */
 
 #full-amenities-modal {
 position: fixed;
@@ -652,4 +656,89 @@ overflow-y: auto;
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* Estrelas do modal de avaliação */
+#review-stars .fa-star {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#review-stars .fa-star:hover {
+  transform: scale(1.2);
+}
+
+/* Card de avaliação */
+.review-card {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviewer-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.review-card .stars {
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+.review-card .stars i {
+  margin-right: 2px;
+}
+
+/* Botão de avaliar */
+button[onclick*="openAddReviewModal"] {
+  transition: all 0.3s ease;
+}
+
+button[onclick*="openAddReviewModal"]:hover {
+  background-color: #4fc015 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(94, 217, 37, 0.3);
+}
+
+/* Modal de avaliação */
+#add-review-modal textarea {
+  font-size: 0.95em;
+}
+
+#add-review-modal textarea:focus {
+  outline: none;
+  border-color: #5ED925;
+  box-shadow: 0 0 0 3px rgba(94, 217, 37, 0.1);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  #add-review-modal > div {
+    width: 95% !important;
+    padding: 20px !important;
+  }
+  
+  #review-stars {
+    font-size: 1.8em !important;
+  }
+  
+  .review-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .reviewer-photo {
+    margin-bottom: 8px;
+  }
 }
