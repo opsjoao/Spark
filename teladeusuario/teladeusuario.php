@@ -88,7 +88,7 @@ $logout_url = $url_base . 'formulario-cadastro-login/formulario-login/logout.php
 <i class="angle fa-solid fa-angle-right"></i>
 </div>
 </a>
-<a href="#">
+<a href="minhas_avaliacoes.php">
 <div class="settings-item">
 <div class="item-content">
 <i class="fa-solid fa-star icon-circle"></i>
