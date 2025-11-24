@@ -14,8 +14,8 @@ body {
 
 /* --- HEADER (Topo Verde) --- */
 .app-header {
-  background-color: #1ea936;
-  color: white;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
   /* ALTERADO: Altura reduzida para 50px */
   height: 50px; 
   padding: 0 20px;
@@ -53,7 +53,7 @@ body {
 /* --- ABAS (Tabs) --- */
 .tabs-container {
   display: flex;
-  background-color: #1ea936; 
+  background-color: #ffffff; 
   position: sticky;
   /* ALTERADO: Top ajustado para 50px para acompanhar o header */
   top: 50px; 
@@ -66,7 +66,7 @@ body {
   flex: 1;
   background: transparent;
   border: none;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(0, 0, 0, 0.7);
   padding: 10px 0; /* Padding reduzido */
   font-size: 14px;
   font-weight: 600;
@@ -83,7 +83,7 @@ body {
 }
 
 .tab-btn.active {
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .tab-btn.active::after {
