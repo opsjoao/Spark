@@ -23,7 +23,7 @@ if ($resultado_evento->num_rows === 0) { die("Erro: Evento não encontrado."); }
 $evento = $resultado_evento->fetch_assoc();
 $idParqueDoEvento = $evento['idParque'];
 
-// --- NOVO: Verifica se o usuário logado é o dono do evento ---
+// Verifica se o usuário logado é o dono do evento
 $souDono = ($evento['idUsuario'] == $idUsuarioLogado);
 
 // Busca os Participantes do evento
@@ -36,7 +36,7 @@ $stmt_participantes->bind_param("i", $idEvento);
 $stmt_participantes->execute();
 $resultado_participantes = $stmt_participantes->get_result();
 
-// Busca as Avaliações do Evento (ALTERADO PARA PRIORIZAR O USUÁRIO LOGADO)
+// Busca as Avaliações do Evento
 $stmt_avaliacoes = $conexao->prepare("
     SELECT av.*, u.nome, u.username, u.avatar_path 
     FROM Avaliacao_evento AS av 
@@ -45,12 +45,11 @@ $stmt_avaliacoes = $conexao->prepare("
     ORDER BY (av.idUsuario = ?) DESC, av.data_avaliacao DESC
 ");
 
-// Note que agora passamos "ii": o ID do evento E o ID do usuário logado para a ordenação
 $stmt_avaliacoes->bind_param("ii", $idEvento, $idUsuarioLogado);
 $stmt_avaliacoes->execute();
 $resultado_avaliacoes = $stmt_avaliacoes->get_result();
 
-// Lógica para o botão dinâmico (Verifica status na tabela Participantes)
+// Lógica para o botão dinâmico
 $stmt_participacao = $conexao->prepare("SELECT status FROM Participantes WHERE idUsuario = ? AND idEvento = ?");
 $stmt_participacao->bind_param("ii", $idUsuarioLogado, $idEvento);
 $stmt_participacao->execute();
@@ -81,6 +80,9 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
     <link rel="stylesheet" href="tela-evento.css">
     <link rel="stylesheet" href="<?php echo $url_base; ?>style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        .review-card { scroll-margin-top: 80px; }
+    </style>
 </head>
 <body>
     <header class="topbar">
@@ -112,45 +114,39 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
 
                 <div class="button-container">
                     <?php 
-                    // --- LÓGICA CORRIGIDA DOS BOTÕES ---
+                    // --- LÓGICA REVISADA DE BOTÕES ---
                     
-                    // 1. Se já participou ou avaliou:
-                    if ($status_participacao === 'participou' || $ja_avaliou): ?>
+                    // 1. Se já avaliou (independente do status): Botão Desabilitado
+                    if ($ja_avaliou): ?>
                         <button class="cta-button disabled" disabled>Evento Finalizado e Avaliado</button>
                     
                     <?php 
-                    // 2. Se o evento está ATIVO (sendo executado):
+                    // 2. Se o evento está ATIVO: Botão Finalizar
                     elseif ($status_participacao === 'ativo'): ?>
                         <button class="cta-button participate" onclick="openEvaluationModal()">Finalizar Evento</button>
                     
                     <?php 
-                    // 3. Se o evento JÁ TERMINOU e o usuário estava inscrito:
-                    elseif ($status_participacao === 'inscrito' && $evento_ja_terminou): ?>
-                        <button class="cta-button participate" onclick="openEvaluationModal()">Participei! Avaliar agora</button>
+                    // 3. Se já participou OU (estava inscrito e acabou) E não avaliou ainda: Botão Avaliar
+                    elseif ($status_participacao === 'participou' || ($status_participacao === 'inscrito' && $evento_ja_terminou)): ?>
+                        <button class="cta-button participate" onclick="openEvaluationModal()">Avaliar Evento</button>
                     
                     <?php 
-                    // 4. Se o evento ESTÁ ACONTECENDO AGORA (Status inscrito OU É O DONO):
-                    // Adicionei "OR $souDono" aqui para permitir que o dono inicie mesmo sem estar na tabela
+                    // 4. Se está acontecendo agora (Inscrito ou Dono): Botão Iniciar
                     elseif (($status_participacao === 'inscrito' || $souDono) && $evento_esta_acontecendo): ?>
                         <button id="btnIniciarEvento" class="cta-button participate" onclick="iniciarEvento(<?php echo $idEvento; ?>)">Iniciar Evento</button>
                     
                     <?php 
-                    // 5. Se está inscrito mas ainda não começou (aguardando):
+                    // 5. Aguardando início (Inscrito):
                     elseif ($status_participacao === 'inscrito'): ?>
                         <button id="btnIniciarEvento" class="cta-button" data-starttime-ms="<?php echo htmlspecialchars($data_inicio_ts * 1000); ?>" disabled>Carregando...</button>
                     
                     <?php 
-                    // 6. (ALTERADO) Se é o DONO: Mostra o contador usando a lógica que JÁ EXISTE no seu JS
+                    // 6. Aguardando início (Dono):
                     elseif ($souDono): ?>
-                         <button id="btnIniciarEvento" 
-                                 class="cta-button" 
-                                 data-starttime-ms="<?php echo htmlspecialchars($data_inicio_ts * 1000); ?>" 
-                                 >
-                             Calculando tempo...
-                         </button>
+                         <button id="btnIniciarEvento" class="cta-button" data-starttime-ms="<?php echo htmlspecialchars($data_inicio_ts * 1000); ?>">Calculando tempo...</button>
                     
                     <?php 
-                    // 7. Caso padrão: Visitante que ainda não se inscreveu
+                    // 7. Visitante: Confirmar Presença
                     else: ?>
                         <form action="confirmar_presenca.php" method="POST" style="margin:0;">
                             <input type="hidden" name="idEvento" value="<?php echo $evento['idEvento']; ?>">
@@ -170,7 +166,8 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
                     ?>
                         <img src="/Spark-main/<?php echo htmlspecialchars($avatar_participante); ?>" 
                              title="<?php echo htmlspecialchars($participante['nome']); ?> (@<?php echo htmlspecialchars($participante['username']); ?>)"
-                             class="participant-avatar">
+                             class="participant-avatar"
+                             onerror="this.onerror=null;this.src='/Spark-main/assets/images/avatar_padrao.png';">
                     <?php endwhile; ?>
                 </div>
             <?php else: ?>
@@ -185,8 +182,11 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
                     $avatar_avaliacao = !empty($avaliacao['avatar_path']) ? $avaliacao['avatar_path'] : 'assets/images/avatar_padrao.png';
                     $isMinhaAvaliacao = ($avaliacao['idUsuario'] == $idUsuarioLogado);
                 ?>
-                <div class="review-card">
-                    <img src="/Spark-main/<?php echo htmlspecialchars($avatar_avaliacao); ?>" alt="avatar" class="avatar">
+                <div class="review-card" id="avaliacao-<?php echo $avaliacao['idAvaliacao']; ?>">
+                    <img src="/Spark-main/<?php echo htmlspecialchars($avatar_avaliacao); ?>" 
+                         alt="avatar" 
+                         class="avatar"
+                         onerror="this.onerror=null;this.src='/Spark-main/assets/images/avatar_padrao.png';">
                     
                     <div class="review-content">
                         <div class="review-header">
@@ -201,9 +201,7 @@ $data_inicio_evento_js = date('c', $data_inicio_ts);
                                 </button>
                                 <div class="review-dropdown">
                                     <?php if ($isMinhaAvaliacao): ?>
-                                        <a href="#" onclick="editarAvaliacao(<?php echo $avaliacao['idAvaliacao']; ?>); return false;">
-                                            <i class="fa-solid fa-pen"></i> Editar
-                                        </a>
+                                        <!-- REMOVIDO O EDITAR, FICANDO APENAS EXCLUIR -->
                                         <a href="#" class="text-danger" onclick="excluirAvaliacao(<?php echo $avaliacao['idAvaliacao']; ?>); return false;">
                                             <i class="fa-solid fa-trash"></i> Excluir
                                         </a>
@@ -276,4 +274,3 @@ $stmt_participacao->close();
 $stmt_check_avaliacao->close();
 $conexao->close();
 ?>
-
