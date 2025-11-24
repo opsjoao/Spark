@@ -231,7 +231,7 @@ main {
 .review-card .avatar {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 8px;
     object-fit: cover;
 }
 
@@ -260,54 +260,57 @@ main {
     display: none; /* Esconde username (@) antigo se houver */
 }
 
-/* --- MENU DROPDOWN (3 pontos) --- */
-.review-menu-container { 
-    position: relative; 
-    /* Certifique-se de que o z-index permita que o menu fique visível sobre outros elementos se necessário, 
-       mas geralmente position relative é suficiente para o contexto */
+/* --- Menu Três Pontinhos --- */
+.review-menu-container {
+    position: relative;
+    flex-shrink: 0;
 }
 
-.menu-dots-btn { 
-    background: none; 
-    border: none; 
-    font-size: 16px; 
-    color: #999; 
-    cursor: pointer; 
-    padding: 5px 10px; /* Aumentei a área de clique */
+.menu-dots-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 0 5px;
+    margin-top: -2px;
+}
+
+.menu-dots-btn:hover {
+    color: #333;
 }
 
 .review-dropdown {
-    display: none; /* Oculto por padrão */
-    position: absolute; 
-    right: 0; 
-    top: 100%;
-    background: white; 
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 25px;
+    background-color: white;
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    border-radius: 8px; 
-    z-index: 10; 
-    overflow: hidden; 
-    min-width: 130px;
+    border-radius: 8px;
+    width: 140px;
+    z-index: 10;
+    overflow: hidden;
     border: 1px solid #eee;
 }
 
-/* Mostra menu quando o container tem a classe .active */
-.review-menu-container.active .review-dropdown { 
-    display: block; 
+.review-dropdown.show {
+    display: block;
 }
 
 .review-dropdown a {
-    display: flex; 
-    align-items: center; 
-    gap: 8px;
-    padding: 10px 15px; 
-    text-decoration: none; 
-    color: #333; 
-    font-size: 13px; 
-    transition: 0.2s;
+    display: block;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #333;
+    font-size: 13px;
+    text-align: left;
 }
+
 .review-dropdown a:hover { background-color: #f5f5f5; }
-.review-dropdown a.text-danger { color: #e53935; }
-.review-dropdown a.text-warning { color: #fb8c00; }
+.review-dropdown a i { margin-right: 8px; width: 16px; text-align: center; }
+.review-dropdown a.text-danger { color: #e74c3c; }
+.review-dropdown a.text-warning { color: #f39c12; }
 
 /* --- Conteúdo da Review --- */
 .stars {
