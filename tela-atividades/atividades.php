@@ -321,7 +321,7 @@ function renderEventCard($evento, $showYear = false, $isOwner = false) {
         event.stopPropagation();
         if(confirm("Tem certeza que deseja excluir este evento?")) {
             // Redireciona para o PHP de exclusão
-            window.location.href = `/Spark-main/excluir-evento.php?id=${id}`;
+            window.location.href = `/Spark-main/tela-atividades/excluir-evento.php?id=${id}`;
         }
     }
 
