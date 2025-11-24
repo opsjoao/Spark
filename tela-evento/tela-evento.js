@@ -1,193 +1,148 @@
 // ==========================================================
-// FUNÇÕES GLOBAIS (acessíveis pelo HTML via onclick)
+// FUNÇÕES DE MENU (Correção do botão de 3 pontos)
 // ==========================================================
 
-// Função para abrir/fechar o menu de opções da avaliação
-function toggleReviewMenu(button) {
-    // 1. Fecha todos os outros menus abertos primeiro
-    const allDropdowns = document.querySelectorAll('.review-dropdown');
-    const thisDropdown = button.nextElementSibling;
-
-    allDropdowns.forEach(dropdown => {
-        if (dropdown !== thisDropdown) {
-            dropdown.classList.remove('show');
+function toggleReviewMenu(btn) {
+    // Pega o container pai do botão clicado
+    const container = btn.closest('.review-menu-container');
+    
+    // Fecha todos os outros menus que estejam abertos
+    document.querySelectorAll('.review-menu-container.active').forEach(el => {
+        if (el !== container) {
+            el.classList.remove('active');
         }
     });
 
-    // 2. Alterna o menu atual
-    thisDropdown.classList.toggle('show');
-
-    // 3. Impede que o clique feche o menu imediatamente
-    event.stopPropagation();
+    // Alterna a classe 'active' no container atual
+    // O CSS exibe o menu quando o container tem essa classe
+    if (container) {
+        container.classList.toggle('active');
+    }
 }
 
 // Fecha o menu se clicar fora dele
-window.onclick = function(event) {
-    if (!event.target.matches('.menu-dots-btn') && !event.target.matches('.menu-dots-btn i')) {
-        const dropdowns = document.querySelectorAll('.review-dropdown');
-        dropdowns.forEach(openDropdown => {
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
+document.addEventListener('click', function(event) {
+    // Se o clique NÃO foi dentro de um container de menu
+    if (!event.target.closest('.review-menu-container')) {
+        // Fecha todos os menus
+        document.querySelectorAll('.review-menu-container.active').forEach(el => {
+            el.classList.remove('active');
         });
     }
-}
+});
 
-// Funções placeholders para as ações (você implementará a lógica depois)
-function excluirAvaliacao(id) {
-    if(confirm('Tem certeza que deseja excluir sua avaliação?')) {
-        // Redirecionar para script de exclusão ou chamada AJAX
-        window.location.href = 'excluir_avaliacao.php?id=' + id;
-    }
-}
+// ==========================================================
+// FUNÇÕES DE AVALIAÇÃO
+// ==========================================================
 
-function denunciaAvaliacao(id) {
-    alert('Denúncia enviada para análise.');
-}
-
-function editarAvaliacao(id) {
-    alert('Funcionalidade de editar será implementada em breve.');
-}
-
-// Função para abrir o pop-up (modal) de avaliação
-function openEvaluationModal() {
-    const modal = document.getElementById('evaluation-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-    }
-}
-
-// Função para fechar o pop-up (modal) de avaliação
-function closeEvaluationModal() {
-    const modal = document.getElementById('evaluation-modal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Função que envia o comando para "iniciar" um evento
-function iniciarEvento(idEvento) {
-    const btn = document.getElementById('btnIniciarEvento');
-    if (!btn) return;
-
-    btn.textContent = 'Iniciando...';
-    btn.disabled = true;
+function excluirAvaliacao(idAvaliacao) {
+    if(!confirm("Tem certeza que deseja excluir sua avaliação?")) return;
 
     const formData = new FormData();
-    formData.append('idEvento', idEvento);
+    formData.append('id_avaliacao', idAvaliacao);
 
-    // Envia os dados para o script PHP em segundo plano
-    fetch('iniciar_evento.php', {
+    fetch('excluir_avaliacao.php', {
         method: 'POST',
         body: formData
     })
     .then(response => response.json())
     .then(data => {
-        if (data.success) {
-            // Se o PHP responder com sucesso, recarrega a página para mostrar o novo botão "Finalizar Evento"
+        if(data.success) {
             window.location.reload();
         } else {
-            alert('Erro: ' + (data.message || 'Não foi possível iniciar o evento.'));
-            btn.textContent = 'Tente Novamente';
-            btn.disabled = false;
+            alert("Erro ao excluir: " + data.msg);
         }
     })
     .catch(error => {
-        console.error('Erro de conexão:', error);
-        alert('Ocorreu um erro de conexão.');
+        console.error('Erro:', error);
+        alert("Erro de conexão ao tentar excluir.");
     });
 }
 
+function denunciarAvaliacao(id) {
+    alert("Denúncia enviada para análise.");
+}
+
+// --- MODAL DE AVALIAÇÃO ---
+function openEvaluationModal() {
+    const modal = document.getElementById('evaluation-modal');
+    if(modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeEvaluationModal() {
+    const modal = document.getElementById('evaluation-modal');
+    if(modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
 
 // ==========================================================
-// LÓGICAS QUE RODAM APÓS O CARREGAMENTO DA PÁGINA
+// LÓGICAS DE CARREGAMENTO E UTILITÁRIOS
 // ==========================================================
+
+// Preview de imagem no modal
+const imgInput = document.getElementById('imagemAvaliacao');
+if(imgInput) {
+    imgInput.addEventListener('change', function(e) {
+        const container = document.getElementById('image-preview-container');
+        container.innerHTML = '';
+        if (this.files && this.files[0]) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(this.files[0]);
+            container.appendChild(img);
+        }
+    });
+}
+
+// Lógica para Iniciar Evento (Contador e Ação)
+function iniciarEvento(id) {
+    alert("Iniciando evento...");
+    // Aqui entraria a lógica real de iniciar
+}
+
+// Ao carregar a página
 document.addEventListener('DOMContentLoaded', function() {
-
-    // --- Lógica do Contador Regressivo ---
+    // Lógica do Contador Regressivo (se existir o botão)
     const btnIniciar = document.getElementById('btnIniciarEvento');
     if (btnIniciar && btnIniciar.hasAttribute('data-starttime-ms')) {
-        
         const eventoStartTime = parseInt(btnIniciar.dataset.starttimeMs, 10);
 
-        if (isNaN(eventoStartTime)) {
-            btnIniciar.textContent = "Data inválida";
-            return;
-        }
+        if (!isNaN(eventoStartTime)) {
+            const timerInterval = setInterval(function() {
+                const agora = new Date().getTime();
+                const distancia = eventoStartTime - agora;
 
-        const timerInterval = setInterval(function() {
-            const agora = new Date().getTime();
-            const distancia = eventoStartTime - agora;
-
-            if (distancia <= 0) {
-                clearInterval(timerInterval);
-                // O tempo acabou, recarrega a página para o PHP mostrar o botão "Iniciar Evento"
-                window.location.reload();
-            } else {
-                const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
-                const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
-                const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
-                
-                let timerText = "Começa em: ";
-                if (dias > 0) timerText += dias + "d ";
-                timerText += horas.toString().padStart(2, '0') + ":" + 
-                             minutos.toString().padStart(2, '0') + ":" + 
-                             segundos.toString().padStart(2, '0');
-                btnIniciar.textContent = timerText;
-            }
-        }, 1000);
-    }
-
-    // --- Lógica da Pré-visualização da Imagem no Modal ---
-    const fileInput = document.getElementById('imagemAvaliacao');
-    const previewContainer = document.getElementById('image-preview-container');
-    
-    if (fileInput && previewContainer) {
-        fileInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewContainer.innerHTML = '';
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.classList.add('image-preview');
-                    const removeBtn = document.createElement('button');
-                    removeBtn.type = "button";
-                    removeBtn.textContent = 'Remover Foto';
-                    removeBtn.classList.add('remove-image-btn');
-                    removeBtn.onclick = function() {
-                        fileInput.value = '';
-                        previewContainer.innerHTML = '';
-                    };
-                    previewContainer.appendChild(img);
-                    previewContainer.appendChild(removeBtn);
+                if (distancia <= 0) {
+                    clearInterval(timerInterval);
+                    window.location.reload(); // Recarrega para liberar o botão
+                } else {
+                    const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+                    const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+                    const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+                    
+                    let timerText = "Inicia em: ";
+                    if (dias > 0) timerText += dias + "d ";
+                    timerText += [horas, minutos, segundos].map(u => u.toString().padStart(2, '0')).join(':');
+                    
+                    btnIniciar.textContent = timerText;
                 }
-                reader.readAsDataURL(file);
-            } else {
-                previewContainer.innerHTML = '';
-            }
-        });
+            }, 1000);
+        }
     }
 
-    // --- Lógica para Rolar até um Comentário Destacado ---
-    const params = new URLSearchParams(window.location.search);
-    const highlightId = params.get('highlight');
-
-    if (highlightId) {
-        const commentElement = document.getElementById('avaliacao-' + highlightId);
-        if (commentElement) {
-            // Rola a tela até o comentário de forma suave
-            commentElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-            // Adiciona uma classe de destaque temporária
-            commentElement.classList.add('highlight');
-
-            // Remove a classe de destaque após alguns segundos
+    // Rolar até comentário destacado (se vier da página 'Minhas Avaliações')
+    if (window.location.hash) {
+        const el = document.querySelector(window.location.hash);
+        if (el) {
             setTimeout(() => {
-                commentElement.classList.remove('highlight');
-            }, 2500); // 2.5 segundos
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.classList.add('highlight'); // Adicione CSS para .highlight se quiser um efeito visual
+            }, 500);
         }
     }
 });
