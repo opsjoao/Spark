@@ -105,20 +105,15 @@ function renderEventCard($evento, $showYear = false, $isOwner = false) {
     echo "<p class='description'>" . nl2br(htmlspecialchars($evento['descricao'])) . "</p>";
     echo "</div></section></a>";
 
-    // O MENU (Só aparece se for dono)
+    // O MENU (Só aparece se for dono) - BOTÃO EDITAR REMOVIDO
     if ($isOwner) {
         $idEvt = $evento['idEvento'];
-        // Links de exemplo para editar e excluir
-        $linkEditar = "/Spark-main/editar-evento.php?id=$idEvt";
         
         echo "
         <button class='card-menu-btn' onclick='toggleCardMenu(event, this)'>
             <i class='fas fa-ellipsis-v'></i>
         </button>
         <div class='card-menu-dropdown'>
-            <a href='$linkEditar' class='card-menu-item edit'>
-                <i class='fas fa-pen'></i> Editar
-            </a>
             <a href='#' onclick='confirmarExclusao(event, $idEvt)' class='card-menu-item delete'>
                 <i class='fas fa-trash'></i> Excluir
             </a>
@@ -144,7 +139,21 @@ function renderEventCard($evento, $showYear = false, $isOwner = false) {
 </head>
 <body>
 
-    <!-- CABEÇALHO FIXO -->
+    <?php
+    // Bloco de Mensagens - ADICIONADO PARA EXIBIR SUCESSO/ERRO DE EXCLUSÃO
+    $mensagem_sucesso = $_SESSION['mensagem_sucesso'] ?? null;
+    $mensagem_erro = $_SESSION['mensagem_erro'] ?? null;
+
+    if ($mensagem_sucesso) {
+        echo "<div class='alert-message success'>" . htmlspecialchars($mensagem_sucesso) . "</div>";
+        unset($_SESSION['mensagem_sucesso']);
+    }
+    if ($mensagem_erro) {
+        echo "<div class='alert-message error'>" . htmlspecialchars($mensagem_erro) . "</div>";
+        unset($_SESSION['mensagem_erro']);
+    }
+    ?>
+
     <header class="activity-header">
         <div class="header-content-wrapper">
             <div class="header-top-row">
@@ -174,7 +183,6 @@ function renderEventCard($evento, $showYear = false, $isOwner = false) {
         </div>
 
         <div id="meus-eventos" class="tab-content">
-            <!-- AQUI PASSAMOS TRUE NO 3º PARAMETRO PARA ATIVAR O MENU -->
             <?php if ($resultado_meus_eventos && $resultado_meus_eventos->num_rows > 0) { while($e = $resultado_meus_eventos->fetch_assoc()) renderEventCard($e, false, true); } else { echo "<p class='empty-message'>Nenhum evento criado.</p>"; } ?>
             
             <a href="/Spark-main/formulario cadastro eventos/criar_evento.html" class="fab">
