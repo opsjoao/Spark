@@ -120,7 +120,7 @@ $jsonEventos = json_encode($listaEventosAmigos);
         Seguidores <br><span style="font-size:11px; opacity:0.8;">(<?php echo count($listaSeguidores); ?>)</span>
     </button>
     <button id="tab-eventos" class="tab-btn" onclick="switchTab('eventos')">
-        Eventos <br><span style="font-size:11px; opacity:0.8;">(<?php echo count($listaEventosAmigos); ?>)</span>
+        Eventos de Amigos <br><span style="font-size:11px; opacity:0.8;">(<?php echo count($listaEventosAmigos); ?>)</span>
     </button>
   </div>
 
