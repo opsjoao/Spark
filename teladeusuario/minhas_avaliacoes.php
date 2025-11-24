@@ -25,7 +25,8 @@ $sql = "
         ae.comentario,
         ae.data_avaliacao as data,
         ae.imagem_path,
-        e.nome as titulo
+        e.nome as titulo,
+        e.idEvento as id_referencia
      FROM Avaliacao_evento ae
      JOIN Evento e ON ae.idEvento = e.idEvento
      WHERE ae.idUsuario = ?)
@@ -37,7 +38,8 @@ $sql = "
         ap.comentario,
         NULL as data,
         NULL as imagem_path,
-        p.nome as titulo
+        p.nome as titulo,
+        p.idParque as id_referencia
      FROM Avaliacao_parque ap
      JOIN Parque p ON ap.idParque = p.idParque
      WHERE ap.idUsuario = ?)
@@ -89,7 +91,6 @@ function renderizarEstrelas($nota) {
   
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    
     :root {
         --cor-primaria: #1A9929;
         --cor-perigo: #D92525;
@@ -101,108 +102,21 @@ function renderizarEstrelas($nota) {
         --fundo-claro: #F8F9FA;
         --cor-divisor: #E9ECEF;
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { font-family: 'Inter', sans-serif; color: var(--texto-escuro); background-color: var(--fundo-claro); }
+    body { display: flex; flex-direction: column !important; min-height: 100vh; width: 100%; }
     
-    html, body { 
-        font-family: 'Inter', sans-serif; 
-        color: var(--texto-escuro); 
-        background-color: var(--fundo-claro); 
-    }
-    
-    /* CORREÇÃO FORÇADA DO LAYOUT */
-    body { 
-        display: flex; 
-        flex-direction: column !important; /* Garante que fique um em cima do outro */
-        min-height: 100vh; 
-        width: 100%;
-    }
-    
-    /* Appbar */
-    .appbar { 
-        display: flex; 
-        align-items: center; 
-        justify-content: space-between; 
-        padding: 20px; 
-        background-color: var(--cor-primaria); 
-        color: white; 
-        width: 100%; 
-        position: sticky; 
-        top: 0; 
-        z-index: 100;
-        flex-shrink: 0; 
-    }
-    
-    .appbar h1 { 
-        font-size: 1.1rem; 
-        font-weight: 600; 
-        text-align: center; 
-        flex-grow: 1; 
-        margin: 0;
-    }
-    
-    .icon-btn { 
-        background: none; 
-        border: none; 
-        color: white; 
-        font-size: 1.2rem; 
-        cursor: pointer; 
-        padding: 5px;
-    }
+    .appbar { display: flex; align-items: center; justify-content: space-between; padding: 20px; background-color: var(--cor-primaria); color: white; width: 100%; position: sticky; top: 0; z-index: 100; flex-shrink: 0; }
+    .appbar h1 { font-size: 1.1rem; font-weight: 600; text-align: center; flex-grow: 1; margin: 0; }
+    .icon-btn { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; padding: 5px; }
 
-    /* Conteúdo */
-    .app-content { 
-        flex: 1; 
-        padding: 20px; 
-        width: 100%; 
-        max-width: 600px; 
-        margin: 0 auto; 
-        padding-bottom: 90px; 
-    }
+    .app-content { flex: 1; padding: 20px; width: 100%; max-width: 600px; margin: 0 auto; padding-bottom: 90px; }
 
-    /* Bottombar */
-    .bottombar { 
-        background: #ffffff; 
-        display: flex; 
-        justify-content: space-around; 
-        align-items: center; 
-        padding: 8px 0; 
-        position: fixed; 
-        bottom: 0; 
-        width: 100%; 
-        border-top: 1px solid #ddd; 
-        z-index: 1000; 
-    }
-    
-    .bottombar .nav-btn { 
-        background: transparent; 
-        border: none; 
-        color: #333; 
-        display: flex; 
-        flex-direction: column; 
-        align-items: center; 
-        justify-content: center; 
-        font-size: 12px; 
-        cursor: pointer; 
-        padding: 5px; 
-        flex: 1; 
-    }
-    
+    .bottombar { background: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 8px 0; position: fixed; bottom: 0; width: 100%; border-top: 1px solid #ddd; z-index: 1000; }
+    .bottombar .nav-btn { background: transparent; border: none; color: #333; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; padding: 5px; flex: 1; text-decoration: none !important; outline: none; }
     .bottombar .nav-btn i { font-size: 22px; margin-bottom: 2px; }
     .bottombar .nav-btn.active { color: #fff; font-weight: bold; position: relative; }
-    
-    .bottombar .nav-btn.active::before { 
-        content: ''; 
-        position: absolute; 
-        top: 50%; 
-        left: 50%; 
-        transform: translate(-50%, -50%); 
-        width: 80px; 
-        height: 40px; 
-        background-color: var(--cor-detalhes); 
-        border-radius: 999px; 
-        z-index: -1; 
-    }
+    .bottombar .nav-btn.active::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 80px; height: 40px; background-color: var(--cor-detalhes); border-radius: 999px; z-index: -1; }
   </style>
 
   <link rel="stylesheet" href="avaliacoes.css" />
@@ -210,22 +124,21 @@ function renderizarEstrelas($nota) {
 </head>
 <body>
 
-  <!-- CABEÇALHO -->
   <header class="appbar">
     <button class="icon-btn" onclick="goBack()">
       <i class="fa-solid fa-arrow-left"></i>
     </button>
     <h1>Minhas Avaliações</h1>
-    <div style="width: 24px;"></div> <!-- Espaçador -->
+    <div style="width: 24px;"></div>
   </header>
 
-  <!-- CONTEÚDO -->
   <div class="app-content">
     
     <?php if (count($avaliacoes) > 0): ?>
         <div class="reviews-list">
             <?php foreach ($avaliacoes as $av): ?>
-                <div class="review-card">
+                <!-- ALTERAÇÃO AQUI: Passamos também o ID da Avaliação -->
+                <div class="review-card" onclick="irParaPagina('<?php echo $av['tipo']; ?>', <?php echo $av['id_referencia']; ?>, <?php echo $av['idAvaliacao']; ?>)">
                     <div class="review-header">
                         <div class="review-info">
                             <span class="type-badge <?php echo $av['tipo']; ?>">
@@ -264,37 +177,24 @@ function renderizarEstrelas($nota) {
 
   </div>
 
-  <nav class="bottombar">
-        <a href="<?php echo $url_base; ?>TelaPerfils/perfil.php" class="nav-btn">
-            <i class="fa-solid fa-users"></i>
-        </a>
-        <a href="<?php echo $url_base; ?>tela-atividades/atividades.php" class="nav-btn">
-            <i class="fa-solid fa-person-walking"></i>
-        </a>
-        <a href="<?php echo $url_base; ?>tela-principal/telaprincipal.php" class="nav-btn">
-            <i class="fa-solid fa-house"></i>
-        </a>
-        <a href="../telas-mapas/index.html" class="nav-btn">
-        <svg version="1.0" xmlns="http://www.w3.org/2000/svg" width="28px" height="28px" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
-            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#333" stroke="none">
-                <path d="M3880 5114 c-253 -46 -368 -91 -527 -203 -320 -226 -515 -647 -464 -1002 50 -348 378 -896 903 -1510 135 -159 185 -185 274 -143 54 26 304 324 523 624 372 510 549 910 528 1190 -40 510 -395 920 -892 1025 -77 17 -294 28 -345 19z m221 -648 c94 -20 164 -59 236 -132 188 -187 187 -481 -1 -670 -189 -189 -483 -189 -672 0 -188 189 -189 483 -1 670 121 122 271 167 438 132z"/>
-                <path d="M836 3535 c-543 -218 -767 -312 -788 -332 -15 -15 -33 -44 -38 -64 -7 -24 -9 -566 -8 -1535 l3 -1499 24 -34 c26 -36 90 -70 133 -71 15 0 345 127 733 282 l705 282 0 1638 c0 901 -1 1638 -2 1638 -2 -1 -345 -138 -762 -305z"/>
-                <path d="M1920 2202 l0 -1638 640 -256 640 -256 0 1285 0 1284 -69 98 c-185 261 -346 534 -431 731 l-41 95 -337 134 c-185 74 -352 141 -369 148 l-33 13 0 -1638z"/>
-                <path d="M5076 3029 c-192 -313 -602 -845 -766 -993 -95 -86 -248 -129 -382 -108 -122 18 -201 65 -312 185 l-96 102 0 -1107 0 -1108 48 19 c26 10 370 148 764 306 791 316 770 305 783 397 3 24 4 567 3 1207 l-3 1164 -39 -64z"/>
-            </g>
-        </svg>
-        </a>
-        <a href="<?php echo $url_base; ?>teladeusuario/teladeusuario.php" class="nav-btn active">
-            <i class="fa-solid fa-user"></i>
-        </a>
-    </nav>
-
   <script>
     function goBack() {
         window.location.href = 'teladeusuario.php'; 
     }
     function navegar(url) {
         window.location.href = url;
+    }
+    
+    // FUNÇÃO DE REDIRECIONAMENTO COM ID ESPECÍFICO
+    function irParaPagina(tipo, idReferencia, idAvaliacao) {
+        // Cria a âncora específica para aquela avaliação
+        const ancora = `#avaliacao-${idAvaliacao}`; 
+        
+        if (tipo === 'evento') {
+            window.location.href = `../tela-evento/tela-evento.php?id=${idReferencia}${ancora}`;
+        } else if (tipo === 'parque') {
+            window.location.href = `../tela-parques/parque.php?id=${idReferencia}${ancora}`;
+        }
     }
   </script>
 </body>
