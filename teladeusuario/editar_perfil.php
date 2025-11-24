@@ -30,7 +30,6 @@ $avatarAtual = !empty($usuario['avatar_path']) ? $usuario['avatar_path'] : 'asse
 
 // ====================================================================================
 // DEFINA A SUA URL BASE CORRETA AQUI
-// Substitua '/Spark-main/' pelo valor exato que o seu script 'teste_caminho.php' mostrou.
 $url_base = '/Spark-main/';
 // ====================================================================================
 
@@ -53,13 +52,18 @@ $processar_edicao_url = $url_base . 'teladeusuario/processar_edicao_perfil.php';
 
         <div class="profile-edit-section">
             <div class="avatar-container"> 
-                <img class="avatar-large" id="avatarPreview" src="<?php echo $url_base . $avatarAtual; ?>" alt="Foto do perfil" />
+                <!-- CORREÇÃO AQUI: Adicionado onerror para garantir que a imagem padrão apareça se a do usuário falhar -->
+                <img class="avatar-large" 
+                     id="avatarPreview" 
+                     src="<?php echo $url_base . $avatarAtual; ?>" 
+                     alt="Foto do perfil" 
+                     onerror="this.onerror=null; this.src='<?php echo $url_base; ?>assets/images/avatar_padrao.png';" />
                 
                 <label for="avatarUpload" class="btn-upload-avatar">
                     <i class="fa-solid fa-camera"></i>
                 </label>
             </div>
-</div>
+        </div>
     </header>
 
     <main class="app-content">
@@ -97,7 +101,8 @@ $processar_edicao_url = $url_base . 'teladeusuario/processar_edicao_perfil.php';
     </script>
 
     <nav class="bottombar">
-        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.html'">
+        <!-- Ajustado para .php para manter consistência -->
+        <button class="nav-btn" onclick="window.location.href='/Spark-main/TelaPerfils/perfil.php'">
             <i class="fa-solid fa-users"></i>
         </button>
         <button class="nav-btn" onclick="window.location.href='/Spark-main/tela-atividades/atividades.php'">
