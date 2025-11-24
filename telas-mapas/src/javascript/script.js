@@ -28,6 +28,10 @@ let map, markers = [], autocomplete, placesService, infoWindow;
 let currentParkLocation = "";
 let currentParkName = "";
 
+window.currentParkPlaceId = ""; // NOVO: Armazena o ID único do Google Maps (definido como window global)
+const PARK_AMENITIES_URL = '/Spark-main/telas-mapas/src/javascript/park_amenities.php'; // NOVO ENDPOINT
+let parkAmenityCounts = {}; // NOVO: Armazenará as contagens de votos vindas do backend
+
 // Variáveis de controle de arrasto
 let isDragging = false;
 let startY = 0;
@@ -262,7 +266,7 @@ window.openAllAmenitiesSelectionScreen = function(isRedrawing = false) {
     ${allAmenitiesHtml}
     </div>
 
-    <button onclick="alert('Funcionalidade de Seleção salva (simulada)!'); document.getElementById('full-amenities-modal').remove();" class="full-amenities-save-button">
+    <button onclick="window.handleSaveAmenities();" class="full-amenities-save-button">
     Salvar Seleção
     </button>
     <button onclick="document.getElementById('full-amenities-modal').remove();" class="full-amenities-close-button">
@@ -523,10 +527,16 @@ function getParkAmenities() {
 }
 
 
+/**
+ * Exibe o painel de detalhes do parque, buscando as informações do Google Places
+ * e as contagens de amenidades do seu backend.
+ * * @param {string} placeId O ID único do local (Place ID)
+ * @param {string} title O nome do parque (fallback)
+ */
 function showDetailsPane(placeId, title) {
     const request = {
         placeId: placeId,
-        fields: ['name', 'formatted_address', 'website', 'formatted_phone_number', 'photos', 'opening_hours', 'rating', 'user_ratings_total', 'reviews', 'editorial_summary']
+        fields: ['name', 'formatted_address', 'website', 'formatted_phone_number', 'photos', 'opening_hours', 'rating', 'user_ratings_total', 'reviews', 'editorial_summary', 'address_components']
     };
 
     placesService.getDetails(request, (place, status) => {
@@ -538,8 +548,13 @@ function showDetailsPane(placeId, title) {
                 photoUrl = place.photos[0].getUrl({ maxWidth: detailsContainer.clientWidth || 400 });
             }
 
+            // --- NOVO: SALVA VARIÁVEIS GLOBAIS IMPORTANTES ---
             currentParkLocation = place.formatted_address || "Endereço não disponível";
             currentParkName = place.name || title;
+            window.currentParkPlaceId = placeId; // <-- SALVANDO O PLACE ID
+            
+            // Restaura o estado de seleção do modal para o padrão (limpa votos anteriores)
+            parkAmenitiesState = JSON.parse(JSON.stringify(PARK_AMENITIES_DATA));
 
             // Extrair CEP
             let parkPostalCode = "";
@@ -547,171 +562,343 @@ function showDetailsPane(placeId, title) {
                 parkPostalCode = getPostalCode(place.address_components);
             }
             window.currentParkPostalCode = parkPostalCode; // salvar CEP globalmente
-
-
+            
             const hoursData = (place.opening_hours && place.opening_hours.weekday_text)
-            ? getTodayAndAllHours(place.opening_hours.weekday_text)
-            : { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
+                ? getTodayAndAllHours(place.opening_hours.weekday_text)
+                : { todayHours: "Horário não disponível", allHoursHtml: "Nenhum horário disponível." };
 
             const realTodayHours = hoursData.todayHours;
             const realAllHoursHtml = hoursData.allHoursHtml;
+            
+            // --- INICIA A BUSCA ASSÍNCRONA DE AMENIDADES ---
+            // A renderização do painel de detalhes agora só ocorre DEPOIS que a contagem é carregada
+            fetchAmenityCounts(placeId).then((counts) => {
 
-            const realAbout = place.editorial_summary ?
-            place.editorial_summary.overview :
-            "Informações detalhadas sobre este parque não estão disponíveis. No entanto, é um ótimo lugar para desfrutar da natureza e de atividades ao ar livre!";
+                const realAbout = place.editorial_summary ?
+                    place.editorial_summary.overview :
+                    "Informações detalhadas sobre este parque não estão disponíveis. No entanto, é um ótimo lugar para desfrutar da natureza e de atividades ao ar livre!";
 
-            const parkDescription = realAbout;
+                const parkDescription = realAbout;
 
-            const simulatedParticipants = [
-                { photo: "src/assets/avatar1.png" },
-                { photo: "src/assets/avatar2.png" }
-            ];
-            const simulatedReview = [
-                {
-                    name: "Robert Renan",
-                    reviewPhoto: "src/assets/avatar3.png",
-                    text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
-                    rating: 5
-                }
-            ];
+                // Dados simulados (mantidos)
+                const simulatedParticipants = [
+                    { photo: "src/assets/avatar1.png" },
+                    { photo: "src/assets/avatar2.png" }
+                ];
+                const simulatedReview = [
+                    {
+                        name: "Robert Renan",
+                        reviewPhoto: "src/assets/avatar3.png",
+                        text: "O piquenique foi espetacular, as pessoas eram muito divertidas, e a comida era muito boa! Se tiver mais vozes, participem, pois vale muito a pena!",
+                        rating: 5
+                    }
+                ];
 
-            const review = simulatedReview.length > 0 ? simulatedReview[0] : {};
+                const review = simulatedReview.length > 0 ? simulatedReview[0] : {};
 
-            const websiteLink = place.website ?
-            `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
-            `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
+                const websiteLink = place.website ?
+                    `<i class="fa-solid fa-globe"></i> <a href="${place.website}" target="_blank" style="color:#7CBD64;">Site: ${new URL(place.website).hostname}</a>` :
+                    `<i class="fa-solid fa-globe"></i> <span>Site: Não disponível</span>`;
 
-            const renderStars = (rating) => {
-                let stars = '';
-                for (let i = 1; i <= 5; i++) {
-                    stars += `<i class="fa-solid fa-star" style="color: ${i <= rating ? 'gold' : '#ccc'};"></i>`;
-                }
-                return stars;
-            };
+                const renderStars = (rating) => {
+                    let stars = '';
+                    for (let i = 1; i <= 5; i++) {
+                        stars += `<i class="fa-solid fa-star" style="color: ${i <= rating ? 'gold' : '#ccc'};"></i>`;
+                    }
+                    return stars;
+                };
 
-            const participantsHtml = simulatedParticipants.map(p => `
-            <img src="${p.photo || ''}"
-            class="participant-photo"
-            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
-            alt="Foto do Participante"
-            >
-            `).join('');
+                const participantsHtml = simulatedParticipants.map(p => `
+                    <img src="${p.photo || ''}"
+                    class="participant-photo"
+                    onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+                    alt="Foto do Participante"
+                    >
+                    `).join('');
 
-            // --- CÓDIGO DO CARROSSEL DE AMENIDADES MODIFICADO (Borda de 4px) ---
-            const amenities = getParkAmenities();
-            const amenitiesCarouselHtml = amenities.map(item => {
+                // --- NOVA LÓGICA DE FILTRAGEM E EXIBIÇÃO DE AMENIDADES ---
+                const amenities = PARK_AMENITIES_DATA; 
+                
+                // Filtra: mantém o botão de ação e as amenidades com 3 ou mais votos.
+                const displayedAmenities = amenities.filter(item => {
+                    if (item.type === 'action') return true; // Mantém o botão de ação "Adicionar sugestão"
+                    
+                    const count = counts[item.label] || 0;
+                    return count >= 3; // <--- REGRA DE EXIBIÇÃO: CONTAGEM >= 3
+                });
 
-                let onclickEvent = '';
-                let cursorStyle = '';
+                // Garante que o botão 'Adicionar sugestão' seja exibido mesmo se não houver amenidades
+                const amenitiesListForDisplay = displayedAmenities.length > 1 || (displayedAmenities.length === 1 && displayedAmenities[0].type === 'action')
+                    ? displayedAmenities
+                    : [amenities.find(a => a.type === 'action')];
 
-                // Usamos a nova propriedade 'color' ou um fallback
-                const amenityColor = item.color || '#ddd';
+                const amenitiesCarouselHtml = amenitiesListForDisplay.map(item => {
 
-                if (item.type === 'action') {
-                    onclickEvent = `onclick="openAllAmenitiesSelectionScreen()"`;
-                    cursorStyle = 'cursor: pointer;';
-                } else {
-                    cursorStyle = '';
-                }
+                    let onclickEvent = '';
+                    let cursorStyle = '';
+                    const amenityColor = item.color || '#ddd';
 
-                // Aplica background branco e borda de 4px com a cor do item (AGORA 4PX)
-                const wrapperStyle = `background-color: white; border: 4px solid ${amenityColor};`;
+                    if (item.type === 'action') {
+                        onclickEvent = `onclick="openAllAmenitiesSelectionScreen()"`;
+                        cursorStyle = 'cursor: pointer;';
+                    } else {
+                        cursorStyle = '';
+                    }
 
-                return `
-                <div class="amenity-item" ${onclickEvent} style="${cursorStyle}">
-                <div class="amenity-icon-wrapper" style="${wrapperStyle}">
-                <img src="${item.icon}" alt="${item.label}" class="amenity-icon" />
+                    const wrapperStyle = `background-color: white; border: 4px solid ${amenityColor};`;
+
+                    // Adiciona a contagem de votos (opcional, para visualização no carrossel)
+                    const count = counts[item.label] || 0;
+                    const countText = item.type !== 'action' ? 
+                        `<span class="amenity-count" style="display:block; font-size: 0.7em; color: gray;">(${count} votos)</span>` : '';
+
+                    return `
+                    <div class="amenity-item" ${onclickEvent} style="${cursorStyle}">
+                    <div class="amenity-icon-wrapper" style="${wrapperStyle}">
+                    <img src="${item.icon}" alt="${item.label}" class="amenity-icon" />
+                    </div>
+                    <p class="amenity-label">${item.label}</p>
+                    ${countText}
+                    </div>
+                    `;
+                }).join('');
+                // --- FIM DA LÓGICA DE AMENIDADES ---
+
+
+                // --- INJEÇÃO DO CONTEÚDO HTML (content) ---
+                const content = `
+                <div class="details-header" style="text-align: center;">
+                <h2>Detalhes do parque</h2>
                 </div>
-                <p class="amenity-label">${item.label}</p>
+
+                <div class="park-image-wrapper">
+                ${photoUrl ? `<img src="${photoUrl}" alt="${place.name}" class="park-image-cover">` : ''}
+
+                <button id="create-event-button-${placeId}" class="create-event-button">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" ><path fill="rgba(255, 255, 255, 1)" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
+                </button>
+                </div>
+                <div class="park-content">
+                <h1 class="text-xl font-bold text-gray-800 mb-2">${place.name || title}</h1>
+                <p class="text-sm text-gray-500 mb-4">${currentParkLocation}</p>
+
+                <div class="park-info-line">
+                <i class="fa-solid fa-clock"></i>
+                <span>Horário de Hoje:</span>
+                <span class="today-hours-display">${realTodayHours}</span>
+
+                <button class="expand-hours-button" onclick="document.getElementById('full-hours').classList.toggle('hidden'); this.querySelector('i').classList.toggle('rotate-180');" aria-expanded="false">
+                Ver todos os dias <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                </div>
+
+                <div id="full-hours" class="full-hours-dropdown hidden">
+                ${realAllHoursHtml}
+                </div>
+                <div class="park-info-line">
+                ${websiteLink}
+                </div>
+                <div class="park-info-line">
+                <i class="fa-solid fa-phone"></i> <span>Telefone: ${place.formatted_phone_number || "Não disponível"}</span>
+                </div>
+
+                <h3 class="section-title">Nesse parque tem</h3>
+                <div class="amenities-carousel-container">
+                <div class="amenities-carousel-track">
+                ${amenitiesCarouselHtml}
+                </div>
+                </div>
+                <hr class="section-divider">
+                <h3 class="section-title">${simulatedReview.length} Avaliações</h3>
+                <div class="review-card">
+                <img src="${review.reviewPhoto || ''}"
+                class="reviewer-photo"
+                onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
+                alt="Foto do Avaliador">
+                <div>
+                <p class="font-bold text-sm">${review.name}</p>
+                <div class="stars">${renderStars(review.rating)}</div>
+                <p class="text-xs text-gray-600 mt-1">${review.text}</p>
+                </div>
+                </div>
                 </div>
                 `;
-            }).join('');
-            // --- FIM CÓDIGO DO CARROSSEL DE AMENIDADES MODIFICADO ---
+                // --- FIM DA INJEÇÃO DO CONTEÚDO HTML ---
 
-            const content = `
-            <div class="details-header" style="text-align: center;">
-            <h2>Detalhes do parque</h2>
-            </div>
+                detailsContainer.innerHTML = content;
+                detailsContainer.style.transition = 'transform 0.3s ease-out';
+                detailsContainer.style.display = 'block';
+                detailsContainer.style.transform = 'translateY(0)';
 
-            <div class="park-image-wrapper">
-            ${photoUrl ? `<img src="${photoUrl}" alt="${place.name}" class="park-image-cover">` : ''}
+                const eventButton = document.getElementById(`create-event-button-${placeId}`);
+                if (eventButton) {
+                    eventButton.addEventListener('click', openCreateEventScreen);
+                }
 
-            <button id="create-event-button-${placeId}" class="create-event-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" ><path fill="rgba(255, 255, 255, 1)" d="M352 128C352 110.3 337.7 96 320 96C302.3 96 288 110.3 288 128L288 288L128 288C110.3 288 96 302.3 96 320C96 337.7 110.3 352 128 352L288 352L288 512C288 529.7 302.3 544 320 544C337.7 544 352 529.7 352 512L352 352L512 352C529.7 352 544 337.7 544 320C544 302.3 529.7 288 512 288L352 288L352 128z"/></svg>
-            </button>
-            </div>
-            <div class="park-content">
-            <h1 class="text-xl font-bold text-gray-800 mb-2">${place.name || title}</h1>
-            <p class="text-sm text-gray-500 mb-4">${currentParkLocation}</p>
-
-            <div class="park-info-line">
-            <i class="fa-solid fa-clock"></i>
-            <span>Horário de Hoje:</span>
-            <span class="today-hours-display">${realTodayHours}</span>
-
-            <button class="expand-hours-button" onclick="document.getElementById('full-hours').classList.toggle('hidden'); this.querySelector('i').classList.toggle('rotate-180');" aria-expanded="false">
-            Ver todos os dias <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            </div>
-
-            <div id="full-hours" class="full-hours-dropdown hidden">
-            ${realAllHoursHtml}
-            </div>
-            <div class="park-info-line">
-            ${websiteLink}
-            </div>
-            <div class="park-info-line">
-            <i class="fa-solid fa-phone"></i> <span>Telefone: ${place.formatted_phone_number || "Não disponível"}</span>
-            </div>
-
-            <h3 class="section-title">Nesse parque tem</h3>
-            <div class="amenities-carousel-container">
-            <div class="amenities-carousel-track">
-            ${amenitiesCarouselHtml}
-            </div>
-            </div>
-            <hr class="section-divider">
-            <h3 class="section-title">${simulatedReview.length} Avaliações</h3>
-            <div class="review-card">
-            <img src="${review.reviewPhoto || ''}"
-            class="reviewer-photo"
-            onerror="this.onerror=null; this.src='${PLACEHOLDER_AVATAR_URL}';"
-            alt="Foto do Avaliador">
-            <div>
-            <p class="font-bold text-sm">${review.name}</p>
-            <div class="stars">${renderStars(review.rating)}</div>
-            <p class="text-xs text-gray-600 mt-1">${review.text}</p>
-            </div>
-            </div>
-            </div>
-            `;
-
-            detailsContainer.innerHTML = content;
-            detailsContainer.style.transition = 'transform 0.3s ease-out';
-            detailsContainer.style.display = 'block';
-            detailsContainer.style.transform = 'translateY(0)';
-
-            const eventButton = document.getElementById(`create-event-button-${placeId}`);
-            if (eventButton) {
-                eventButton.addEventListener('click', openCreateEventScreen);
-            }
+            }).catch(error => {
+                // Trata erros durante o fetchAmenityCounts
+                console.error("Erro ao carregar dados do parque após Places API:", error);
+                // Renderiza o painel de detalhes com um erro nas amenidades
+                detailsContainer.innerHTML = `
+                    <div class="details-header" style="text-align: center;">
+                    <h2>Detalhes do parque</h2>
+                    </div>
+                    <div class="park-content">
+                    <h1 class="text-xl font-bold text-gray-800 mb-2">${title}</h1>
+                    <p>Não foi possível carregar detalhes ou informações de amenidades. Tente novamente.</p>
+                    </div>
+                    `;
+                detailsContainer.style.transition = 'transform 0.3s ease-out';
+                detailsContainer.style.display = 'block';
+                detailsContainer.style.transform = 'translateY(0)';
+            }); 
+            // --- FIM DA EXECUÇÃO APÓS PROMISE ---
 
         } else {
+            // Lógica de erro do Google Places (mantida)
             detailsContainer.innerHTML = `
-            <div class="details-header" style="text-align: center;">
-            <h2>Detalhes do parque</h2>
-            </div>
-            <div class="park-content">
-            <h1 class="text-xl font-bold text-gray-800 mb-2">${title}</h1>
-            <p>Não foi possível carregar detalhes.</p>
-            </div>
-            `;
+                <div class="details-header" style="text-align: center;">
+                <h2>Detalhes do parque</h2>
+                </div>
+                <div class="park-content">
+                <h1 class="text-xl font-bold text-gray-800 mb-2">${title}</h1>
+                <p>Não foi possível carregar detalhes.</p>
+                </div>
+                `;
             detailsContainer.style.transition = 'transform 0.3s ease-out';
             detailsContainer.style.display = 'block';
             detailsContainer.style.transform = 'translateY(0)';
         }
     });
 }
+
+
+
+
+// ====================================================
+// FUNÇÕES DE BACKEND (COMUNICAÇÃO COM O PHP)
+// ====================================================
+
+/**
+ * Busca as contagens de votos de amenidades para um parque específico.
+ * @param {string} placeId O ID do local (Place ID) do parque.
+ * @returns {Promise<Object>} Um objeto contendo a contagem de votos, ex: { 'Bebedouro': 5, 'Banheiro': 2 }
+ */
+function fetchAmenityCounts(placeId) {
+    // A URL é o seu endpoint PHP: /Spark-main/telas-mapas/src/javascript/park_amenities.php
+    return fetch(`${PARK_AMENITIES_URL}?place_id=${placeId}`, { method: 'GET' })
+        .then(response => {
+            // Verifica se a resposta HTTP é OK (200)
+            if (!response.ok) {
+                // Tenta ler o erro do corpo da resposta, mas lança um erro HTTP se falhar
+                return response.json().then(err => {
+                    throw new Error(`Erro HTTP ${response.status}: ${err.message || 'Erro no servidor.'}`);
+                }).catch(() => {
+                    throw new Error(`Erro HTTP ${response.status}. Não foi possível buscar as amenidades.`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Se o JSON for processado e não tiver 'success', ainda pode ser um erro lógico do PHP
+            if (data.success) {
+                // Armazena e retorna as contagens
+                parkAmenityCounts = data.counts || {};
+                return parkAmenityCounts;
+            } else {
+                console.error("Erro lógico ao buscar contagens:", data.message);
+                return {}; // Retorna objeto vazio para não quebrar a exibição
+            }
+        })
+        .catch(error => {
+            console.error('Erro de rede ou na API de amenidades:', error);
+            // Isso garante que o showDetailsPane não pare, mas apenas exiba o carrossel vazio
+            return {}; 
+        });
+}
+
+
+/**
+ * Envia os votos do usuário para o backend e recarrega os detalhes do parque.
+ */
+window.handleSaveAmenities = function() {
+    const parkId = window.currentParkPlaceId; 
+    
+    // Filtra as amenidades que o usuário marcou como presentes
+    const selectedAmenities = parkAmenitiesState
+        .filter(a => a.type === 'amenity' && a.isSelected)
+        .map(a => a.label);
+
+    // LOGS DE DEBUG
+    console.log("=== DEBUG SAVE AMENITIES ===");
+    console.log("Place ID:", parkId);
+    console.log("Amenidades selecionadas:", selectedAmenities);
+    console.log("===========================");
+
+    if (!parkId) {
+        alert("Erro ao salvar amenidades: ID do parque não encontrado.");
+        console.error("Place ID ausente. Valor atual:", parkId);
+        return;
+    }
+
+    if (selectedAmenities.length === 0) {
+        alert("Por favor, selecione pelo menos uma amenidade antes de salvar.");
+        return;
+    }
+
+    // Fecha o modal imediatamente para melhor UX
+    const modal = document.getElementById('full-amenities-modal');
+    if (modal) modal.remove();
+
+    // Mostra mensagem de processamento
+    console.log(`Enviando ${selectedAmenities.length} votos...`);
+
+    // Envia um voto (upvote) para cada amenidade selecionada
+    const promises = selectedAmenities.map(amenityName => {
+        const formData = new FormData();
+        formData.append('park_place_id', parkId);
+        formData.append('amenity_name', amenityName);
+        formData.append('action', 'upvote');
+
+        console.log(`Votando em: ${amenityName}`);
+
+        return fetch(PARK_AMENITIES_URL, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(`Resposta para ${amenityName}:`, data);
+            return { amenityName, success: data.success, data };
+        })
+        .catch(error => {
+            console.error(`Erro ao votar em ${amenityName}:`, error);
+            return { amenityName, success: false, error: error.message };
+        });
+    });
+
+    // Aguarda todas as requisições completarem
+    Promise.all(promises)
+        .then(results => {
+            const successful = results.filter(r => r.success).length;
+            const failed = results.filter(r => !r.success).length;
+
+            console.log(`Resultados: ${successful} sucesso, ${failed} falhas`);
+
+            if (successful > 0) {
+                alert(`${successful} voto(s) registrado(s) com sucesso!`);
+                
+                // Recarrega o painel de detalhes para mostrar o estado atualizado
+                showDetailsPane(parkId, window.currentParkName || currentParkName);
+            } else {
+                alert("Nenhum voto foi registrado. Verifique se você está logado.");
+            }
+        })
+        .catch(error => {
+            console.error('Erro geral ao processar votos:', error);
+            alert("Erro ao processar os votos. Tente novamente.");
+        });
+};
 
 function addMarkerUser(position, title) {
     const m = new google.maps.Marker({
