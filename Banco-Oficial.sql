@@ -234,3 +234,31 @@ CREATE TABLE IF NOT EXISTS Seguidores (
 
 -- Inserir dados de teste (Usuário 1 segue o 2)
 INSERT INTO Seguidores (idSeguidor, idSeguido) VALUES (1, 2);
+
+CREATE TABLE `amenities` (
+  `id_amenity` INT NOT NULL AUTO_INCREMENT,
+  `amenity_name` VARCHAR(100) NOT NULL UNIQUE,
+  PRIMARY KEY (`id_amenity`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `park_amenities` (
+  `place_id` VARCHAR(255) NOT NULL,
+  `id_amenity` INT NOT NULL,
+  `votes` INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`place_id`, `id_amenity`),
+  CONSTRAINT `fk_amenity` FOREIGN KEY (`id_amenity`) REFERENCES `amenities` (`id_amenity`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `amenities` (`amenity_name`) VALUES
+('Bebedouro'),
+('Banheiro'),
+('Pista de Skate'),
+('Quadra de Vôlei'),
+('Quadra de Futebol'),
+('Quadra de Basquete'),
+('Bicicleta'),
+('Pedalinho'),
+('Museu'),
+('Quiosque'),
+('Lago'),
+('Churrasqueira');
