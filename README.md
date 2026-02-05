@@ -1,16 +1,53 @@
 # Spark
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)]()
-[![Version](https://img.shields.io/badge/version-1.0.0-orange.svg)]()
-[![Made with](https://img.shields.io/badge/made%20with-HTML%2C%20CSS%2C%20JS%2C%20PHP-blue.svg)]()
+Aplicativo de organização de eventos e encontros em parques — projeto integrador desenvolvido no Instituto Federal 2025.
 
-Aplicativo de organização de eventos e encontros em parques
+---
 
-- **Frontend:** HTML5, CSS3, JavaScript (ES6+)
-- **Frameworks/Libraries:** [Tailwind](https://tailwindcss.com)
-- **Controle de Versão:** GitHub
+## 🧠 Sobre o Projeto
 
-Projeto Integrador do Instituto Federal 2025
+O **Spark** é uma aplicação web que permite organizar eventos e encontros em parques, oferecendo telas para cadastro de usuários, eventos, perfis, atividades e mapas.
 
+Este projeto foi criado com foco em responsividade e usabilidade, aplicando boas práticas de desenvolvimento front-end com HTML, CSS e JavaScript.
 
+---
+
+## 🚀 Funcionalidades Principais
+
+- Tela de splash de carregamento  
+- Cadastro de usuário e eventos  
+- Tela de login e recuperação de senha  
+- Listagem de atividades e eventos  
+- Tela de perfil de usuário  
+- Visualização de mapas e locais  
+- Área de favoritos  
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+| Tecnologia    | Função                         |
+|---------------|-------------------------------|
+| HTML5         | Estrutura das páginas         |
+| CSS3          | Estilização e layout          |
+| JavaScript    | Comportamento interativo      |
+| Tailwind CSS  | Framework de estilos          |
+
+---
+
+## 💡 Como Rodar o Projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/joaogmpereiradev/Spark.git
+2. Abra a pasta do projeto no seu editor de código.
+
+3. Inicie um servidor local (pode usar Live Server ou similar).
+
+4. Navegue até index.php no seu navegador.
+
+---
+
+## 📌 Sobre
+
+Projeto integrador realizado como parte das atividades do Instituto Federal em 2025 — focado em organização de eventos e experiência prática com desenvolvimento web.
