@@ -1,4 +1,5 @@
 # Spark
+<img width="180" height="387" alt="image" src="https://github.com/user-attachments/assets/ce0a9ef7-0d24-4d83-aba6-46b0726caae7" />
 
 Aplicativo de organização de eventos e encontros em parques — projeto integrador desenvolvido no Instituto Federal 2025.
 
