@@ -1,9 +1,27 @@
 # Spark
-<img width="180" height="387" alt="image" src="https://github.com/user-attachments/assets/ce0a9ef7-0d24-4d83-aba6-46b0726caae7" />
 
 Aplicativo de organização de eventos e encontros em parques — projeto integrador desenvolvido no Instituto Federal 2025.
 
 ---
+
+## 🖼️ Preview do Projeto
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/c8fa1750-b2eb-45f9-b7e7-47ffd47bcd82" width="800" alt="Tela de amenidades Spark" />
+</div>
+
+<br/>
+
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/109b0962-b4e4-4921-8483-44fe9d8e50d6" width="300" alt="Tela detalhe mapa" />
+</div>
+
+---
+
+💡 **Exemplo da interface do Spark**, aplicação web desenvolvida para organização de eventos e encontros em parques, apresentando telas de cadastro, atividades, mapas e perfil de usuário, com foco em usabilidade e responsividade.
+
+---
+
 
 ## 🧠 Sobre o Projeto
 
