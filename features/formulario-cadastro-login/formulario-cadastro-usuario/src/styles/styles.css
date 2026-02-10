@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{display:flex;justify-content:center;align-items:center;min-height:100vh;background:#7CBD64;padding:20px}
+#form_container{width:100%;max-width:800px;background:#f6f8ff;padding:30px;border-radius:12px;box-shadow:0 10px 25px rgba(0,0,0,.1)}
+#form_header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+#form_title{font-weight:700;font-size:24px;color:#272727;position:relative;padding-bottom:8px}
+#form_title span::after {
+    content: '';
+    position: absolute;
+    width: 100%; /* A linha terá 100% da largura do span */
+    height: 4px;
+    background-color: #448019; /* Sua cor verde */
+    left: 0;
+    bottom: -1px; /* Distância da linha para o texto */
+    border-radius: 30px;
+}
+#form{display:flex;flex-direction:column;gap:30px}
+#input_container{display:grid;grid-template-columns:repeat(2,1fr);gap:20px 30px}
+.full-width{grid-column:span 2}
+.input-box{display:flex;flex-direction:column}
+.form-label{font-size:14px;color:#555;font-weight:500;margin-bottom:8px}
+.input-field{display:flex;align-items:center;background:#fff;border-radius:10px;border:1px solid #e0e0e0;padding-right:15px;transition:.2s}
+.input-field:focus-within{border-color:#448019;box-shadow:0 0 0 3px rgba(68,128,25,.2)}
+.input-field i{color:#999;font-size:16px}
+.form-control{flex-grow:1;padding:12px 15px;width:100%;border:none;background:0 0;border-radius:10px;font-size:15px}
+.form-control:focus{outline:none}
+.password-icon{cursor:pointer}
+.radio-container-1{grid-column:span 2;display:flex;justify-content:center; margin-bottom: 20px;}
+.radio-container{grid-column:span 2}
+#gender_inputs{display:flex;gap:30px;align-items:center;margin-top:10px}
+.radio-box{display:flex;gap:8px;align-items:center}
+.radio-box label{margin-bottom:0}
+input[type=radio]{accent-color:#448019}
+/* DEPOIS (CORRIGIDO) */
+.feedback-message {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 6px;
+    height: 15px; /* Reserva o espaço */
+    transition: color 0.3s ease;
+}
+
+/* Aplica o alinhamento à direita especificamente ao span de feedback da senha */
+#password-feedback {
+    text-align: right;
+    padding-right: 5px;
+}
+.feedback-message.disponivel,.feedback-message.forte{color:#388E3C}
+.feedback-message.indisponivel,.feedback-message.fraca{color:#D32F2F}
+.feedback-message.media{color:#F57C00}
+.btn-default{background:#448019;display:flex;align-items:center;justify-content:center;border:none;padding:12px;border-radius:8px;font-size:16px;font-weight:600;color:#fff;cursor:pointer;gap:8px;box-shadow:0 4px 10px rgba(0,0,0,.1);transition:background-color .3s}
+.btn-default:hover{background:#3a6d15}
+@media screen and (max-width:700px){#input_container{grid-template-columns:1fr;gap:20px}.full-width{grid-column:span 1}#form_container{padding:20px}}
+/* --- ESTILO PARA O BOTÃO DESABILITADO --- */
+
+.btn-default[disabled] {
+    background-color: #A5D6A7; /* Um tom de verde mais claro e 'apagado' */
+    cursor: not-allowed; /* Mostra um ícone de 'proibido' ao passar o mouse */
+    box-shadow: none;
+}
+
+.btn-default[disabled]:hover {
+    background-color: #A5D6A7; /* Garante que a cor não mude no hover */
+}

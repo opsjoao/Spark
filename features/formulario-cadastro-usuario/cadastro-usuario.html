@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="src/styles/styles.css">
+    <title>Cadastrar Usuário</title>
+</head>
+<body>
+    <main id="form_container">
+        <div id="form_header">
+            <h1 id="form_title"><span>Cadastrar Usuário</span></h1>
+            <button class="btn-default" onclick="window.location.href='../formulario-login/login.php'">
+                <i class="fa-solid fa-right-to-bracket"></i>
+            </button>
+        </div>
+        
+        <div class="radio-container-1 full-width">
+            <div id="gender_inputs">
+                <div class="radio-box">
+                    <input type="radio" name="form_type" id="user" checked>
+                    <label for="user" class="form-label">Usuário</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" name="form_type" id="institution" onclick="window.location.href='../formulario-cadastro-instituicao/cadastro-instituicao.html'">
+                    <label for="institution" class="form-label">Instituição</label>
+                </div>
+            </div>
+        </div>
+        
+        <form action="cadastro.php" id="form" method="POST">
+            <div id="input_container">
+                
+                <div class="input-box full-width">
+                    <label for="name" class="form-label">Nome</label>
+                    <div class="input-field">
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Digite seu nome completo" required>
+                        <i class="fa-regular fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="input-box">
+                    <label for="username" class="form-label">Nome de Usuário</label>
+                    <div class="input-field">
+                        <input type="text" name="username" id="username" class="form-control" placeholder="(sem espaços)" required maxlength="30" pattern="[^\s]+">
+                        <i class="fa-solid fa-at"></i>
+                    </div>
+                    <span id="username-feedback" class="feedback-message"></span>
+                </div>
+
+                <div class="input-box">
+                    <label for="cpf" class="form-label">CPF</label>
+                    <div class="input-field">
+                        <input type="text" name="cpf" id="cpf" class="form-control" placeholder="(Apenas Números)" maxlength="14">
+                        <i class="fa-regular fa-address-card"></i>
+                    </div>
+                    <span id="cpf-feedback" class="feedback-message"></span>
+                </div>
+                
+                <div class="input-box">
+                    <label for="birthdate" class="form-label">Nascimento</label>
+                    <div class="input-field">
+                        <input type="date" name="birthdate" id="birthdate" class="form-control" required>
+                    </div>
+                </div>
+                
+                 <div class="input-box">
+                    <label for="email" class="form-label">E-mail</label>
+                    <div class="input-field">
+                        <input type="email" name="email" id="email" class="form-control" placeholder="exemplo@gmail.com" required>
+                        <i class="fa-regular fa-envelope"></i>
+                    </div>
+                     <span id="email-feedback" class="feedback-message"></span>
+                </div>
+
+                <div class="input-box">
+                    <label for="password" class="form-label">Senha</label>
+                    <div class="input-field">
+                        <input type="password" name="password" id="password" class="form-control" placeholder="Mínimo 6 caracteres" required>
+                        <i class="fa-regular fa-eye-slash password-icon"></i>
+                    </div>
+                    <span id="password-feedback" class="feedback-message"></span>
+                </div>
+
+                <div class="input-box">
+                    <label for="confirm_password" class="form-label">Confirmar senha</label>
+                    <div class="input-field">
+                        <input type="password" name="confirm_password" id="confirm_password" class="form-control" placeholder="Repita a senha" required>
+                        <i class="fa-regular fa-eye-slash password-icon"></i>
+                    </div>
+                    <span id="password-error" class="feedback-message indisponivel"></span>
+                </div>
+
+                 <div class="radio-container full-width">
+                    <label class="form-label">Gênero</label>
+                    <div id="gender_inputs">
+                        <div class="radio-box"><input type="radio" name="gender" id="female" value="Feminino" required><label for="female">Feminino</label></div>
+                        <div class="radio-box"><input type="radio" name="gender" id="male" value="Masculino"><label for="male">Masculino</label></div>
+                        <div class="radio-box"><input type="radio" name="gender" id="other" value="Outro"><label for="other">Outro</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-default full-width">
+                <i class="fa-solid fa-check"></i>
+                Criar conta
+            </button>
+        </form>
+    </main>
+
+    <script src="src/javascript/script.js"></script>
+</body>
+</html>

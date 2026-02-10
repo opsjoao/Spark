@@ -1,0 +1,129 @@
+/* --- RESET --- */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+body {
+  margin: 0; padding: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  padding-bottom: 80px;
+}
+
+/* --- HEADER --- */
+.profile-header {
+    background-color: #1ea936; 
+    padding-bottom: 50px; 
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    position: relative;
+    margin-bottom: 50px; 
+}
+
+.header-top { padding: 20px; }
+
+.back-btn {
+    background: none; border: none; color: white;
+    font-size: 24px; cursor: pointer;
+}
+
+.avatar-container {
+    position: absolute;
+    bottom: -50px; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 110px; height: 110px;
+    background-color: #fff;
+    border-radius: 50%;
+    padding: 4px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.profile-avatar {
+    width: 100%; height: 100%;
+    border-radius: 50%; object-fit: cover; background-color: #eee;
+}
+
+/* --- CONTEÚDO --- */
+.profile-content { padding: 10px 20px; text-align: center; }
+
+.profile-name { margin: 0; font-size: 22px; font-weight: 700; color: #333; }
+.profile-username { margin: 2px 0 5px 0; color: #888; font-size: 14px; }
+.member-since { font-size: 12px; color: #aaa; margin-bottom: 20px; }
+
+/* Estatísticas */
+.stats-row {
+    display: flex; justify-content: space-around;
+    margin-bottom: 20px; padding: 0 20px;
+}
+
+.stat-item { display: flex; flex-direction: column; align-items: center; }
+.stat-number { font-size: 18px; font-weight: 700; color: #1ea936; }
+.stat-label { font-size: 12px; color: #666; }
+
+/* Botões */
+.action-area { margin-bottom: 20px; }
+.btn-action {
+    border: none; padding: 10px 30px; border-radius: 30px;
+    font-size: 15px; font-weight: 600; cursor: pointer;
+    width: 80%; max-width: 300px; transition: 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.btn-seguir { background-color: #1ea936; color: white; }
+.btn-seguindo { background-color: #e0e0e0; color: #333; border: 1px solid #ccc; }
+.btn-edit { background-color: transparent; border: 2px solid #1ea936; color: #1ea936; }
+
+.divider { border: none; border-top: 1px solid #eee; margin: 20px 0; }
+
+/* --- EVENTOS --- */
+.events-container { text-align: left; }
+.event-section { margin-bottom: 30px; }
+
+.section-title {
+    font-size: 16px; font-weight: 700;
+    margin-bottom: 15px; display: flex; align-items: center; gap: 8px;
+}
+.title-created { color: #1ea936; } 
+.title-participating { color: #F57C00; } 
+
+.cards-grid {
+    display: grid; grid-template-columns: 1fr; gap: 12px;
+}
+
+.event-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    display: flex; align-items: center; gap: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s; /* Suavização adicionada */
+    cursor: pointer; /* Mãozinha ao passar o mouse */
+}
+
+/* Efeito Hover para indicar clique */
+.event-card:active { transform: scale(0.98); }
+.event-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Estilos específicos de borda */
+.card-created { border-left: 4px solid #1ea936; }
+.card-participating { border-left: 4px solid #F57C00; }
+
+.card-date {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    width: 50px; height: 50px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-weight: 700; color: #333; font-size: 14px;
+}
+
+.card-info h4 {
+    margin: 0 0 4px 0; font-size: 15px; color: #333;
+}
+.card-info .time {
+    font-size: 12px; color: #888; display: flex; align-items: center; gap: 5px;
+}
+
+.empty-msg {
+    font-size: 13px; color: #aaa; font-style: italic; padding-left: 10px;
+}
