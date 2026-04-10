@@ -1,0 +1,27 @@
+/* /teladeusuario/alterar_senha.css */
+
+/* Estilos Globais */
+:root {
+    --primary-green: #5ED925; /* Verde principal vibrante */
+    --dark-green: #1A9929; /* Verde para o header */
+    --light-gray: #F3F4F6; /* Cor de fundo do corpo */
+    --text-color: #333;
+    --label-color: #6B7280;
+    --border-color: #D1D5DB;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--dark-green);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden; /* Evita a rolagem da página inteira */
+}

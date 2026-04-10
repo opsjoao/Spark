@@ -1,0 +1,279 @@
+/*
+ * ARQUIVO: telaprincipal.css
+ * Correções e estilos específicos da Tela Principal
+ */
+
+/* 1. CORREÇÃO DO LAYOUT PRINCIPAL */
+.app-content.home {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    /* Garante o espaço para a navbar fixa não cobrir o conteúdo */
+    padding-bottom: 88px !important; 
+}
+
+
+/* 2. BARRA DE BUSCA (STICKY) */
+.search-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #ffffff; 
+    padding: 10px 12px;
+    margin-bottom: 10px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #f0f2f5;
+    border-radius: 10px;
+    padding: 10px 15px;
+    position: relative; /* Importante para posicionamento */
+}
+
+/* Novo Estilo para o ícone "Voltar" (Seta) */
+.back-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    
+    /* MUDANÇA AQUI: Aumentado de 10px para 15px */
+    margin-right: 10px; 
+    
+    text-decoration: none;
+    border-radius: 50%; /* Círculo perfeito */
+    transition: background-color 0.2s;
+
+}
+
+.back-icon-link:hover {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.back-icon-link i {
+    font-size: 16px;
+}
+
+/* Estilo do Container do Formulário */
+.search-form-container {
+    flex-grow: 1;
+    display: flex;
+    margin-right: 10px;
+    position: relative; /* Essencial para a lista flutuante se alinhar aqui */
+}
+
+.search-form-container input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-bar .fa-search {
+    color: #555;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Link do ícone de pesquisa */
+.search-icon-link,
+.search-icon-link:hover,
+.search-icon-link:visited {
+    color: #555;
+    text-decoration: none;
+}
+
+
+/* 3. SEÇÃO DE CATEGORIAS */
+.categories-section {
+    padding-left: 0; 
+}
+
+.categories-section h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.category-list {
+    display: flex;
+    overflow-x: auto;
+    /* Espaçamento para o efeito de zoom não cortar */
+    padding: 10px 12px 10px 12px; 
+    scrollbar-width: none;
+}
+.category-list::-webkit-scrollbar { display: none; }
+
+.category-item {
+    position: relative;
+    min-width: 90px; 
+    height: 90px;
+    margin-right: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.category-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.category-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 4px 0;
+}
+
+/* Links de Categoria */
+a.category-item-link,
+a.category-item-link:hover {
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+a.category-item-link:active {
+    transform: scale(0.95);
+}
+a.category-item-link.active .category-item {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px var(--cor-primaria, #1A9929), 0 5px 10px rgba(0,0,0,0.1);
+}
+.categories-section:has(.category-item-link.active) a.category-item-link:not(.active) {
+    opacity: 0.6;
+}
+.categories-section:has(.category-item-link.active) a.category-item-link:not(.active):hover {
+    opacity: 1;
+}
+
+
+/* 4. FEED DE EVENTOS */
+.events-feed {
+    margin-top: 20px;
+    padding-left: 12px;
+    padding-right: 12px; 
+}
+
+/* Links de Eventos */
+a.event-card-link,
+a.event-card-link:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.event-card {
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+.event-card.featured {
+    position: relative;
+    height: 350px;
+    color: white;
+    background-size: cover;
+    background-position: center;
+}
+.event-card.featured::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+    z-index: 1; 
+}
+.event-card.featured .card-content {
+    position: relative;
+    z-index: 2;
+    padding: 15px;
+    height: 100%;
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+}
+.event-info h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+.event-info p {
+    margin: 5px 0 0;
+    font-size: 16px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+}
+.event-host {
+    display: flex;
+    align-items: center;
+    background-color: rgba(102, 204, 51, 0.7); 
+    padding: 5px 10px;
+    border-radius: 20px;
+    width: fit-content;
+}
+.event-host img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 8px;
+    border: 1px solid white;
+}
+.event-host span {
+    font-weight: bold;
+    font-size: 14px;
+    color: #ffffff; 
+}
+
+/* --- 5. LISTA DE SUGESTÕES (DROPDOWN) --- */
+.suggestions-dropdown {
+    display: none; /* JS muda para 'block' */
+    position: absolute;
+    top: 45px; /* Força a posição logo abaixo do input */
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 10000 !important; /* Z-index altíssimo para garantir */
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.suggestion-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+    border-radius: 0 0 10px 10px;
+}
+
+.suggestion-item:hover {
+    background-color: #e8f5e9; /* Verde claro ao passar o mouse */
+    color: #1A9929;
+}
+
+.suggestion-item i {
+    margin-right: 10px;
+    color: #999;
+}

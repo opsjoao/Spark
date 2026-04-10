@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark</title>
+    <link rel="stylesheet" href="avaliacoes.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body>
+  <div class="rate">
+    <input type="radio" id="star5" name="rate" value="5" />
+    <label for="star5" title="text">5 stars</label>
+    <input type="radio" id="star4" name="rate" value="4" />
+    <label for="star4" title="text">4 stars</label>
+    <input type="radio" id="star3" name="rate" value="3" />
+    <label for="star3" title="text">3 stars</label>
+    <input type="radio" id="star2" name="rate" value="2" />
+    <label for="star2" title="text">2 stars</label>
+    <input type="radio" id="star1" name="rate" value="1" />
+    <label for="star1" title="text">1 star</label>
+  </div>
+
+  <h3 style="margin-top: 20px; margin-bottom: 10px;">Quais características você avaliou? (Opcional)</h3>
+  <div id="category-grid" class="grid grid-cols-2 md:grid-cols-3 gap-3">
+    <button class="category-button" data-category="Atracoes">Atrações</button>
+    <button class="category-button" data-category="Limpeza">Limpeza</button>
+    <button class="category-button" data-category="Atendimento">Atendimento</button>
+    <button class="category-button" data-category="Filas">Filas</button>
+    <button class="category-button" data-category="Alimentacao">Alimentação</button>
+    <button class="category-button" data-category="Preco">Preço</button>
+  </div>
+    
+  <div id="valor-selecionado" style="margin-top: 10px;">
+    Selecione uma avaliação.
+  </div>
+    
+  <button id="submit" style="margin-top: 20px; padding: 10px; background-color: #5ED925; color: white; border: none; cursor: pointer;">
+    Salvar Avaliação
+  </button>
+    
+  <hr style="margin-top: 20px;">
+    
+  <h2>Avaliação Salva:</h2>
+  <div id="avaliacao-salva" style="font-weight: bold;">
+    Ainda não há avaliação salva.
+  </div>
+
+<script src="avaliacoes.js"></script>
+</body>
+</html>

@@ -1,0 +1,744 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+/* =========================================================================
+    Estilos para Sistema de Avaliações de Parques
+    ========================================================================= */
+
+:root {
+  --verde-claro: #DCF8DC;
+  --verde-selecao: #7CBD64;
+}
+
+/* --- CORREÇÕES CRUCIAIS PARA O LAYOUT DE SOBREPOSIÇÃO (Overlay) --- */
+
+/* --- CORREÇÕES ESSENCIAIS NO CSS --- */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Evita rolagem desnecessária */
+}
+
+body {
+  position: relative; /* O pai para o mapa absoluto */
+  padding-bottom: 60px; /* Espaço para o rodapé */
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2, h3, p, button, input {
+  font-family: 'Inter', sans-serif;
+}
+
+/* O mapa deve preencher todo o corpo do documento, sob os elementos fixos */
+#map {
+top: 0;
+left: 0;
+width: 100%;
+height: 100%; /* Garante que ele cubra toda a área do body */
+}
+
+/* O container de pesquisa e filtro agora é fixo/flutuante */
+.search-and-filter-container {
+  /* Tornando-o fixo, ele flutua sobre o mapa e não interfere no layout */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20; /* Garante que fique acima do mapa e do painel de detalhes */
+
+  /* Estilos de Aparência */
+  background: transparent; /* Fundo transparente */
+  padding: 10px; /* Adiciona um padding para a barra não tocar a borda */
+
+  /* Garante que o conteúdo interno da barra de pesquisa se alinhe corretamente */
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Permite a quebra de linha em telas menores */
+  gap: 15px; /* Mantém o espaçamento entre a pesquisa e o botão de filtro */
+}
+
+/* Adiciona um fundo à própria barra de pesquisa para destacá-la no overlay */
+.search-and-filter-container > div {
+  background-color: white; /* Dá um fundo branco apenas para a caixa de pesquisa */
+  padding: 8px; /* Padding interno para a caixa de pesquisa */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%; /* Permite que o flex-grow do input preencha o espaço */
+  box-sizing: border-box;
+}
+
+/* --- ESTILOS DE NAVEGAÇÃO --- */
+.bottombar {
+  background: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 8px 0;
+  position: fixed;
+  bottom: 0; /* CORREÇÃO: Fixa a bottombar no fundo da tela */
+  width: 100%;
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+}
+.bottombar .nav-btn {
+  background: transparent;
+  border: none;
+  color: #333;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 5px;
+  flex: 1;
+}
+.bottombar .nav-btn i {
+  font-size: 22px;
+  margin-bottom: 2px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+}
+.bottombar .nav-btn span {
+  font-size: 12px;
+}
+.bottombar .nav-btn.active {
+  color: #ffffff; /* Cor do texto e do ícone quando ativo */
+  font-weight: bold;
+  position: relative;
+}
+
+.bottombar .nav-btn.active span {
+  color: #364b36; /* Cor do texto específica, se desejar */
+}
+
+/* O EFEITO PRINCIPAL: um pseudo-elemento para o "pílula" de fundo */
+.bottombar .nav-btn.active::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80px; /* Largura da "pílula" */
+  height: 40px; /* Altura da "pílula" */
+  background-color: #5ED925; /* Cor do fundo verde-claro */
+  border-radius: 999px; /* Arredonda totalmente a borda */
+  z-index: -1; /* Coloca o elemento atrás do ícone e do texto */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar {
+  display: none;
+}
+
+
+@media (min-width: 768px) {
+  .barra-tarefas {
+    display: none;
+  }
+}
+
+
+.filter-menu-hidden {
+  display: none;
+}
+
+.filter-menu-visible {
+  display: block;
+  position: absolute;
+  top: 100%; /* Posiciona o menu abaixo do botão */
+  right: 0; /* Alinha o menu à direita do contêiner pai */
+  z-index: 25; /* Acima da barra de pesquisa */
+
+  /* Estilos de aparência para o menu */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-width: 250px;
+  margin-top: 5px;
+}
+
+/* Estilos para os elementos internos do menu */
+.filter-menu-visible label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.apply-button {
+  width: 100%;
+  padding: 8px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+
+/* Estilo para o loader */
+#loader-wrapper {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: #fff;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: column;
+z-index: 1000; /* Garante que ele fique na frente de tudo */
+}
+
+/* Exemplo de um spinner simples */
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+/* Animação do spinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Classe para esconder elementos */
+.hidden {
+  display: none;
+}
+
+
+/* ------------------------------------------------ */
+/* NOVOS ESTILOS PARA O PAINEL DE DETALHES (PARK-DETAILS) */
+/* ------------------------------------------------ */
+
+/* Estilo geral do container de detalhes */
+#park-details {
+/* Manter estilos de arrasto */
+touch-action: none;
+transform: translateY(0);
+transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+z-index: 50; /* Z-index alto para ficar acima do mapa e da barra de pesquisa */
+cursor: grab;
+max-height: 85vh;
+min-height: 85vh;
+
+overflow-y: auto;
+
+/* Estilos do 'Card' */
+position: fixed;
+bottom: 60px; /* Altura da bottombar */
+width: 100%;
+background-color: white;
+box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.2);
+border-top-left-radius: 20px;
+border-top-right-radius: 20px;
+padding: 0;
+box-sizing: border-box;
+}
+
+/* Estilo para a barra de topo (header) */
+.details-header {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  padding: 15px 10px; /* Aumenta o padding vertical para dar espaço ao "puxador" */
+  background-color: #1A9929;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.details-header .back-arrow {
+  font-size: 20px;
+  margin-right: 15px;
+  cursor: pointer;
+}
+
+.details-header h2 {
+  flex-grow: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.back-arrow {
+  /* Para que a seta de volta não seja centralizada com o texto, */
+  /* ela precisa de posicionamento absoluto: */
+  position: absolute;
+  left: 15px; /* Ajuste a distância da esquerda conforme necessário */
+  top: 15px; /* Ajuste a distância do topo conforme necessário */
+  z-index: 10; /* Garante que ela fique acima de outros elementos */
+}
+
+
+/* NOVO: Estilo para envolver a imagem e o botão, tornando-o o contexto relativo. */
+.park-image-wrapper {
+  position: relative; /* CRUCIAL: Define o contexto para o botão absoluto */
+  padding: 15px 15px 0 15px; /* Adiciona o padding da imagem aqui */
+}
+
+/* Estilo para a imagem de capa */
+.park-image-cover {
+  width: 100%; /* Ajustado para preencher o wrapper */
+  height: 200px;
+  object-fit: cover;
+  display: block;
+  /* REMOVIDO: margens e centralização, pois está dentro do wrapper */
+  border-radius: 12px; /* Arredonda as bordas */
+}
+/* Estilo para o conteúdo (abaixo da imagem) */
+.park-content {
+  padding: 15px;
+}
+
+/* Estilos de iconografia e títulos */
+.park-info-line {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
+  flex-wrap: wrap; /* Adicionado para permitir quebrar linha se a tela for pequena */
+}
+
+.park-info-line i {
+  color:#1A9929; /* Cor dos ícones, usando o verde principal */
+  margin-right: 10px;
+  width: 20px;
+  text-align: center;
+}
+
+.section-title {
+  font-size: 1.1em; /* Ajustado para consistência com o JS */
+  font-weight: bold;
+  color: #333; /* Ajustado para consistência com o JS */
+  margin-top: 15px; /* Ajustado para consistência com o JS */
+  margin-bottom: 10px; /* Ajustado para consistência com o JS */
+  padding-left: 5px; /* Ajustado para consistência com o JS */
+}
+
+/* Estilo do botão "Criar avaliação" */
+.create-review-button {
+  background-color:#1A9929;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+
+/* Estilo para avaliações e participantes */
+.review-card {
+  background-color: #f9f9f9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.reviewer-photo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.participant-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 5px;
+}
+
+.stars {
+  color: gold;
+  font-size: 14px;
+}
+
+/* --- NOVOS ESTILOS PARA HORÁRIO EXPANSÍVEL --- */
+
+.today-hours-display {
+  margin-left: 5px;
+  flex-grow: 1; /* Permite que o texto de horário ocupe o espaço */
+  font-weight: 500;
+}
+
+.expand-hours-button {
+  background: none;
+  border: none;
+  color: #7CBD64;
+  cursor: pointer;
+  text-decoration: none; /* Removido underline para melhor visual */
+  font-size: 0.85em;
+  padding: 0;
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.expand-hours-button i {
+  transition: transform 0.3s ease;
+  color: #7CBD64;
+  width: auto; /* Sobrescreve a largura do ícone padrão */
+}
+
+.expand-hours-button .rotate-180 {
+  transform: rotate(180deg);
+}
+
+.full-hours-dropdown {
+  margin: 5px 0 15px 30px; /* Alinhamento com os outros itens da linha, com recuo */
+  padding: 10px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background-color: #fcfcfc;
+  width: calc(100% - 30px); /* Ajusta a largura pelo recuo */
+  box-sizing: border-box;
+}
+
+.full-hours-dropdown p {
+  margin: 3px 0;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.full-hours-dropdown .current-day {
+  font-weight: bold;
+  color: #1A9929;
+}
+
+/* BOTÃO DE CRIAR EVENTO: ALTERADO PARA POSICIONAMENTO ABSOLUTO */
+.create-event-button {
+  position: absolute; /* MUDADO: De 'fixed' para 'absolute' */
+  top: 180px; /* Alinhamento com o topo do wrapper/imagem */
+  right: 9px; /* Distância da direita para centralizar o botão na borda direita da imagem */
+  width: 57px;
+  height: 57px;
+  background-color: #5ED925; /* Cor verde para destaque */
+  border-radius: 50%; /* Torna o botão circular */
+  color: rgb(255, 255, 255);
+  border: none;
+  display: flex; /* Para centralizar o conteúdo (o ícone) */
+  justify-content: center;
+  align-items: center;
+  font-size: 24px; /* Tamanho do ícone */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidade */
+  cursor: pointer;
+  z-index: 100;
+}
+
+/* ====================================
+ * ESTILOS NOVOS PARA O CARROSSEL (AMENIDADES) - CORRIGIDOS PARA ARRASTO
+ * ==================================== */
+
+.amenities-carousel-container {
+  /* Permite a rolagem horizontal */
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* CRUCIAL PARA ARRASTO TOUCH/MOUSE */
+  touch-action: pan-x;
+
+  /* Esconde a barra de rolagem se desejar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  margin: 15px 0;
+  padding-bottom: 5px;
+}
+
+/* Esconde a barra de rolagem no Chrome/Safari/Opera */
+.amenities-carousel-container::-webkit-scrollbar {
+  display: none;
+}
+
+.amenities-carousel-track {
+  /* MUDANÇA CHAVE: Usar display: flex, mas garantir que não quebre a linha */
+  display: flex;
+  white-space: nowrap;
+  gap: 15px;
+  padding: 0 5px;
+
+  /* Adiciona um cursor visualmente indicativo de que é arrastável */
+  cursor: grab;
+}
+
+.amenities-carousel-track:active {
+  /* Altera o cursor enquanto o usuário está clicando e arrastando */
+  cursor: grabbing;
+}
+
+.amenity-item {
+  /* MUDANÇA CHAVE: flex-shrink: 0 garante que o item não encolha, mantendo sua largura. */
+  flex-shrink: 0;
+  width: 80px; /* Largura para cada item/coluna */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* REMOVIDO: cursor: pointer para desabilitar a ideia de clique individual */
+}
+
+/* Sobrescreve o cursor apenas para o item de ação, que é o único clicável */
+.amenity-item[onclick] {
+  cursor: pointer;
+}
+
+.amenity-icon-wrapper {
+  /* Estilo do círculo colorido */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  background-color: #ddd;
+  transition: transform 0.2s;
+}
+/* Efeito de clique */
+.amenity-item:active .amenity-icon-wrapper {
+  transform: scale(0.95);
+}
+
+.amenity-icon {
+  /* Estilo do ícone dentro do círculo */
+  width: 35px;
+  height: 35px;
+}
+
+.amenity-label {
+  /* Estilo do texto */
+  font-size: 0.75rem;
+  color: #333;
+  white-space: normal;
+  line-height: 1.2;
+}
+
+/* Títulos de seção e divisores para melhor organização */
+.section-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 10px;
+  padding-left: 5px;
+}
+
+.section-divider {
+  border: none;
+  height: 1px;
+  background-color: #eee;
+  margin: 15px 0;
+}
+
+/* ====================================
+ * ESTILOS NOVOS PARA O MODAL DE SELEÇÃO COMPLETA
+ * ==================================== */
+
+#full-amenities-modal {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.9);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 3000;
+overflow-y: auto;
+}
+
+.full-amenities-content-wrapper {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 95%;
+  max-width: 600px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.full-amenities-header {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.full-amenities-grid {
+  display: grid;
+  /* 3 colunas, como nas suas imagens */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.full-amenity-item {
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  /* Opcional: Efeito hover para indicar que é selecionável */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.full-amenity-item:hover {
+  background-color: #f0f0f0;
+}
+
+.full-amenity-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  margin: 0 auto 5px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7; /* Cor de fundo clara para a tela de seleção */
+  border: 2px solid #ddd;
+}
+
+.full-amenity-icon {
+  width: 35px;
+  height: 35px;
+}
+
+.full-amenity-label {
+  font-size: 0.8em;
+  font-weight: 500;
+  color: #333;
+}
+
+.full-amenities-save-button {
+  padding: 12px;
+  background-color: #5ED925;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.full-amenities-close-button {
+  padding: 10px;
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Estrelas do modal de avaliação */
+#review-stars .fa-star {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+#review-stars .fa-star:hover {
+  transform: scale(1.2);
+}
+
+/* Card de avaliação */
+.review-card {
+  display: flex;
+  gap: 12px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s ease;
+}
+
+.review-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reviewer-photo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.review-card .stars {
+  margin: 5px 0;
+  font-size: 0.9em;
+}
+
+.review-card .stars i {
+  margin-right: 2px;
+}
+
+/* Botão de avaliar */
+button[onclick*="openAddReviewModal"] {
+  transition: all 0.3s ease;
+}
+
+button[onclick*="openAddReviewModal"]:hover {
+  background-color: #4fc015 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(94, 217, 37, 0.3);
+}
+
+/* Modal de avaliação */
+#add-review-modal textarea {
+  font-size: 0.95em;
+}
+
+#add-review-modal textarea:focus {
+  outline: none;
+  border-color: #5ED925;
+  box-shadow: 0 0 0 3px rgba(94, 217, 37, 0.1);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  #add-review-modal > div {
+    width: 95% !important;
+    padding: 20px !important;
+  }
+  
+  #review-stars {
+    font-size: 1.8em !important;
+  }
+  
+  .review-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .reviewer-photo {
+    margin-bottom: 8px;
+  }
+}
